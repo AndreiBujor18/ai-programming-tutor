@@ -1,0 +1,8 @@
+{
+  "id": "frequency_count",
+  "title": "Target frequency",
+  "statement": "Count how many times a target integer appears in an array.",
+  "input_format": "The first line contains n (1 <= n <= 1000). The second line contains n integers. The third line contains the target.",
+  "output_format": "Print the number of occurrences of the target.",
+  "tags": ["arrays", "loops", "conditions", "counters"]
+}

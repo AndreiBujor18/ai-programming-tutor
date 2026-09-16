@@ -1,0 +1,8 @@
+{
+  "id": "line_after_number",
+  "title": "Read a line after a number",
+  "statement": "Read an integer identifier followed by a full line of text, preserving spaces inside the text.",
+  "input_format": "The first line contains an integer. The second line contains between 1 and 1000 printable characters and may contain spaces.",
+  "output_format": "Print the identifier, a colon, and the complete second line.",
+  "tags": ["input", "strings", "buffers", "standard-library"]
+}

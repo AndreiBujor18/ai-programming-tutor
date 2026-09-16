@@ -1,0 +1,7 @@
+[
+  {"name": "odd-palindrome", "input": "level\n", "expected": "YES\n", "hidden": false},
+  {"name": "ordinary-word", "input": "code\n", "expected": "NO\n", "hidden": false},
+  {"name": "single-character", "input": "a\n", "expected": "YES\n", "hidden": true},
+  {"name": "two-characters", "input": "ab\n", "expected": "NO\n", "hidden": true},
+  {"name": "even-palindrome", "input": "abccba\n", "expected": "YES\n", "hidden": true}
+]

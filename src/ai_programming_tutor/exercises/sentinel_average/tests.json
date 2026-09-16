@@ -1,0 +1,7 @@
+[
+  {"name": "fractional-average", "input": "4 5 8 0\n", "expected": "5.67\n", "hidden": false},
+  {"name": "empty-sequence", "input": "0\n", "expected": "EMPTY\n", "hidden": false},
+  {"name": "negative-values", "input": "-5 -1 0\n", "expected": "-3.00\n", "hidden": true},
+  {"name": "ignores-after-marker", "input": "1 2 0 999\n", "expected": "1.50\n", "hidden": true},
+  {"name": "wide-sum", "input": "2000000000 2000000000 0\n", "expected": "2000000000.00\n", "hidden": true}
+]

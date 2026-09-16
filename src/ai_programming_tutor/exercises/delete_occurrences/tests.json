@@ -1,0 +1,7 @@
+[
+  {"name": "several-consecutive", "input": "6\n2 7 2 2 9 2\n2\n", "expected": "4 2 7 9\n", "hidden": false},
+  {"name": "no-match", "input": "4\n1 3 5 7\n2\n", "expected": "0 4 1 3 5 7\n", "hidden": false},
+  {"name": "all-match", "input": "5\n-1 -1 -1 -1 -1\n-1\n", "expected": "5 0\n", "hidden": true},
+  {"name": "first-and-last", "input": "5\n8 1 2 3 8\n8\n", "expected": "2 3 1 2 3\n", "hidden": true},
+  {"name": "single-kept", "input": "1\n10\n3\n", "expected": "0 1 10\n", "hidden": true}
+]

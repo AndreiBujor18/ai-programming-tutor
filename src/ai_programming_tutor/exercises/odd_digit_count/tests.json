@@ -1,0 +1,7 @@
+[
+  {"name": "all-odd", "input": "13579\n", "expected": "5\n", "hidden": false},
+  {"name": "all-even", "input": "24680\n", "expected": "0\n", "hidden": false},
+  {"name": "zero", "input": "0\n", "expected": "0\n", "hidden": true},
+  {"name": "mixed-digits", "input": "1029384756\n", "expected": "5\n", "hidden": true},
+  {"name": "wide-value", "input": "8000000000000000001\n", "expected": "1\n", "hidden": true}
+]

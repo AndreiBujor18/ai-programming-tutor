@@ -1,0 +1,7 @@
+[
+  {"name": "two-by-two", "input": "2\n1 2\n3 4\n", "expected": "2.50\n", "hidden": false},
+  {"name": "three-by-three", "input": "3\n1 2 3\n4 5 6\n7 8 9\n", "expected": "5.00\n", "hidden": false},
+  {"name": "single-negative", "input": "1\n-3\n", "expected": "-3.00\n", "hidden": true},
+  {"name": "negative-fraction", "input": "2\n-1 100\n200 -2\n", "expected": "-1.50\n", "hidden": true},
+  {"name": "rounding", "input": "3\n1 0 0\n0 2 0\n0 0 5\n", "expected": "2.67\n", "hidden": true}
+]

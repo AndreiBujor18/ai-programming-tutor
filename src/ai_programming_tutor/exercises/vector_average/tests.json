@@ -1,0 +1,7 @@
+[
+  {"name": "fractional", "input": "4\n1 2 3 4\n", "expected": "2.50\n", "hidden": false},
+  {"name": "integer-result", "input": "3\n10 20 30\n", "expected": "20.00\n", "hidden": false},
+  {"name": "single-negative", "input": "1\n-7\n", "expected": "-7.00\n", "hidden": true},
+  {"name": "negative-fraction", "input": "4\n-5 -2 0 2\n", "expected": "-1.25\n", "hidden": true},
+  {"name": "small-fraction", "input": "5\n2 2 2 2 3\n", "expected": "2.20\n", "hidden": true}
+]

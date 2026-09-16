@@ -1,0 +1,8 @@
+{
+  "id": "perfect_squares",
+  "title": "Perfect squares up to a limit",
+  "statement": "Print every positive perfect square that does not exceed a given limit, in increasing order.",
+  "input_format": "One line contains n (0 <= n <= 1000000000).",
+  "output_format": "Print the squares separated by one space. Print NONE when no positive square is available.",
+  "tags": ["loops", "number-properties", "boundaries"]
+}

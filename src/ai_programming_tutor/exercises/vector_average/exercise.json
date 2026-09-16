@@ -1,0 +1,8 @@
+{
+  "id": "vector_average",
+  "title": "Vector average",
+  "statement": "Read n integer values and print their arithmetic mean with exactly two digits after the decimal point.",
+  "input_format": "The first line contains n (1 <= n <= 1000). The second line contains n integers.",
+  "output_format": "Print the arithmetic mean rounded to two decimal places.",
+  "tags": ["arrays", "loops", "numeric-types"]
+}

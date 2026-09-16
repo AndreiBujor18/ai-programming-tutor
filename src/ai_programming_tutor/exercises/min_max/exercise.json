@@ -1,0 +1,8 @@
+{
+  "id": "min_max",
+  "title": "Minimum and maximum",
+  "statement": "Read n integers and print the smallest value followed by the largest value.",
+  "input_format": "The first line contains n (1 <= n <= 1000). The second line contains n integers.",
+  "output_format": "Print the minimum and maximum separated by one space.",
+  "tags": ["arrays", "loops", "comparisons"]
+}

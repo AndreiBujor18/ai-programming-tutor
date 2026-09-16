@@ -1,0 +1,8 @@
+{
+  "id": "odd_digit_count",
+  "title": "Count odd digits",
+  "statement": "Count how many odd digits occur in the decimal representation of a nonnegative integer.",
+  "input_format": "One line contains an integer n (0 <= n <= 8000000000000000001).",
+  "output_format": "Print the number of odd decimal digits in n.",
+  "tags": ["digits", "loops", "counters"]
+}

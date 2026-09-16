@@ -1,0 +1,8 @@
+{
+  "id": "vector_menu",
+  "title": "Vector command menu",
+  "statement": "Process a sequence of vector-menu commands. R replaces the vector, S prints its sum, and M prints its maximum. Queries before the first read must print EMPTY.",
+  "input_format": "The first line contains q (1 <= q <= 30). Each command is R followed by n and n integers, S, or M. Commands are case-insensitive.",
+  "output_format": "For each S or M command print the result or EMPTY. Print INVALID for an unknown command.",
+  "tags": ["arrays", "functions", "menus", "program-state"]
+}

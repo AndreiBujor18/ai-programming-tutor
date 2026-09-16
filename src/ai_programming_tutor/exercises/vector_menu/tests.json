@@ -1,0 +1,7 @@
+[
+  {"name": "query-before-read", "input": "4\nS\nR 3 1 2 3\nS\nM\n", "expected": "EMPTY\n6\n3\n", "hidden": false},
+  {"name": "negative-values", "input": "3\nR 4 -5 -2 -9 -1\nM\nS\n", "expected": "-1\n-17\n", "hidden": false},
+  {"name": "lowercase-commands", "input": "3\nr 2 8 11\ns\nm\n", "expected": "19\n11\n", "hidden": true},
+  {"name": "replace-vector", "input": "4\nR 3 9 9 9\nS\nR 2 -4 10\nS\n", "expected": "27\n6\n", "hidden": true},
+  {"name": "invalid-command", "input": "4\nZ\nR 1 42\nZ\nM\n", "expected": "INVALID\nINVALID\n42\n", "hidden": true}
+]

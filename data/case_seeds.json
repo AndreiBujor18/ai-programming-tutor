@@ -1,0 +1,139 @@
+{
+  "schema_version": "1.0",
+  "created_for": "taxonomy-v0.3",
+  "classification": "public-safe-derived-metadata",
+  "privacy": {
+    "raw_material_included": false,
+    "student_code_included": false,
+    "personal_identifiers_included": false,
+    "policy": "Only abstract observations and newly authored examples may enter the repository."
+  },
+  "source_groups": [
+    {
+      "id": "SRC-TUTORING-AGG",
+      "kind": "tutoring conversation exports",
+      "item_count": 3,
+      "use": "teaching constraints and recurring confusion patterns",
+      "repository_handling": "raw files excluded"
+    },
+    {
+      "id": "SRC-PYTHON-LABS-AGG",
+      "kind": "introductory Python laboratory PDFs",
+      "item_count": 5,
+      "use": "future Python curriculum map only",
+      "repository_handling": "documents excluded"
+    },
+    {
+      "id": "SRC-C-REFERENCES-AGG",
+      "kind": "C vector and menu reference templates",
+      "item_count": 2,
+      "use": "exercise-scope validation, not student-submission evidence",
+      "repository_handling": "original templates excluded"
+    },
+    {
+      "id": "SRC-MIXED-NOTES-AGG",
+      "kind": "mixed C, Python, and prose notes",
+      "item_count": 1,
+      "use": "candidate bug observations with conservative provenance",
+      "repository_handling": "excluded because provenance is mixed and personal data is present"
+    },
+    {
+      "id": "SRC-ALGORITHM-SCAFFOLDS-AGG",
+      "kind": "menu, input, greedy, and backtracking scaffolds",
+      "item_count": 5,
+      "use": "future exercise ideas; incomplete scaffolds are not solver ground truth",
+      "repository_handling": "original archives excluded"
+    },
+    {
+      "id": "SRC-C-CURRICULUM-AGG",
+      "kind": "private first-semester C curriculum packet",
+      "use": "abstract curriculum coverage and compatibility requirements only",
+      "repository_handling": "raw documents, text, filenames, authorship, and metadata excluded"
+    }
+  ],
+  "case_seeds": [
+    {
+      "id": "C-SEED-001",
+      "label": "menu_dispatch",
+      "observation": "A documented menu operation may be missing or attached to the wrong command.",
+      "source_groups": ["SRC-TUTORING-AGG", "SRC-MIXED-NOTES-AGG"],
+      "status": "implemented",
+      "implemented_in": ["vector_menu", "matrix_menu"]
+    },
+    {
+      "id": "C-SEED-002",
+      "label": "input_buffer_misuse",
+      "observation": "Mixing token, character, and full-line reads can consume pending whitespace as data.",
+      "source_groups": ["SRC-MIXED-NOTES-AGG"],
+      "status": "implemented",
+      "implemented_in": ["vector_menu", "matrix_menu", "line_after_number"]
+    },
+    {
+      "id": "C-SEED-003",
+      "label": "invalid_program_state",
+      "observation": "A menu action may run before the required vector or matrix has been read.",
+      "source_groups": ["SRC-C-REFERENCES-AGG", "SRC-MIXED-NOTES-AGG"],
+      "status": "implemented",
+      "implemented_in": ["vector_menu", "matrix_menu"]
+    },
+    {
+      "id": "C-SEED-004",
+      "label": "wrong_identifier_or_argument",
+      "observation": "A valid but semantically unrelated variable may be used in an assignment or function call.",
+      "source_groups": ["SRC-MIXED-NOTES-AGG"],
+      "status": "implemented",
+      "implemented_in": [
+        "vector_insert",
+        "delete_occurrences",
+        "vector_menu",
+        "matrix_menu",
+        "line_after_number"
+      ]
+    },
+    {
+      "id": "C-SEED-005",
+      "label": "toolchain_or_portability_issue",
+      "observation": "C and C++ headers, compilers, and non-standard console APIs may be mixed.",
+      "source_groups": ["SRC-TUTORING-AGG", "SRC-MIXED-NOTES-AGG"],
+      "status": "operational-only",
+      "implemented_in": []
+    },
+    {
+      "id": "C-SEED-006",
+      "label": "vector_shift_and_boundary",
+      "observation": "Insertion and deletion require coordinated bounds, indices, and logical-size updates.",
+      "source_groups": ["SRC-C-REFERENCES-AGG"],
+      "status": "implemented-with-existing-labels",
+      "implemented_in": ["vector_insert", "delete_occurrences"]
+    },
+    {
+      "id": "C-SEED-007",
+      "label": "file_cursor_state",
+      "observation": "Repeated reads can assume data remains after the input source has been exhausted.",
+      "source_groups": ["SRC-ALGORITHM-SCAFFOLDS-AGG"],
+      "status": "deferred-insufficient-cross-exercise-coverage",
+      "implemented_in": []
+    },
+    {
+      "id": "C-SEED-008",
+      "label": "declaration_or_identifier_typo",
+      "observation": "Misspelled declarations and unknown identifiers are common compile-time failures.",
+      "source_groups": ["SRC-MIXED-NOTES-AGG"],
+      "status": "handled-as-compilation-error",
+      "implemented_in": []
+    },
+    {
+      "id": "CURR-C-002",
+      "label": "curriculum_coverage",
+      "observation": "The introductory sequence covers numeric expressions, conditions, loops, digit processing, arrays, strings, functions, and basic file handling, including sentinel-driven repetition and older portability patterns.",
+      "source_groups": ["SRC-C-CURRICULUM-AGG"],
+      "status": "implemented-as-original-exercises-and-operational-warnings",
+      "implemented_in": [
+        "interval_parity",
+        "odd_digit_count",
+        "sentinel_average",
+        "perfect_squares"
+      ]
+    }
+  ]
+}

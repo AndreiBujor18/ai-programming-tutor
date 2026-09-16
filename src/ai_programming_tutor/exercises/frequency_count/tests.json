@@ -1,0 +1,7 @@
+[
+  {"name": "several-matches", "input": "7\n1 2 1 3 1 4 1\n1\n", "expected": "4\n", "hidden": false},
+  {"name": "no-match", "input": "5\n2 4 6 8 10\n3\n", "expected": "0\n", "hidden": false},
+  {"name": "single-match", "input": "1\n-5\n-5\n", "expected": "1\n", "hidden": true},
+  {"name": "last-only", "input": "4\n9 8 7 6\n6\n", "expected": "1\n", "hidden": true},
+  {"name": "all-match", "input": "5\n0 0 0 0 0\n0\n", "expected": "5\n", "hidden": true}
+]

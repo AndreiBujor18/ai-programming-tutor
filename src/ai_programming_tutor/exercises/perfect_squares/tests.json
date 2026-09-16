@@ -1,0 +1,7 @@
+[
+  {"name": "exact-square", "input": "16\n", "expected": "1 4 9 16\n", "hidden": false},
+  {"name": "between-squares", "input": "20\n", "expected": "1 4 9 16\n", "hidden": false},
+  {"name": "no-positive-square", "input": "0\n", "expected": "NONE\n", "hidden": true},
+  {"name": "smallest-square", "input": "1\n", "expected": "1\n", "hidden": true},
+  {"name": "ten-roots", "input": "100\n", "expected": "1 4 9 16 25 36 49 64 81 100\n", "hidden": true}
+]

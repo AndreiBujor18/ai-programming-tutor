@@ -1,0 +1,7 @@
+[
+  {"name": "mixed", "input": "5\n3 -2 8 1 4\n", "expected": "-2 8\n", "hidden": false},
+  {"name": "duplicates", "input": "6\n5 5 1 9 1 9\n", "expected": "1 9\n", "hidden": false},
+  {"name": "single", "input": "1\n-12\n", "expected": "-12 -12\n", "hidden": true},
+  {"name": "all-negative", "input": "4\n-8 -3 -20 -4\n", "expected": "-20 -3\n", "hidden": true},
+  {"name": "last-extremes", "input": "5\n2 3 4 5 -100\n", "expected": "-100 5\n", "hidden": true}
+]

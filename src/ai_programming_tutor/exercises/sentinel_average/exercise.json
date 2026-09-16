@@ -1,0 +1,8 @@
+{
+  "id": "sentinel_average",
+  "title": "Average until stop marker",
+  "statement": "Read signed integers until the first zero. The zero is a stop marker, not a value. Print the average of the preceding values or EMPTY when no value precedes it.",
+  "input_format": "A sequence of integers terminated by 0. Values after the first 0, if present, are ignored.",
+  "output_format": "Print the average with two decimal places, or EMPTY when 0 is the first value.",
+  "tags": ["loops", "sentinels", "averages", "program-state"]
+}

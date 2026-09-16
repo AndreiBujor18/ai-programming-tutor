@@ -1,0 +1,7 @@
+[
+  {"name": "five-values", "input": "3 7\n", "expected": "ODD\n", "hidden": false},
+  {"name": "crosses-zero", "input": "-2 3\n", "expected": "EVEN\n", "hidden": false},
+  {"name": "single-value", "input": "5 5\n", "expected": "ODD\n", "hidden": true},
+  {"name": "two-negative-values", "input": "-100 -99\n", "expected": "EVEN\n", "hidden": true},
+  {"name": "wide-interval", "input": "0 1000000000\n", "expected": "ODD\n", "hidden": true}
+]

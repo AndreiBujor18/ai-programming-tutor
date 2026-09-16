@@ -1,0 +1,8 @@
+{
+  "id": "matrix_menu",
+  "title": "Matrix row-maximum menu",
+  "statement": "Process matrix-menu commands. R replaces the matrix and X prints the maximum value from every row. A query before the first read must print EMPTY.",
+  "input_format": "The first line contains q (1 <= q <= 30). R is followed by rows, columns, and all matrix values; X requests row maxima. Commands are case-insensitive.",
+  "output_format": "For each X command print all row maxima on one line or EMPTY. Print INVALID for an unknown command.",
+  "tags": ["matrices", "functions", "menus", "program-state"]
+}

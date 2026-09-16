@@ -1,0 +1,8 @@
+{
+  "id": "interval_parity",
+  "title": "Parity of a closed interval",
+  "statement": "Determine whether the closed interval between two given integers contains an even or odd number of integers.",
+  "input_format": "One line contains left and right (-1000000000 <= left <= right <= 1000000000).",
+  "output_format": "Print EVEN when the interval contains an even number of integers; otherwise print ODD.",
+  "tags": ["conditions", "intervals", "arithmetic"]
+}

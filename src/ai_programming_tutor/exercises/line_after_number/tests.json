@@ -1,0 +1,7 @@
+[
+  {"name": "several-words", "input": "17\nfirst programming lesson\n", "expected": "17:first programming lesson\n", "hidden": false},
+  {"name": "single-word", "input": "3\nvector\n", "expected": "3:vector\n", "hidden": false},
+  {"name": "leading-space", "input": "9\n  keep both spaces\n", "expected": "9:  keep both spaces\n", "hidden": true},
+  {"name": "punctuation", "input": "-4\nC, arrays & files!\n", "expected": "-4:C, arrays & files!\n", "hidden": true},
+  {"name": "one-character", "input": "0\nx\n", "expected": "0:x\n", "hidden": true}
+]

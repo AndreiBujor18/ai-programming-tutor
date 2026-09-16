@@ -1,0 +1,8 @@
+{
+  "id": "diagonal_average",
+  "title": "Main diagonal average",
+  "statement": "Read a square integer matrix and print the arithmetic mean of the elements on its main diagonal with two decimal places.",
+  "input_format": "The first line contains n (1 <= n <= 50), followed by n lines containing n integers each.",
+  "output_format": "Print the mean of matrix[0][0], matrix[1][1], ..., matrix[n-1][n-1] with two decimal places.",
+  "tags": ["matrices", "loops", "numeric-types"]
+}

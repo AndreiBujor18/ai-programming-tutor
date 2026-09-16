@@ -1,0 +1,8 @@
+{
+  "id": "palindrome",
+  "title": "Palindrome word",
+  "statement": "Determine whether a non-empty lowercase word reads identically from left to right and right to left.",
+  "input_format": "One lowercase word of at most 1000 characters.",
+  "output_format": "Print YES if the word is a palindrome, otherwise print NO.",
+  "tags": ["strings", "loops", "conditions"]
+}
