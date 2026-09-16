@@ -143,8 +143,15 @@ Target product metrics:
 
 ## Next sprint
 
-Run the practice simulation and expanded style protocol with the project owner's two
-controlled profiles. Then design a consented, de-identified natural-code evaluation,
-especially for sentinel handling. Before public release, move execution behind a
-disposable worker boundary. Consider accounts, history, and favorites only after
-defining retention, deletion, and consent policies.
+The v0.6.3 practice-simulation and two-profile acceptance protocol is complete.
+Before feature work, resolve the hosted GCC timeouts and 15-minute GitHub Actions
+cancellation while preserving the runner's local safety limits.
+
+The feature sprint then adds opt-in local learning progress: favorite exercises,
+attempt history, last/best results, a small concept/exercise progress view, one-click
+deletion, and JSON export/import. It deliberately avoids accounts and a server
+database while the retention and deletion behavior is validated locally.
+
+After that sprint, design a consented, de-identified natural-code evaluation,
+especially for sentinel handling. Before public code execution, move the runner
+behind a disposable worker boundary.

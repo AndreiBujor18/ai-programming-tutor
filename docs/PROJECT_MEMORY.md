@@ -132,36 +132,38 @@ natural-data evaluation. The browser currently uses rules without loading the mo
   four-task, 10-point practice exam.
 - The v0.6.3 release privacy scan found no uploaded archive, private filename, Library ID,
   workspace path, PDF, image, office document, or raw tutoring export.
+- The six-stage manual Windows acceptance protocol is complete. The final regression
+  confirmed frozen finished time, same-tab source recovery, and removal of temporary
+  exam source after tab closure with permanent drafts disabled. See
+  `docs/ACCEPTANCE_V063.md`.
+- The first public GitHub Actions matrix run was cancelled at the 15-minute job
+  limit. Its ML baseline test passed, but GCC-backed checks repeatedly reached the
+  four-second compilation timeout on the hosted Ubuntu runner. This is a separate
+  CI-portability issue; local source and extracted-release runs still pass 49/49.
 - The runner is for trusted localhost use only. Resource limits, loopback binding,
   Host/Origin checks, and explicit execution enablement are not a production sandbox.
 - Public deployment requires disposable isolated workers with no network, no host
   secrets/mounts, strict resource/syscall controls, quotas, and cleanup.
 
+## Completed manual acceptance
+
+All six manual acceptance stages now pass. Tests 1–5 cover the exercise catalog,
+practice exam, Windows runner, diagnosis, progressive hints, locale transitions,
+style personalization, best-attempt scoring, and source-free compatibility warnings.
+Test 6 confirms the complete v0.6.3 lifecycle: finished time remains frozen, the
+numeric result and edited source survive a same-tab refresh, and temporary exam
+source disappears after the tab is closed when permanent drafts are disabled.
+
+The public-safe evidence record is in `docs/ACCEPTANCE_V063.md`.
+
 ## Recommended next step
 
-Complete the final manual acceptance recheck on v0.6.3. Test 1 passed on Windows: the
-14-exercise catalog, dark Romanian UI, exam start, task navigation, timer, and score
-persisted correctly across refresh. Test 2 passed after the protected Windows temp
-fallback was fixed in v0.6.1: correct and deliberately wrong submissions, diagnosis,
-three hints, personalized complete solution, and best-attempt scoring all behaved as
-intended. Test 3 confirmed translated code feedback and preserved exam state, then
-exposed the hint-depth and false-dirty locale regressions fixed in v0.6.2. Test 4
-confirmed distinct Profile A/Profile B/PCLP1 formatting on vector-average and
-palindrome solutions, all passing 5/5 tests. Test 5 confirmed that `fflush(stdin)`
-produces a compatibility warning without rewriting the learner's source and while
-the valid solution still passes 5/5 tests. Test 6 exposed a moving finished timer
-and lost exam source after refresh; v0.6.3 snapshots the final time and retains exam
-source temporarily in the current tab.
+Before feature work, make the public GitHub Actions workflow complete reliably.
+Reproduce one hosted GCC timeout with focused diagnostics, review compiler-specific
+process limits separately from untrusted-program limits, and keep the expensive ML
+evaluation from obscuring runner failures.
 
-Remaining acceptance checks:
-
-1. finish a fresh practice exam on v0.6.3;
-2. refresh in the same tab and confirm that the timer is frozen, the score remains,
-   the last exam task is selected, and its edited source is restored;
-3. close the tab and confirm that temporary exam source is not treated as an
-   opt-in permanent draft.
-
-If that pass succeeds, the recommended v0.7.0 sprint is **local learning progress**:
+After CI is green, the recommended v0.7.0 sprint is **local learning progress**:
 
 - favorite exercises;
 - opt-in local attempt history and last/best result;

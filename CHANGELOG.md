@@ -2,6 +2,9 @@
 
 ## 0.6.3
 
+- Completed the six-stage local Windows acceptance protocol, including same-tab
+  finished-exam recovery and removal of temporary source after tab closure when
+  permanent drafts are disabled.
 - Snapshotted the remaining practice-exam time when the learner finishes, so the
   displayed timer remains frozen across refreshes instead of being recalculated
   from the original start time.

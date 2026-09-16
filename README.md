@@ -174,7 +174,7 @@ The core is deliberately independent of the web framework:
 10. `service.py` exposes the application interface; `webserver.py` and `api.py`
    deliver it to the local browser.
 
-See `docs/PROJECT_BRIEF.md`, `docs/BUG_TAXONOMY.md`,
+See `docs/PROJECT_BRIEF.md`, `docs/ACCEPTANCE_V063.md`, `docs/BUG_TAXONOMY.md`,
 `docs/DATA_PROVENANCE.md`, `docs/CURRICULUM_ALIGNMENT.md`,
 `docs/STYLE_PERSONALIZATION.md`, and
 `docs/SECURITY.md` for the product scope, labels, privacy boundary, manual
