@@ -4,8 +4,12 @@
 
 `CRunner` is a development runner. It uses a temporary directory, direct argument
 lists rather than a shell, source and output caps, process-group termination, and
-Unix CPU, address-space, file-size, core-dump, and process-count limits. These
-controls reduce accidental damage and make automated tests predictable.
+Unix CPU, address-space, file-size, and core-dump limits. Evaluated programs also
+receive a process-count cap. GCC does not receive that cap because `RLIMIT_NPROC`
+counts every process owned by the real user and can block the compiler's helper
+processes on a shared host; compilation remains bounded by the other resource
+limits and a wall-clock timeout. These controls reduce accidental damage and make
+automated tests predictable.
 
 The v0.6.3 dependency-free demo binds only to `127.0.0.1`, checks the Host and Origin
 for local requests, and requires `--enable-local-execution` to run user source.

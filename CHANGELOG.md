@@ -1,5 +1,15 @@
 # Changelog
 
+## Unreleased
+
+- Kept the evaluated program's process cap while removing the user-wide
+  `RLIMIT_NPROC` cap from GCC, allowing compiler helper processes to start on
+  shared Linux and GitHub-hosted runners.
+- Added POSIX resource-profile regressions and made the ML baseline fail if a
+  controlled mutation does not compile.
+- Split GitHub Actions into independently visible core and ML matrix jobs so a
+  runner failure is reported before expensive model evaluation can obscure it.
+
 ## 0.6.3
 
 - Completed the six-stage local Windows acceptance protocol, including same-tab

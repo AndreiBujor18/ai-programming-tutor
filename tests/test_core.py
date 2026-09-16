@@ -11,7 +11,12 @@ from unittest import mock
 from ai_programming_tutor.catalog import get_exercise, list_exercises
 from ai_programming_tutor.dataset import iter_samples
 from ai_programming_tutor.diagnosis import diagnose
-from ai_programming_tutor.runner import CRunner, _process_environment
+from ai_programming_tutor.runner import (
+    CRunner,
+    _compiler_resource_limiter,
+    _process_environment,
+    _program_resource_limiter,
+)
 from ai_programming_tutor.service import TutorService
 
 
@@ -44,7 +49,12 @@ class RunnerTests(unittest.TestCase):
 
     def test_compilation_error_is_reported(self) -> None:
         exercise = get_exercise("vector_average")
-        result = self.runner.evaluate("int main(void) { this is not C; }", exercise)
+        with mock.patch(
+            "ai_programming_tutor.runner._compiler_resource_limiter",
+            wraps=_compiler_resource_limiter,
+        ) as compiler_limits:
+            result = self.runner.evaluate("int main(void) { this is not C; }", exercise)
+        compiler_limits.assert_called_once_with()
         self.assertFalse(result.compilation.succeeded)
         self.assertTrue(result.compilation.stderr)
 
@@ -133,6 +143,34 @@ class DatasetTests(unittest.TestCase):
 
 
 class RunnerEnvironmentTests(unittest.TestCase):
+    @unittest.skipIf(sys.platform == "win32", "POSIX resource limits are unavailable")
+    def test_compiler_limits_do_not_apply_a_user_wide_process_cap(self) -> None:
+        import resource
+
+        limiter = _compiler_resource_limiter()
+        self.assertIsNotNone(limiter)
+        with mock.patch("resource.setrlimit") as set_limit:
+            limiter()
+
+        limited_resources = {call.args[0] for call in set_limit.call_args_list}
+        self.assertIn(resource.RLIMIT_CPU, limited_resources)
+        self.assertIn(resource.RLIMIT_AS, limited_resources)
+        self.assertIn(resource.RLIMIT_FSIZE, limited_resources)
+        self.assertNotIn(resource.RLIMIT_NPROC, limited_resources)
+
+    @unittest.skipIf(sys.platform == "win32", "POSIX resource limits are unavailable")
+    def test_program_limits_keep_the_process_cap(self) -> None:
+        import resource
+
+        if not hasattr(resource, "RLIMIT_NPROC"):
+            self.skipTest("RLIMIT_NPROC is unavailable")
+        limiter = _program_resource_limiter()
+        self.assertIsNotNone(limiter)
+        with mock.patch("resource.setrlimit") as set_limit:
+            limiter()
+
+        set_limit.assert_any_call(resource.RLIMIT_NPROC, (16, 16))
+
     def test_private_temp_variables_are_always_set(self) -> None:
         workdir = Path(tempfile.gettempdir()) / "aptutor-private-test"
         environment = _process_environment(workdir)

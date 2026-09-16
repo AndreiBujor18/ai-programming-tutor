@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import importlib.util
+import json
 import tempfile
 import unittest
 from pathlib import Path
@@ -22,6 +23,17 @@ class BaselineTests(unittest.TestCase):
             metrics_path = root / "metrics.json"
             matrix = root / "matrix.csv"
             generate_dataset(dataset, variants=2, evaluate=True)
+            records = [
+                json.loads(line)
+                for line in dataset.read_text(encoding="utf-8").splitlines()
+            ]
+            compilation_failures = [
+                record["id"] for record in records if not record["signals"]["compiled"]
+            ]
+            self.assertFalse(
+                compilation_failures,
+                f"Controlled mutations failed to compile: {compilation_failures[:5]}",
+            )
             metrics = train_baseline(dataset, model, metrics_path, matrix)
 
             self.assertEqual(metrics["evaluation"], "leave-one-exercise-out")

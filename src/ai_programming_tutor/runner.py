@@ -42,7 +42,13 @@ def _process_environment(workdir: Path) -> dict[str, str]:
     return environment
 
 
-def _resource_limiter(cpu_seconds: int, memory_mb: int, file_mb: int) -> Callable[[], None] | None:
+def _resource_limiter(
+    cpu_seconds: int,
+    memory_mb: int,
+    file_mb: int,
+    *,
+    process_limit: int | None,
+) -> Callable[[], None] | None:
     if sys.platform == "win32":
         return None
 
@@ -55,10 +61,22 @@ def _resource_limiter(cpu_seconds: int, memory_mb: int, file_mb: int) -> Callabl
         resource.setrlimit(resource.RLIMIT_AS, (memory_bytes, memory_bytes))
         resource.setrlimit(resource.RLIMIT_FSIZE, (file_bytes, file_bytes))
         resource.setrlimit(resource.RLIMIT_CORE, (0, 0))
-        if hasattr(resource, "RLIMIT_NPROC"):
-            resource.setrlimit(resource.RLIMIT_NPROC, (16, 16))
+        if process_limit is not None and hasattr(resource, "RLIMIT_NPROC"):
+            resource.setrlimit(resource.RLIMIT_NPROC, (process_limit, process_limit))
 
     return apply_limits
+
+
+def _compiler_resource_limiter() -> Callable[[], None] | None:
+    # RLIMIT_NPROC counts every process owned by the real user, not just this
+    # subprocess tree. A low value can therefore prevent GCC from starting cc1
+    # on shared hosts such as CI runners. Compilation remains bounded by CPU,
+    # address-space, file-size, and wall-clock limits.
+    return _resource_limiter(4, 512, 16, process_limit=None)
+
+
+def _program_resource_limiter() -> Callable[[], None] | None:
+    return _resource_limiter(1, 128, 1, process_limit=16)
 
 
 def _terminate_group(process: subprocess.Popen[bytes]) -> None:
@@ -147,7 +165,7 @@ class CRunner:
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 start_new_session=True,
-                preexec_fn=_resource_limiter(4, 512, 16),
+                preexec_fn=_compiler_resource_limiter(),
                 env=_process_environment(workdir),
             )
         except FileNotFoundError:
@@ -194,7 +212,7 @@ class CRunner:
                     stdout=stdout_file,
                     stderr=stderr_file,
                     start_new_session=True,
-                    preexec_fn=_resource_limiter(1, 128, 1),
+                    preexec_fn=_program_resource_limiter(),
                     env=_process_environment(workdir),
                 )
             except OSError as exc:
