@@ -96,6 +96,7 @@ class LocalHandler(BaseHTTPRequestHandler):
             "/": ("index.html", "text/html; charset=utf-8"),
             "/static/style.css": ("style.css", "text/css; charset=utf-8"),
             "/static/theme.js": ("theme.js", "text/javascript; charset=utf-8"),
+            "/static/progress.js": ("progress.js", "text/javascript; charset=utf-8"),
             "/static/i18n.js": ("i18n.js", "text/javascript; charset=utf-8"),
             "/static/app.js": ("app.js", "text/javascript; charset=utf-8"),
         }

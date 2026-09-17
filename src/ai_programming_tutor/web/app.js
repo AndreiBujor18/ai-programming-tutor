@@ -2,6 +2,7 @@
 
 const element = (id) => document.getElementById(id);
 const translations = window.APT_I18N;
+const progressTools = window.APT_PROGRESS;
 const STORAGE_PREFIX = "aptutor-v0.5-";
 const LEGACY_PREFIX = "aptutor-v0.3-";
 const PROFILE_SCHEMA_VERSION = "0.3";
@@ -9,6 +10,8 @@ const PREVIOUS_PROFILE_SCHEMA_VERSION = "0.2";
 const MAX_PERSISTED_DRAFT_LENGTH = 100000;
 const EXAM_SESSION_KEY = "aptutor-v0.6-exam-session";
 const EXAM_DRAFTS_KEY = "aptutor-v0.6-exam-drafts";
+const PROGRESS_STORAGE_PREFIX = "aptutor-v0.7-progress-";
+const HISTORY_SETTING_PREFIX = "aptutor-v0.7-attempt-history-";
 const PROFILE_DIMENSIONS = {
   function_brace_style: {
     choices: [["function_brace_same_line", "same_line"], ["function_brace_next_line", "next_line"]],
@@ -127,6 +130,9 @@ const state = {
   profileId: "profile_a",
   profiles: {profile_a: blankProfile(), profile_b: blankProfile()},
   profileMessageKey: "", profileMessageError: false,
+  learningProgress: {profile_a: progressTools.blank(), profile_b: progressTools.blank()},
+  attemptHistoryEnabled: {profile_a: false, profile_b: false},
+  progressMessageKey: "", progressMessageError: false,
   exam: {
     definition: null, active: false, finished: false, expired: false,
     startedAt: 0, remainingMs: null, currentIndex: 0, scores: {},
@@ -162,6 +168,66 @@ function preferred(key, fallback) {
   } catch (_) {
     return fallback;
   }
+}
+
+function exerciseIds() {
+  return state.exercises.map((exercise) => exercise.id);
+}
+
+function progressStorageKey(profileId) {
+  return PROGRESS_STORAGE_PREFIX + profileId;
+}
+
+function historySettingKey(profileId) {
+  return HISTORY_SETTING_PREFIX + profileId;
+}
+
+function currentLearningProgress() {
+  return state.learningProgress[state.profileId];
+}
+
+function loadLearningProgress(profileId) {
+  let progress = progressTools.blank();
+  try {
+    const raw = localStorage.getItem(progressStorageKey(profileId));
+    if (raw) progress = progressTools.sanitise(JSON.parse(raw), exerciseIds());
+  } catch (_) { /* ignore malformed or unavailable local storage */ }
+  try {
+    state.attemptHistoryEnabled[profileId] =
+      localStorage.getItem(historySettingKey(profileId)) === "yes";
+  } catch (_) {
+    state.attemptHistoryEnabled[profileId] = false;
+  }
+  const storedAttemptCount = progressTools.totals(progress, exerciseIds()).attemptCount;
+  if (!state.attemptHistoryEnabled[profileId]) {
+    progress = progressTools.clearAttempts(progress, exerciseIds());
+  }
+  state.learningProgress[profileId] = progress;
+  if (!state.attemptHistoryEnabled[profileId] && storedAttemptCount > 0) {
+    saveLearningProgress(profileId);
+  }
+}
+
+function saveLearningProgress(profileId) {
+  const progress = progressTools.sanitise(state.learningProgress[profileId], exerciseIds());
+  state.learningProgress[profileId] = progress;
+  try {
+    const totals = progressTools.totals(progress, exerciseIds());
+    if (totals.favoriteCount === 0 && totals.attemptCount === 0) {
+      localStorage.removeItem(progressStorageKey(profileId));
+    } else {
+      localStorage.setItem(progressStorageKey(profileId), JSON.stringify(progress));
+    }
+  } catch (_) { /* optional */ }
+}
+
+function saveHistorySetting(profileId) {
+  try {
+    localStorage.setItem(
+      historySettingKey(profileId),
+      state.attemptHistoryEnabled[profileId] ? "yes" : "no"
+    );
+  } catch (_) { /* optional */ }
 }
 
 function loadProfile(id) {
@@ -269,6 +335,77 @@ function setProfileMessage(key, isError = false) {
   message.classList.toggle("error", isError);
 }
 
+function setProgressMessage(key, isError = false) {
+  state.progressMessageKey = key;
+  state.progressMessageError = isError;
+  const message = element("progress-message");
+  message.textContent = key ? tr(key) : "";
+  message.classList.toggle("error", isError);
+}
+
+function localizedExerciseTitle(exercise) {
+  if (!exercise) return "";
+  return state.locale === "ro" ? translations.exercises[exercise.id].title : exercise.title;
+}
+
+function refreshExerciseOptions() {
+  const list = element("exercise-select");
+  const favorites = new Set(currentLearningProgress().favorites);
+  for (const option of list.options) {
+    const exercise = state.exercises.find((item) => item.id === option.value);
+    if (exercise) {
+      option.textContent = (favorites.has(exercise.id) ? "★ " : "")
+        + localizedExerciseTitle(exercise);
+    }
+  }
+}
+
+function progressTotalsText(totals) {
+  if (state.locale === "ro") {
+    return totals.favoriteCount + " " + (totals.favoriteCount === 1 ? "favorit" : "favorite")
+      + " · " + totals.attemptCount + " " + (totals.attemptCount === 1 ? "încercare" : "încercări")
+      + " · " + totals.solvedCount + " "
+      + (totals.solvedCount === 1 ? "exercițiu rezolvat complet" : "exerciții rezolvate complet");
+  }
+  return totals.favoriteCount + " " + (totals.favoriteCount === 1 ? "favorite" : "favorites")
+    + " · " + totals.attemptCount + " " + (totals.attemptCount === 1 ? "attempt" : "attempts")
+    + " · " + totals.solvedCount + " fully solved "
+    + (totals.solvedCount === 1 ? "exercise" : "exercises");
+}
+
+function exerciseProgressText() {
+  if (!state.active) return "";
+  if (!state.attemptHistoryEnabled[state.profileId]) return tr("attemptHistoryOff");
+  const summary = progressTools.summary(
+    currentLearningProgress(), state.active.id, exerciseIds()
+  );
+  if (!summary.count) return tr("noSavedAttempts");
+  const count = state.locale === "ro"
+    ? summary.count + " " + (summary.count === 1 ? "încercare" : "încercări")
+    : summary.count + " " + (summary.count === 1 ? "attempt" : "attempts");
+  return state.locale === "ro"
+    ? "Ultimul: " + summary.last.passed + "/" + summary.last.total
+      + " · Cel mai bun: " + summary.best.passed + "/" + summary.best.total + " · " + count
+    : "Last: " + summary.last.passed + "/" + summary.last.total
+      + " · Best: " + summary.best.passed + "/" + summary.best.total + " · " + count;
+}
+
+function refreshProgress() {
+  const progress = currentLearningProgress();
+  const totals = progressTools.totals(progress, exerciseIds());
+  element("save-attempt-history").checked = state.attemptHistoryEnabled[state.profileId];
+  element("progress-summary-badge").textContent = totals.favoriteCount + " ★ · "
+    + totals.solvedCount + "/" + state.exercises.length + " ✓";
+  element("progress-summary").textContent = progressTotalsText(totals);
+  const favoriteButton = element("favorite-exercise");
+  const isFavorite = Boolean(state.active && progress.favorites.includes(state.active.id));
+  favoriteButton.disabled = !state.active;
+  favoriteButton.textContent = tr(isFavorite ? "favoriteRemove" : "favoriteAdd");
+  favoriteButton.setAttribute("aria-pressed", String(isFavorite));
+  element("exercise-progress").textContent = exerciseProgressText();
+  setProgressMessage(state.progressMessageKey, state.progressMessageError);
+}
+
 function refreshHeader() {
   document.documentElement.lang = state.locale;
   const languageButton = element("language-toggle");
@@ -374,6 +511,7 @@ function translateStatic() {
   refreshHeader();
   refreshProfile();
   refreshDraftControls();
+  refreshProgress();
   setStatus(state.statusKey);
   renderExam();
 }
@@ -402,7 +540,7 @@ function examTasks() {
 function examTaskTitle(exerciseId) {
   const exercise = state.exercises.find((item) => item.id === exerciseId);
   if (!exercise) return exerciseId;
-  return state.locale === "ro" ? translations.exercises[exerciseId].title : exercise.title;
+  return localizedExerciseTitle(exercise);
 }
 
 function examMaximum() {
@@ -746,6 +884,7 @@ function refreshExercise() {
     state.drafts.set(key, element("code").value);
   }
   renderPublicTests(exercise);
+  refreshProgress();
 }
 
 function selectExercise(id) {
@@ -776,6 +915,7 @@ function selectExercise(id) {
   clearFeedback();
   setStatus("");
   setProfileMessage("");
+  setProgressMessage("");
   notice("");
   renderExam();
 }
@@ -802,7 +942,10 @@ function switchProfile(id) {
   clearFeedback();
   setStatus("");
   setProfileMessage("");
+  setProgressMessage("");
   refreshProfile();
+  refreshExerciseOptions();
+  refreshProgress();
   notice("");
 }
 
@@ -962,12 +1105,7 @@ function switchLanguage() {
   state.locale = state.locale === "ro" ? "en" : "ro";
   rememberPreference("locale", state.locale);
   translateStatic();
-  const list = element("exercise-select");
-  for (const option of list.options) {
-    const exercise = state.exercises.find((item) => item.id === option.value);
-    if (exercise) option.textContent = state.locale === "ro"
-      ? translations.exercises[exercise.id].title : exercise.title;
-  }
+  refreshExerciseOptions();
   refreshExercise();
   if (keepEditedSource) element("code").value = source;
   if (state.lastResponse) renderFeedback(state.lastResponse, revealedHints);
@@ -1038,6 +1176,57 @@ function resetProfile() {
   setProfileMessage("profileReset");
 }
 
+function toggleFavorite() {
+  if (!state.active) return;
+  const profileId = state.profileId;
+  const wasFavorite = currentLearningProgress().favorites.includes(state.active.id);
+  state.learningProgress[profileId] = progressTools.toggleFavorite(
+    currentLearningProgress(), state.active.id, exerciseIds()
+  );
+  saveLearningProgress(profileId);
+  refreshExerciseOptions();
+  setProgressMessage(wasFavorite ? "favoriteRemoved" : "favoriteAdded");
+  refreshProgress();
+}
+
+function toggleAttemptHistory(event) {
+  const profileId = state.profileId;
+  const enable = Boolean(event.target.checked);
+  const totals = progressTools.totals(currentLearningProgress(), exerciseIds());
+  if (!enable && totals.attemptCount > 0 && !window.confirm(tr("disableHistoryConfirm"))) {
+    event.target.checked = true;
+    return;
+  }
+  state.attemptHistoryEnabled[profileId] = enable;
+  saveHistorySetting(profileId);
+  if (!enable) {
+    state.learningProgress[profileId] = progressTools.clearAttempts(
+      currentLearningProgress(), exerciseIds()
+    );
+    saveLearningProgress(profileId);
+  }
+  setProgressMessage(enable ? "historySavingEnabled" : "historySavingDisabled");
+  refreshProgress();
+}
+
+function clearLearningProgress() {
+  if (!window.confirm(tr("clearProgressConfirm"))) return;
+  state.learningProgress[state.profileId] = progressTools.blank();
+  try { localStorage.removeItem(progressStorageKey(state.profileId)); } catch (_) { /* optional */ }
+  refreshExerciseOptions();
+  setProgressMessage("progressCleared");
+  refreshProgress();
+}
+
+function recordLearningAttempt(profileId, exerciseId, evaluation) {
+  if (!state.attemptHistoryEnabled[profileId]) return;
+  state.learningProgress[profileId] = progressTools.recordAttempt(
+    state.learningProgress[profileId], exerciseId, evaluation, exerciseIds()
+  );
+  saveLearningProgress(profileId);
+  if (state.profileId === profileId) refreshProgress();
+}
+
 function toggleDraftPersistence(event) {
   state.persistDrafts = Boolean(event.target.checked);
   rememberPreference("save-drafts", state.persistDrafts ? "yes" : "no");
@@ -1071,6 +1260,7 @@ function resetDraft() {
 async function runCode() {
   if (!state.active) return;
   const exerciseId = state.active.id;
+  const profileId = state.profileId;
   const source = element("code").value;
   if (!source.trim()) { notice(tr("codeRequired"), true); return; }
   const button = element("run");
@@ -1082,9 +1272,11 @@ async function runCode() {
       method: "POST", headers: {"Content-Type": "application/json"},
       body: JSON.stringify({source, dialect: "c17"})
     });
-    if (!state.active || state.active.id !== exerciseId || element("code").value !== source) return;
+    if (!state.active || state.active.id !== exerciseId || state.profileId !== profileId ||
+        element("code").value !== source) return;
     state.lastResponse = response;
     renderFeedback(response);
+    recordLearningAttempt(profileId, exerciseId, response.evaluation);
     recordExamResult(exerciseId, response.evaluation);
     setStatus("ready");
   } catch (error) {
@@ -1137,6 +1329,9 @@ async function start() {
   element("profile-select").addEventListener("change", (event) => switchProfile(event.target.value));
   element("learn-style").addEventListener("click", learnStyle);
   element("reset-profile").addEventListener("click", resetProfile);
+  element("favorite-exercise").addEventListener("click", toggleFavorite);
+  element("save-attempt-history").addEventListener("change", toggleAttemptHistory);
+  element("clear-progress").addEventListener("click", clearLearningProgress);
   element("save-drafts").addEventListener("change", toggleDraftPersistence);
   element("reset-draft").addEventListener("click", resetDraft);
   element("run").addEventListener("click", runCode);
@@ -1173,15 +1368,17 @@ async function start() {
     const loaded = await Promise.all([requestJSON("/exercises"), requestJSON("/exam")]);
     state.exercises = loaded[0];
     state.exam.definition = loaded[1];
+    loadLearningProgress("profile_a");
+    loadLearningProgress("profile_b");
     const list = element("exercise-select");
     list.replaceChildren();
     for (const exercise of state.exercises) {
       const option = document.createElement("option");
       option.value = exercise.id;
-      option.textContent = state.locale === "ro"
-        ? translations.exercises[exercise.id].title : exercise.title;
+      option.textContent = localizedExerciseTitle(exercise);
       list.append(option);
     }
+    refreshExerciseOptions();
     if (!state.persistDrafts) clearAllPersistedDrafts();
     restoreExamSession();
     restoreExamDrafts();

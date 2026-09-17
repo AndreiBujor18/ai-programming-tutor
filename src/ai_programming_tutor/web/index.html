@@ -7,6 +7,7 @@
   <title>Tutor de programare · PCLP1</title>
   <script src="/static/theme.js"></script>
   <link rel="stylesheet" href="/static/style.css">
+  <script src="/static/progress.js" defer></script>
   <script src="/static/i18n.js" defer></script>
   <script src="/static/app.js" defer></script>
 </head>
@@ -54,13 +55,31 @@
             <ol id="exam-rubric-list"></ol>
           </details>
         </section>
+        <section class="card progress-card" aria-labelledby="progress-heading">
+          <div class="section-head">
+            <h2 id="progress-heading" data-i18n="progressHeading">Progres local</h2>
+            <span id="progress-summary-badge" class="counter">0 · 0 · 0</span>
+          </div>
+          <label class="draft-toggle">
+            <input id="save-attempt-history" type="checkbox">
+            <span data-i18n="saveAttemptHistory">Salvează rezultatele încercărilor</span>
+          </label>
+          <p id="progress-summary" class="progress-summary"></p>
+          <p class="small muted" data-i18n="progressPrivacy">Favoritele sunt salvate numai când le alegi. Istoricul este opțional și păstrează doar momentul și numărul testelor trecute, niciodată codul.</p>
+          <button id="clear-progress" class="text-button" type="button" data-i18n="clearProgress">Șterge progresul profilului</button>
+          <p id="progress-message" class="small" role="status" aria-live="polite"></p>
+        </section>
         <section class="card exercise-card" aria-labelledby="exercise-heading">
           <h2 id="exercise-heading" data-i18n="exerciseHeading">Exercițiu</h2>
           <label for="exercise-select" class="field-label" data-i18n="exerciseLabel">Alege o problemă</label>
           <select id="exercise-select" aria-describedby="exercise-count"><option>Se încarcă exercițiile…</option></select>
           <p id="exercise-count" class="small muted"></p>
           <div class="divider"></div>
-          <h3 id="exercise-title">Se încarcă…</h3>
+          <div class="exercise-title-row">
+            <h3 id="exercise-title">Se încarcă…</h3>
+            <button id="favorite-exercise" class="text-button favorite-button" type="button" aria-pressed="false">☆ Favorit</button>
+          </div>
+          <p id="exercise-progress" class="small muted"></p>
           <p id="exercise-statement" class="statement"></p>
           <dl class="formats"><dt data-i18n="input">Intrare</dt><dd id="input-format"></dd><dt data-i18n="output">Ieșire</dt><dd id="output-format"></dd></dl>
           <details class="sample-tests"><summary data-i18n="publicExamples">Vezi exemplele publice</summary><ul id="public-tests"></ul></details>

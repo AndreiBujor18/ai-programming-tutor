@@ -112,7 +112,7 @@ button:disabled { cursor: not-allowed; opacity: .55; }
   align-items: start;
   gap: 18px;
 }
-.exam-card { margin-bottom: 18px; }
+.exam-card, .progress-card { margin-bottom: 18px; }
 .exam-card .section-head { margin-bottom: 11px; }
 .exam-intro { margin: 0 0 14px; color: var(--muted); font-size: 13px; }
 .exam-actions { display: flex; align-items: center; gap: 12px; }
@@ -131,6 +131,18 @@ button:disabled { cursor: not-allowed; opacity: .55; }
 .exam-rubric > ol > li { margin: 10px 0; }
 .exam-rubric ul { margin: 5px 0 0; padding-left: 17px; color: var(--muted); }
 #exam-note { margin: 10px 0 0; }
+.progress-card .section-head { margin-bottom: 12px; }
+.progress-summary {
+  margin: 13px 0 7px;
+  padding: 9px 10px;
+  border-left: 2px solid var(--primary);
+  background: var(--diagnostic-bg);
+  color: var(--text);
+  font-size: 12px;
+}
+.progress-card > .small { margin: 0 0 9px; }
+#progress-message { min-height: 19px; margin: 8px 0 0; color: var(--success); }
+#progress-message.error { color: var(--danger); }
 .main-column { display: grid; gap: 18px; }
 .card {
   padding: 24px;
@@ -154,8 +166,16 @@ select {
 }
 select:disabled { color: var(--muted); }
 .exercise-card h2 { margin-bottom: 20px; }
-.exercise-card h3 { margin-top: 0; }
+.exercise-card h3 { margin: 0; }
 .exercise-card select { margin-bottom: 4px; }
+.exercise-title-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+.favorite-button { white-space: nowrap; }
+#exercise-progress { min-height: 19px; margin: 5px 0 8px; }
 .divider { border-top: 1px solid var(--hairline); margin: 20px 0; }
 .statement { color: var(--text); font-size: 14px; white-space: pre-line; }
 .formats {
@@ -371,6 +391,7 @@ textarea:focus { outline: 2px solid var(--focus); outline-offset: 1px; }
   .draft-controls { align-items: start; flex-direction: column; gap: 8px; }
   .exam-actions { align-items: start; flex-direction: column; }
   .exam-metrics { grid-template-columns: 1fr; }
+  .exercise-title-row { align-items: start; flex-direction: column; gap: 5px; }
   .editor-actions { align-items: start; flex-direction: column; gap: 8px; }
   .solution-controls > div, .solution-controls button, .solution-controls select { width: 100%; max-width: none; }
   textarea { min-height: 300px; }

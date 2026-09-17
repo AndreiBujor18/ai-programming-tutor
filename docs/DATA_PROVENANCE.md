@@ -59,6 +59,13 @@ program is a real student's submission.
   data. It is disabled by default, stores raw code only on the learner's current
   device, separates it by profile and exercise, and deletes it when the option is
   disabled or that draft is restored to its starter.
+- Local progress is also profile-specific and device-local. Favorites are written
+  only after an explicit click. Attempt history is disabled by default and, when
+  enabled, retains at most 20 timestamped numeric results per exercise: compilation
+  status and passed/total test counts. It never stores source, compiler output,
+  diagnoses, hints, identifiers, comments, or style-profile evidence. Disabling
+  history deletes all saved attempts for that profile; the clear action also
+  deletes its favorites.
 - The two-profile experiment is controlled testing by the project owner. Its
   output is product-validation evidence, not a real-student dataset or a model
   accuracy result.

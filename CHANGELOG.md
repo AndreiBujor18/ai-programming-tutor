@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+- Added profile-specific favorite exercises and a compact local progress summary.
+- Added opt-in, device-local attempt history with bounded last/best numeric results;
+  stored attempts contain only a timestamp, compilation status, and passed/total
+  test counts, never source, compiler output, diagnoses, hints, or profile traits.
+- Added immediate deletion for the active profile: disabling history removes all
+  saved attempts while retaining favorites, and the clear action removes both.
+- Added schema sanitization and browser-state regressions for profile isolation,
+  bounded retention, source-free storage, and deletion behavior.
 - Kept the evaluated program's process cap while removing the user-wide
   `RLIMIT_NPROC` cap from GCC, allowing compiler helper processes to start on
   shared Linux and GitHub-hosted runners.

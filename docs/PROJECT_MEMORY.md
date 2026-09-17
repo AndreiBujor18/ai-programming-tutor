@@ -1,4 +1,4 @@
-# Project memory — AI Programming Tutor v0.6.3
+# Project memory — AI Programming Tutor v0.7.0 development
 
 This is the maintainer handoff and continuity record for the project. It contains
 only public-safe decisions and implementation state. Private tutoring exports,
@@ -18,8 +18,9 @@ must never be copied into this document or the repository.
   inspired by public USV/FIESC colors but no official logo or brand-code claim.
 - Current scope is Computer Engineering-style classic C17/GCC. Mixed introductory
   C/C++ material and IETTI-specific shortcuts are excluded from the current mode.
-- Python, C++, accounts, server-side history, favorites, plagiarism detection, and
-  arbitrary user-authored problems are future work, not current claims.
+- Python, C++, accounts, server-side history, plagiarism detection, and arbitrary
+  user-authored problems are future work, not current claims. Device-local
+  favorites and numeric attempt history are the current v0.7.0 development focus.
 
 ## User and privacy decisions
 
@@ -36,6 +37,11 @@ must never be copied into this document or the repository.
   state, active task, and numeric best-attempt results. Edited exam source is kept
   separately in tab-scoped session storage for refresh and review, then disappears
   when the tab is closed unless permanent drafts were explicitly enabled.
+- Local learning progress is isolated by profile. Favorites require an explicit
+  click. Attempt history is optional and off by default; it retains at most 20
+  timestamped numeric results per exercise and never source, compiler output,
+  diagnoses, hints, or style evidence. Disabling history deletes its attempts, and
+  clearing progress also deletes favorites for the active profile.
 - Private tutoring and course materials may inform abstract topic coverage and bug
   hypotheses only. Originals, extracted text, screenshots, filenames, authorship,
   metadata, and copied code are excluded from the repository, dataset, model, and
@@ -58,6 +64,7 @@ must never be copied into this document or the repository.
 | 0.6.1 | Windows runner fix: private writable compiler temp variables, required toolchain/system paths only, native executable name |
 | 0.6.2 | Locale-switch fix: visible hint depth, edited source, feedback, and run status remain synchronized |
 | 0.6.3 | Finished-exam timer snapshot and tab-scoped source recovery across refresh |
+| 0.7.0 (development) | Profile-specific favorites, opt-in bounded numeric attempt history, and per-exercise last/best summaries |
 
 ## Current v0.6.3 capabilities
 
@@ -126,6 +133,10 @@ natural-data evaluation. The browser currently uses rules without loading the mo
   revealed hints, an open complete solution, both locale transitions, exact
   edited-source retention, frozen finished time, and tab-scoped exam-source
   recovery. The Windows compiler-environment regressions remain covered.
+- The current v0.7.0 development tree passes 52/52 automated tests. The added
+  progress-state contract verifies schema sanitization, bounded retention,
+  source-free storage, profile isolation, and deletion; the browser regression
+  also verifies the complete favorite/history interaction.
 - All 14 reference solutions and every complete-solution style pass their exercise
   tests; generated variants compile without warnings in the tested matrix.
 - The release wheel installs as version 0.6.3 and exposes all 14 exercises plus the
@@ -136,10 +147,10 @@ natural-data evaluation. The browser currently uses rules without loading the mo
   confirmed frozen finished time, same-tab source recovery, and removal of temporary
   exam source after tab closure with permanent drafts disabled. See
   `docs/ACCEPTANCE_V063.md`.
-- The first public GitHub Actions matrix run was cancelled at the 15-minute job
-  limit. Its ML baseline test passed, but GCC-backed checks repeatedly reached the
-  four-second compilation timeout on the hosted Ubuntu runner. This is a separate
-  CI-portability issue; local source and extracted-release runs still pass 49/49.
+- The public GitHub Actions portability issue is resolved. Compiler helper processes
+  no longer inherit the learner program's user-wide `RLIMIT_NPROC` cap, while
+  evaluated programs retain it; the independently visible core and ML jobs complete
+  on the supported Python matrix.
 - The runner is for trusted localhost use only. Resource limits, loopback binding,
   Host/Origin checks, and explicit execution enablement are not a production sandbox.
 - Public deployment requires disposable isolated workers with no network, no host
@@ -158,21 +169,16 @@ The public-safe evidence record is in `docs/ACCEPTANCE_V063.md`.
 
 ## Recommended next step
 
-Before feature work, make the public GitHub Actions workflow complete reliably.
-Reproduce one hosted GCC timeout with focused diagnostics, review compiler-specific
-process limits separately from untrusted-program limits, and keep the expensive ML
-evaluation from obscuring runner failures.
+The first v0.7.0 local-progress slice is implemented: profile-specific favorites,
+opt-in numeric attempt history, per-exercise last/best summaries, and immediate
+deletion. Manually accept that slice on Windows, then complete the sprint with:
 
-After CI is green, the recommended v0.7.0 sprint is **local learning progress**:
-
-- favorite exercises;
-- opt-in local attempt history and last/best result;
-- a small progress view by concept and exercise;
-- one-click deletion plus JSON export/import;
+- a compact progress view by concept and exercise;
+- JSON export/import with strict schema validation;
 - no accounts or server database yet.
 
 This validates the future account/history/favorites experience cheaply and privately.
-Afterwards, prioritize a file-aware isolated runner and consented natural-code
+After the sprint, prioritize a file-aware isolated runner and consented natural-code
 evaluation before improving the model or deploying public code execution.
 
 ## Restart commands

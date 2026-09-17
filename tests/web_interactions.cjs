@@ -44,6 +44,9 @@ const ids = [
   "solution-meta", "solution-code", "solution-explanation", "solution-note",
   "profile-select", "learn-style", "reset-profile", "profile-summary",
   "profile-message", "save-drafts", "reset-draft", "editor-help",
+  "progress-heading", "progress-summary-badge", "save-attempt-history",
+  "progress-summary", "clear-progress", "progress-message",
+  "favorite-exercise", "exercise-progress",
   "exam-heading", "exam-summary-badge", "start-exam", "finish-exam",
   "exam-session", "exam-timer", "exam-score", "exam-task-list",
   "next-exam-task", "exam-note", "exam-rubric-list"
@@ -71,6 +74,10 @@ const document = {
 const stored = {
   "aptutor-v0.5-style-profile_a": JSON.stringify({
     schema_version: "0.1", samples: 4, counts: {increment_postfix: 4}
+  }),
+  "aptutor-v0.7-progress-profile_b": JSON.stringify({
+    schema_version: "0.1", favorites: [],
+    attempts: {vector_menu: [{at: Date.now(), passed: 1, total: 1, compiled: true}]}
   })
 };
 const sessionStored = {};
@@ -168,6 +175,7 @@ const context = vm.createContext({
     return {ok: true, json: async () => answer};
   }
 });
+vm.runInContext(fs.readFileSync(path.join(root, "progress.js"), "utf8"), context);
 vm.runInContext(fs.readFileSync(path.join(root, "i18n.js"), "utf8"), context);
 vm.runInContext(fs.readFileSync(path.join(root, "app.js"), "utf8"), context);
 
@@ -181,6 +189,22 @@ vm.runInContext(fs.readFileSync(path.join(root, "app.js"), "utf8"), context);
   assert.equal(elements["profile-message"].textContent.includes("resetate o singură dată"), true);
   assert.equal(elements["save-drafts"].checked, false);
   assert.equal(elements["editor-help"].textContent.includes("păstrat temporar în această filă"), true);
+  assert.equal(elements["save-attempt-history"].checked, false);
+  assert.equal(elements["exercise-progress"].textContent, "Istoricul încercărilor este oprit.");
+  assert.equal(elements["favorite-exercise"].textContent, "☆ Adaugă la favorite");
+  assert.equal(stored["aptutor-v0.7-progress-profile_b"], undefined,
+    "disabled history retained an old numeric attempt");
+  elements["favorite-exercise"].listeners.click();
+  let progressA = JSON.parse(stored["aptutor-v0.7-progress-profile_a"]);
+  assert.deepStrictEqual(progressA.favorites, ["vector_menu"]);
+  assert.equal(JSON.stringify(progressA).includes("source"), false);
+  assert.equal(elements["favorite-exercise"].attributes["aria-pressed"], "true");
+  assert.equal(elements["exercise-select"].options[0].textContent.startsWith("★ "), true);
+  elements["save-attempt-history"].checked = true;
+  elements["save-attempt-history"].listeners.change({target: elements["save-attempt-history"]});
+  assert.equal(stored["aptutor-v0.7-attempt-history-profile_a"], "yes");
+  assert.equal(elements["exercise-progress"].textContent,
+    "Nicio încercare salvată pentru acest exercițiu.");
   assert.equal(elements["exam-summary-badge"].textContent, "60 min · 10p");
   elements["start-exam"].listeners.click();
   assert.equal(elements["exam-session"].hidden, false);
@@ -214,6 +238,13 @@ vm.runInContext(fs.readFileSync(path.join(root, "app.js"), "utf8"), context);
   assert.ok(stored["aptutor-v0.5-style-profile_a"]);
 
   await vm.runInContext("runCode()", context);
+  progressA = JSON.parse(stored["aptutor-v0.7-progress-profile_a"]);
+  assert.equal(progressA.attempts.vector_menu.length, 1);
+  assert.deepStrictEqual(
+    Object.keys(progressA.attempts.vector_menu[0]).sort(),
+    ["at", "compiled", "passed", "total"]
+  );
+  assert.equal(JSON.stringify(progressA).includes(ownCodeA), false);
   assert.equal(elements["exam-score"].textContent, "1.00 / 10");
   vm.runInContext("showNextHint()", context);
   assert.equal(elements.hints.children.length, 2);
@@ -223,6 +254,8 @@ vm.runInContext(fs.readFileSync(path.join(root, "app.js"), "utf8"), context);
   elements["profile-select"].value = "profile_b";
   elements["profile-select"].listeners.change({target: elements["profile-select"]});
   assert.notEqual(elements.code.value, ownCodeA, "profile B inherited profile A's draft");
+  assert.equal(elements["favorite-exercise"].attributes["aria-pressed"], "false");
+  assert.equal(elements["save-attempt-history"].checked, false);
   const ownCodeB = "int main() {\n    int n;\n    for ( int i = 0; i < n; i = i + 1 )\n    {\n    }\n}\n";
   elements.code.value = ownCodeB;
   elements.code.listeners.input();
@@ -235,6 +268,14 @@ vm.runInContext(fs.readFileSync(path.join(root, "app.js"), "utf8"), context);
   elements["profile-select"].value = "profile_a";
   elements["profile-select"].listeners.change({target: elements["profile-select"]});
   assert.equal(elements.code.value, ownCodeA, "profile A draft was not restored");
+  assert.equal(elements["favorite-exercise"].attributes["aria-pressed"], "true");
+  assert.equal(elements["save-attempt-history"].checked, true);
+
+  vm.runInContext(`recordLearningAttempt("profile_a", "vector_menu", {
+    compilation: {succeeded: true}, passed_count: 1, total_count: 1
+  })`, context);
+  assert.equal(elements["exercise-progress"].textContent.includes("Ultimul: 1/1"), true);
+  assert.equal(elements["exercise-progress"].textContent.includes("Cel mai bun: 1/1"), true);
 
   await vm.runInContext("runCode()", context);
   vm.runInContext("showNextHint()", context);
@@ -267,6 +308,16 @@ vm.runInContext(fs.readFileSync(path.join(root, "app.js"), "utf8"), context);
     context.window.APT_I18N.explanations.vector_menu[0]), true);
   assert.equal(elements["solution-explanation"].children[0].textContent,
     context.window.APT_I18N.explanations.vector_menu[0]);
+
+  elements["save-attempt-history"].checked = false;
+  elements["save-attempt-history"].listeners.change({target: elements["save-attempt-history"]});
+  progressA = JSON.parse(stored["aptutor-v0.7-progress-profile_a"]);
+  assert.deepStrictEqual(progressA.attempts, {});
+  assert.deepStrictEqual(progressA.favorites, ["vector_menu"]);
+  assert.equal(stored["aptutor-v0.7-attempt-history-profile_a"], "no");
+  elements["clear-progress"].listeners.click();
+  assert.equal(stored["aptutor-v0.7-progress-profile_a"], undefined);
+  assert.equal(elements["favorite-exercise"].attributes["aria-pressed"], "false");
 
   elements["theme-toggle"].listeners.click();
   assert.equal(document.documentElement.dataset.theme, "dark");

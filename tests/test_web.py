@@ -265,7 +265,10 @@ class LocalWebTests(unittest.TestCase):
         self.assertEqual(status, 200)
         self.assertIn("Arată rezolvarea completă".encode("utf-8"), html)
         self.assertIn("default-src 'none'", headers["Content-Security-Policy"])
-        for asset in ("/static/style.css", "/static/theme.js", "/static/i18n.js", "/static/app.js"):
+        for asset in (
+            "/static/style.css", "/static/theme.js", "/static/progress.js",
+            "/static/i18n.js", "/static/app.js",
+        ):
             self.assertEqual(self.fetch(asset)[0], 200)
         status, _, payload = self.fetch("/exercises")
         self.assertEqual(status, 200)
@@ -388,7 +391,9 @@ class LocalWebTests(unittest.TestCase):
             "learn-style", "reset-profile", "save-drafts", "reset-draft", "code",
             "run", "next-hint", "style",
             "show-solution", "start-exam", "finish-exam", "next-exam-task",
-            "exam-timer", "exam-score", "exam-task-list", "exam-rubric-list"
+            "exam-timer", "exam-score", "exam-task-list", "exam-rubric-list",
+            "favorite-exercise", "save-attempt-history", "clear-progress",
+            "progress-summary-badge", "progress-summary", "exercise-progress",
         ):
             self.assertIn(f'id="{control_id}"', html)
         self.assertIn('lang="ro"', html)
@@ -492,6 +497,14 @@ for (const [stored, systemDark, expected] of [
     @unittest.skipUnless(shutil.which("node"), "Node.js required for UI interaction smoke test")
     def test_language_switch_keeps_student_draft_and_hint_progress(self) -> None:
         script = WEB_ROOT.parents[2] / "tests" / "web_interactions.cjs"
+        result = subprocess.run(
+            ["node", str(script)], capture_output=True, text=True, check=False, timeout=5,
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+
+    @unittest.skipUnless(shutil.which("node"), "Node.js required for progress-state contract")
+    def test_local_progress_schema_is_bounded_and_source_free(self) -> None:
+        script = WEB_ROOT.parents[2] / "tests" / "progress_state.cjs"
         result = subprocess.run(
             ["node", str(script)], capture_output=True, text=True, check=False, timeout=5,
         )

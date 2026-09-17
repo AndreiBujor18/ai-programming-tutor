@@ -61,6 +61,13 @@ layer should use random attempt identifiers, avoid raw source in logs by default
 encrypt retained code, apply retention limits, and require explicit consent before
 using any submission for model training.
 
+The unreleased local-progress feature keeps favorites separately for each profile.
+Its attempt history is off by default and stores only a timestamp, compilation
+status, and passed/total test counts, bounded to the latest 20 attempts per exercise.
+It never stores submitted source, compiler output, diagnoses, hints, or learned
+style evidence. Turning history off deletes its numeric attempts immediately;
+clearing progress deletes both attempts and favorites for the active profile.
+
 The practice-exam session persists only its exam identifier, timer origin, active
 task, and numeric best-attempt results in browser storage. It does not duplicate the
 editor source. Draft persistence remains a separate, off-by-default learner choice.
