@@ -396,7 +396,8 @@ class LocalWebTests(unittest.TestCase):
             "progress-summary-badge", "progress-summary", "exercise-progress",
             "progress-breakdown", "concept-progress", "concept-progress-note",
             "concept-progress-overlap", "exercise-progress-list",
-            "progress-breakdown-empty",
+            "progress-breakdown-empty", "export-progress", "import-progress-trigger",
+            "import-progress",
         ):
             self.assertIn(f'id="{control_id}"', html)
         self.assertIn('lang="ro"', html)

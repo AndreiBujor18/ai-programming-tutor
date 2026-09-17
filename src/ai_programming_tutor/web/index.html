@@ -78,6 +78,12 @@
               <p id="progress-breakdown-empty" class="small muted" data-i18n="progressBreakdownEmpty">Încă nu există favorite sau încercări salvate.</p>
             </div>
           </details>
+          <div class="progress-transfer-actions">
+            <button id="export-progress" class="text-button" type="button" data-i18n="exportProgress">Exportă JSON</button>
+            <button id="import-progress-trigger" class="text-button" type="button" data-i18n="importProgress">Importă JSON</button>
+            <input id="import-progress" class="visually-hidden" type="file" accept=".json,application/json">
+          </div>
+          <p class="small muted" data-i18n="progressTransferPrivacy">Transferă numai favoritele și rezultatele numerice ale profilului activ; importul înlocuiește progresul lui.</p>
           <button id="clear-progress" class="text-button" type="button" data-i18n="clearProgress">Șterge progresul profilului</button>
           <p id="progress-message" class="small" role="status" aria-live="polite"></p>
         </section>

@@ -42,6 +42,9 @@ must never be copied into this document or the repository.
   timestamped numeric results per exercise and never source, compiler output,
   diagnoses, hints, or style evidence. Disabling history deletes its attempts, and
   clearing progress also deletes favorites for the active profile.
+- JSON transfer operates on only the active profile's favorites, history setting,
+  and bounded numeric attempts. Imports replace that profile only after confirmation
+  and reject unknown fields or exercises rather than silently retaining them.
 - Private tutoring and course materials may inform abstract topic coverage and bug
   hypotheses only. Originals, extracted text, screenshots, filenames, authorship,
   metadata, and copied code are excluded from the repository, dataset, model, and
@@ -64,7 +67,7 @@ must never be copied into this document or the repository.
 | 0.6.1 | Windows runner fix: private writable compiler temp variables, required toolchain/system paths only, native executable name |
 | 0.6.2 | Locale-switch fix: visible hint depth, edited source, feedback, and run status remain synchronized |
 | 0.6.3 | Finished-exam timer snapshot and tab-scoped source recovery across refresh |
-| 0.7.0 (development) | Profile-specific favorites, opt-in bounded numeric attempt history, per-exercise last/best summaries, and a derived concept/exercise view |
+| 0.7.0 (development) | Profile-specific favorites, opt-in bounded numeric attempt history, last/best summaries, a derived concept/exercise view, and strict JSON transfer |
 
 ## Current v0.6.3 capabilities
 
@@ -136,8 +139,8 @@ natural-data evaluation. The browser currently uses rules without loading the mo
 - The current v0.7.0 development tree passes 52/52 automated tests. The added
   progress-state contract verifies schema sanitization, bounded retention,
   source-free storage, profile isolation, and deletion; the browser regression
-  also verifies the complete favorite/history interaction and the derived bilingual
-  concept/exercise view.
+  also verifies the complete favorite/history interaction, the derived bilingual
+  concept/exercise view, and strict source-free JSON export/import.
 - The first v0.7.0 feature slice also passed its complete manual Windows protocol.
   Profile-specific favorites, opt-in history, latest/best results, forced-refresh
   persistence, history disablement, full progress clearing, and cross-profile
@@ -182,15 +185,15 @@ The public-safe evidence records are in `docs/ACCEPTANCE_V063.md` and
 The first v0.7.0 local-progress slice is implemented and manually accepted:
 profile-specific favorites, opt-in numeric attempt history, per-exercise last/best
 summaries, refresh persistence, and immediate profile-scoped deletion. The compact
-concept/exercise view is also implemented and manually accepted. Complete the
-sprint with:
+concept/exercise view is also implemented and manually accepted. Strict JSON
+export/import is implemented and awaits a short manual browser check. Accounts and
+a server database remain deliberately outside this sprint.
 
-- JSON export/import with strict schema validation;
-- no accounts or server database yet.
-
-This validates the future account/history/favorites experience cheaply and privately.
-After the sprint, prioritize a file-aware isolated runner and consented natural-code
+After that check, prioritize a file-aware isolated runner and consented natural-code
 evaluation before improving the model or deploying public code execution.
+
+The completed local sprint validates the future account/history/favorites experience
+cheaply and privately.
 
 ## Restart commands
 

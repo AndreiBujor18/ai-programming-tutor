@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Added active-profile JSON export/import for favorites, the history setting, and
+  bounded numeric attempts. Import requires confirmation and rejects unknown
+  fields, unknown exercises, duplicate favorites, invalid results, oversized
+  histories, and disabled-history files that still contain attempts.
 - Documented successful bilingual manual acceptance of the compact concept/exercise
   view, including profile isolation and the empty-history state.
 - Added a collapsible profile-specific progress view that derives solved/attempted

@@ -66,6 +66,10 @@ program is a real student's submission.
   diagnoses, hints, identifiers, comments, or style-profile evidence. Disabling
   history deletes all saved attempts for that profile; the clear action also
   deletes its favorites.
+- Progress export/import uses an exact project-authored JSON envelope containing
+  only that same active-profile state and its history setting. Unknown fields or
+  exercises invalidate the whole file; imports never accept source, compiler
+  output, diagnoses, hints, comments, identifiers, drafts, or style evidence.
 - The two-profile experiment is controlled testing by the project owner. Its
   output is product-validation evidence, not a real-student dataset or a model
   accuracy result.

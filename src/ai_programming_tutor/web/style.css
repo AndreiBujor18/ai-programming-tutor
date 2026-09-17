@@ -161,6 +161,7 @@ button:disabled { cursor: not-allowed; opacity: .55; }
   line-height: 1.45;
 }
 .progress-list li:first-child { border-top: 0; }
+.progress-transfer-actions { display: flex; flex-wrap: wrap; gap: 13px; margin: 12px 0 7px; }
 #progress-message { min-height: 19px; margin: 8px 0 0; color: var(--success); }
 #progress-message.error { color: var(--danger); }
 .main-column { display: grid; gap: 18px; }

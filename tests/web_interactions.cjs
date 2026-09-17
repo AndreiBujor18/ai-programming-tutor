@@ -6,6 +6,9 @@ const fs = require("node:fs");
 const path = require("node:path");
 const vm = require("node:vm");
 const root = path.join(__dirname, "..", "src", "ai_programming_tutor", "web");
+const blobUrls = {};
+let nextBlobId = 1;
+let lastDownload = null;
 
 class Element {
   constructor(tag = "div") {
@@ -20,6 +23,8 @@ class Element {
     this.textContent = "";
     this.disabled = false;
     this.checked = false;
+    this.files = [];
+    this.clickCount = 0;
   }
   addEventListener(name, callback) { this.listeners[name] = callback; }
   setAttribute(name, value) { this.attributes[name] = value; }
@@ -32,7 +37,33 @@ class Element {
     this.append(...items);
   }
   scrollIntoView() {}
+  click() {
+    this.clickCount += 1;
+    if (this.tag === "a") {
+      lastDownload = {download: this.download, blob: blobUrls[this.href]};
+    } else if (this.listeners.click) {
+      this.listeners.click();
+    }
+  }
+  remove() { this.removed = true; }
 }
+
+class FakeBlob {
+  constructor(parts, options) {
+    this.parts = parts;
+    this.type = options?.type || "";
+  }
+}
+
+const fakeURL = {
+  createObjectURL(blob) {
+    const id = "blob:test-" + nextBlobId;
+    nextBlobId += 1;
+    blobUrls[id] = blob;
+    return id;
+  },
+  revokeObjectURL(id) { delete blobUrls[id]; }
+};
 
 const ids = [
   "language-toggle", "theme-toggle", "notice", "run-status", "result-card",
@@ -49,6 +80,7 @@ const ids = [
   "favorite-exercise", "exercise-progress",
   "progress-breakdown", "concept-progress", "concept-progress-note",
   "concept-progress-overlap", "exercise-progress-list", "progress-breakdown-empty",
+  "export-progress", "import-progress-trigger", "import-progress",
   "exam-heading", "exam-summary-badge", "start-exam", "finish-exam",
   "exam-session", "exam-timer", "exam-score", "exam-task-list",
   "next-exam-task", "exam-note", "exam-rubric-list"
@@ -66,6 +98,7 @@ for (const value of ["personalized_c", "pclp1_classic", "classic_c", "commented_
 const document = {
   title: "",
   documentElement: {lang: "ro", dataset: {theme: "light"}},
+  body: {children: [], append(item) { this.children.push(item); }},
   getElementById: (id) => {
     assert.ok(elements[id], "missing element " + id);
     return elements[id];
@@ -162,6 +195,8 @@ const context = vm.createContext({
     removeItem: (key) => { delete sessionStored[key]; }
   },
   navigator: {clipboard: {writeText: async () => {}}},
+  Blob: FakeBlob,
+  URL: fakeURL,
   setInterval: () => 1,
   clearInterval: () => {},
   fetch: async (url, options = {}) => {
@@ -340,6 +375,20 @@ vm.runInContext(fs.readFileSync(path.join(root, "app.js"), "utf8"), context);
   assert.equal(elements["solution-explanation"].children[0].textContent,
     context.window.APT_I18N.explanations.vector_menu[0]);
 
+  elements["export-progress"].listeners.click();
+  assert.equal(lastDownload.download, "ai-programming-tutor-profile-a-progress.json");
+  const exportedProgressText = lastDownload.blob.parts.join("");
+  const exportedProgress = JSON.parse(exportedProgressText);
+  assert.deepStrictEqual(Object.keys(exportedProgress).sort(),
+    ["attempts", "favorites", "format", "history_enabled", "schema_version"]);
+  assert.equal(exportedProgress.history_enabled, true);
+  assert.deepStrictEqual(exportedProgress.favorites, ["vector_menu"]);
+  assert.equal(exportedProgress.attempts.vector_menu.length, 3);
+  assert.equal(exportedProgressText.includes(ownCodeA), false);
+  assert.equal(elements["progress-message"].textContent.includes("pregătit"), true);
+  elements["import-progress-trigger"].listeners.click();
+  assert.equal(elements["import-progress"].clickCount, 1);
+
   elements["save-attempt-history"].checked = false;
   elements["save-attempt-history"].listeners.change({target: elements["save-attempt-history"]});
   progressA = JSON.parse(stored["aptutor-v0.7-progress-profile_a"]);
@@ -353,6 +402,44 @@ vm.runInContext(fs.readFileSync(path.join(root, "app.js"), "utf8"), context);
   assert.equal(elements["favorite-exercise"].attributes["aria-pressed"], "false");
   assert.equal(elements["exercise-progress-list"].hidden, true);
   assert.equal(elements["progress-breakdown-empty"].hidden, false);
+
+  elements["import-progress"].files = [{
+    size: exportedProgressText.length,
+    text: async () => exportedProgressText
+  }];
+  await elements["import-progress"].listeners.change({target: elements["import-progress"]});
+  progressA = JSON.parse(stored["aptutor-v0.7-progress-profile_a"]);
+  assert.deepStrictEqual(progressA.favorites, ["vector_menu"]);
+  assert.equal(progressA.attempts.vector_menu.length, 3);
+  assert.equal(stored["aptutor-v0.7-attempt-history-profile_a"], "yes");
+  assert.equal(elements["save-attempt-history"].checked, true);
+  assert.equal(elements["progress-message"].textContent.includes("înlocuit"), true);
+  assert.equal(elements.code.value, ownCodeA, "progress import changed the active draft");
+  assert.ok(stored["aptutor-v0.5-style-profile_a"], "progress import changed the style profile");
+  assert.equal(stored["aptutor-v0.7-progress-profile_b"], undefined,
+    "progress import changed the other profile");
+  assert.equal(elements["import-progress"].value, "");
+
+  const invalidProgressText = JSON.stringify({...exportedProgress, source: ownCodeA});
+  elements["import-progress"].files = [{
+    size: invalidProgressText.length,
+    text: async () => invalidProgressText
+  }];
+  await elements["import-progress"].listeners.change({target: elements["import-progress"]});
+  assert.equal(JSON.parse(stored["aptutor-v0.7-progress-profile_a"])
+    .attempts.vector_menu.length, 3);
+  assert.equal(elements["progress-message"].textContent.includes("respins"), true);
+
+  elements["import-progress"].files = [{
+    size: 100001,
+    text: async () => exportedProgressText
+  }];
+  await elements["import-progress"].listeners.change({target: elements["import-progress"]});
+  assert.equal(JSON.parse(stored["aptutor-v0.7-progress-profile_a"])
+    .attempts.vector_menu.length, 3);
+  assert.equal(elements["progress-message"].textContent.includes("respins"), true);
+  elements["clear-progress"].listeners.click();
+  assert.equal(stored["aptutor-v0.7-progress-profile_a"], undefined);
 
   elements["theme-toggle"].listeners.click();
   assert.equal(document.documentElement.dataset.theme, "dark");

@@ -70,3 +70,48 @@ assert.deepStrictEqual(cleared.favorites, ["beta"]);
 assert.deepStrictEqual(cleared.attempts, {});
 assert.deepStrictEqual(JSON.parse(JSON.stringify(progress.sanitise({schema_version: "old"}, ids))),
   {schema_version: "0.1", favorites: [], attempts: {}});
+
+const exported = JSON.parse(JSON.stringify(progress.exportPayload(value, true, ids)));
+assert.deepStrictEqual(Object.keys(exported).sort(),
+  ["attempts", "favorites", "format", "history_enabled", "schema_version"]);
+assert.equal(exported.format, "ai-programming-tutor-progress");
+assert.equal(exported.schema_version, "0.1");
+assert.equal(exported.history_enabled, true);
+assert.equal(exported.favorites[0], "beta");
+assert.equal(exported.attempts.beta.length, progress.MAX_ATTEMPTS_PER_EXERCISE);
+assert.equal(JSON.stringify(exported).includes("source"), false);
+
+const imported = progress.importPayload(exported, ids, now + 1000);
+assert.equal(imported.ok, true);
+assert.equal(imported.historyEnabled, true);
+assert.deepStrictEqual(JSON.parse(JSON.stringify(imported.progress)), {
+  schema_version: "0.1", favorites: ["beta"], attempts: {beta: exported.attempts.beta}
+});
+
+const favoritesOnly = progress.exportPayload(cleared, false, ids);
+assert.equal(favoritesOnly.history_enabled, false);
+assert.deepStrictEqual(JSON.parse(JSON.stringify(favoritesOnly.attempts)), {});
+assert.equal(progress.importPayload(favoritesOnly, ids, now + 1000).ok, true);
+
+function rejectedTransfer(change, reason) {
+  const candidate = JSON.parse(JSON.stringify(exported));
+  change(candidate);
+  const result = progress.importPayload(candidate, ids, now + 1000);
+  assert.equal(result.ok, false);
+  assert.equal(result.reason, reason);
+}
+
+rejectedTransfer((candidate) => { candidate.source = "private source"; }, "invalid_structure");
+rejectedTransfer((candidate) => { candidate.format = "another-product"; }, "unsupported_format");
+rejectedTransfer((candidate) => { candidate.favorites.push("beta"); }, "invalid_favorites");
+rejectedTransfer((candidate) => { candidate.favorites = ["missing"]; }, "invalid_favorites");
+rejectedTransfer((candidate) => {
+  candidate.attempts.beta[0].compiler_output = "private output";
+}, "invalid_attempt");
+rejectedTransfer((candidate) => {
+  candidate.attempts.missing = [{at: now, passed: 1, total: 1, compiled: true}];
+}, "invalid_attempts");
+rejectedTransfer((candidate) => {
+  candidate.attempts.beta.push({at: now, passed: 1, total: 1, compiled: true});
+}, "invalid_attempts");
+rejectedTransfer((candidate) => { candidate.history_enabled = false; }, "history_conflict");

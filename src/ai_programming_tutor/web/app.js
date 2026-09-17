@@ -12,6 +12,7 @@ const EXAM_SESSION_KEY = "aptutor-v0.6-exam-session";
 const EXAM_DRAFTS_KEY = "aptutor-v0.6-exam-drafts";
 const PROGRESS_STORAGE_PREFIX = "aptutor-v0.7-progress-";
 const HISTORY_SETTING_PREFIX = "aptutor-v0.7-attempt-history-";
+const MAX_PROGRESS_IMPORT_BYTES = 100000;
 const PROGRESS_CONCEPTS = [
   {id: "arrays", tags: ["arrays"]},
   {id: "loops", tags: ["loops", "sentinels"]},
@@ -1301,6 +1302,65 @@ function clearLearningProgress() {
   refreshProgress();
 }
 
+function exportLearningProgress() {
+  try {
+    const payload = progressTools.exportPayload(
+      currentLearningProgress(), state.attemptHistoryEnabled[state.profileId], exerciseIds()
+    );
+    const blob = new Blob([JSON.stringify(payload, null, 2) + "\n"], {
+      type: "application/json"
+    });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "ai-programming-tutor-" + state.profileId.replace("_", "-")
+      + "-progress.json";
+    document.body.append(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+    setProgressMessage("progressExported");
+    refreshProgress();
+  } catch (_) {
+    setProgressMessage("progressExportFailed", true);
+    refreshProgress();
+  }
+}
+
+async function importLearningProgress(event) {
+  const input = event.target;
+  const file = input.files?.[0];
+  if (!file) return;
+  const profileId = state.profileId;
+  try {
+    if (!Number.isInteger(file.size) || file.size <= 0 ||
+        file.size > MAX_PROGRESS_IMPORT_BYTES) {
+      throw new Error("invalid progress file size");
+    }
+    const text = await file.text();
+    if (text.length > MAX_PROGRESS_IMPORT_BYTES) {
+      throw new Error("invalid progress file size");
+    }
+    const imported = progressTools.importPayload(JSON.parse(text), exerciseIds());
+    if (!imported.ok) throw new Error(imported.reason);
+    if (state.profileId !== profileId || !window.confirm(tr("progressImportConfirm"))) return;
+    state.learningProgress[profileId] = imported.progress;
+    state.attemptHistoryEnabled[profileId] = imported.historyEnabled;
+    saveHistorySetting(profileId);
+    saveLearningProgress(profileId);
+    refreshExerciseOptions();
+    setProgressMessage("progressImported");
+    refreshProgress();
+  } catch (_) {
+    if (state.profileId === profileId) {
+      setProgressMessage("progressImportInvalid", true);
+      refreshProgress();
+    }
+  } finally {
+    input.value = "";
+  }
+}
+
 function recordLearningAttempt(profileId, exerciseId, evaluation) {
   if (!state.attemptHistoryEnabled[profileId]) return;
   state.learningProgress[profileId] = progressTools.recordAttempt(
@@ -1414,6 +1474,11 @@ async function start() {
   element("reset-profile").addEventListener("click", resetProfile);
   element("favorite-exercise").addEventListener("click", toggleFavorite);
   element("save-attempt-history").addEventListener("change", toggleAttemptHistory);
+  element("export-progress").addEventListener("click", exportLearningProgress);
+  element("import-progress-trigger").addEventListener("click", () => {
+    element("import-progress").click();
+  });
+  element("import-progress").addEventListener("change", importLearningProgress);
   element("clear-progress").addEventListener("click", clearLearningProgress);
   element("save-drafts").addEventListener("change", toggleDraftPersistence);
   element("reset-draft").addEventListener("click", resetDraft);

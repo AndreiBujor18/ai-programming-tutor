@@ -4,6 +4,8 @@
 // exclude source code, compiler output, diagnoses, hints, and profile traits.
 window.APT_PROGRESS = (() => {
   const SCHEMA_VERSION = "0.1";
+  const TRANSFER_FORMAT = "ai-programming-tutor-progress";
+  const TRANSFER_SCHEMA_VERSION = "0.1";
   const MAX_ATTEMPTS_PER_EXERCISE = 20;
   const MAX_TESTS_PER_EXERCISE = 100;
   const MAX_FUTURE_SKEW_MS = 24 * 60 * 60 * 1000;
@@ -134,8 +136,87 @@ window.APT_PROGRESS = (() => {
     return {favoriteCount: progress.favorites.length, attemptCount, solvedCount};
   }
 
+  function exactKeys(value, expected) {
+    if (!value || typeof value !== "object" || Array.isArray(value)) return false;
+    const actual = Object.keys(value).sort();
+    const wanted = [...expected].sort();
+    return actual.length === wanted.length && actual.every((key, index) => key === wanted[index]);
+  }
+
+  function exportPayload(value, historyEnabled, exerciseIds) {
+    const progress = sanitise(value, exerciseIds);
+    if (!historyEnabled) progress.attempts = {};
+    return {
+      format: TRANSFER_FORMAT,
+      schema_version: TRANSFER_SCHEMA_VERSION,
+      history_enabled: Boolean(historyEnabled),
+      favorites: progress.favorites,
+      attempts: progress.attempts
+    };
+  }
+
+  function rejected(reason) {
+    return {ok: false, reason};
+  }
+
+  function importPayload(value, exerciseIds, now = Date.now()) {
+    if (!value || typeof value !== "object" || Array.isArray(value)) {
+      return rejected("invalid_structure");
+    }
+    if (value.format !== TRANSFER_FORMAT || value.schema_version !== TRANSFER_SCHEMA_VERSION) {
+      return rejected("unsupported_format");
+    }
+    if (!exactKeys(value, [
+      "format", "schema_version", "history_enabled", "favorites", "attempts"
+    ]) || typeof value.history_enabled !== "boolean") {
+      return rejected("invalid_structure");
+    }
+
+    const known = exerciseSet(exerciseIds);
+    if (!Array.isArray(value.favorites) || value.favorites.length > known.size) {
+      return rejected("invalid_favorites");
+    }
+    const seen = new Set();
+    for (const id of value.favorites) {
+      if (typeof id !== "string" || !known.has(id) || seen.has(id)) {
+        return rejected("invalid_favorites");
+      }
+      seen.add(id);
+    }
+
+    if (!value.attempts || typeof value.attempts !== "object" || Array.isArray(value.attempts)) {
+      return rejected("invalid_attempts");
+    }
+    for (const [id, history] of Object.entries(value.attempts)) {
+      if (!known.has(id) || !Array.isArray(history) ||
+          history.length > MAX_ATTEMPTS_PER_EXERCISE) {
+        return rejected("invalid_attempts");
+      }
+      for (const attempt of history) {
+        if (!exactKeys(attempt, ["at", "passed", "total", "compiled"]) ||
+            !sanitiseAttempt(attempt, now)) {
+          return rejected("invalid_attempt");
+        }
+      }
+    }
+    const hasAttempts = Object.values(value.attempts).some((history) => history.length > 0);
+    if (!value.history_enabled && hasAttempts) return rejected("history_conflict");
+
+    return {
+      ok: true,
+      historyEnabled: value.history_enabled,
+      progress: sanitise({
+        schema_version: SCHEMA_VERSION,
+        favorites: value.favorites,
+        attempts: value.attempts
+      }, exerciseIds, now)
+    };
+  }
+
   return {
     SCHEMA_VERSION,
+    TRANSFER_FORMAT,
+    TRANSFER_SCHEMA_VERSION,
     MAX_ATTEMPTS_PER_EXERCISE,
     blank,
     sanitise,
@@ -143,6 +224,8 @@ window.APT_PROGRESS = (() => {
     recordAttempt,
     clearAttempts,
     summary,
-    totals
+    totals,
+    exportPayload,
+    importPayload
   };
 })();

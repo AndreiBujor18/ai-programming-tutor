@@ -72,6 +72,15 @@ state and public exercise tags; it does not add fields, identifiers, or another
 storage location. A displayed solved count means only that every local test passed
 at least once, not that the system inferred learner mastery.
 
+Progress JSON transfer is limited to the active profile's favorites, history
+setting, and sanitized numeric attempts. The browser caps input at 100,000 bytes
+and requires an exact format/version and exact object keys. It rejects unknown
+exercise IDs, duplicate favorites, out-of-range results, timestamps more than 24
+hours in the future, more than 20 attempts per exercise, and any extra field such
+as source or compiler output.
+A valid import still requires confirmation before replacing the active profile;
+it cannot alter drafts, style profiles, exam state, or the other profile.
+
 The practice-exam session persists only its exam identifier, timer origin, active
 task, and numeric best-attempt results in browser storage. It does not duplicate the
 editor source. Draft persistence remains a separate, off-by-default learner choice.
