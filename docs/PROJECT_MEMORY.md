@@ -1,4 +1,4 @@
-# Project memory — AI Programming Tutor v0.7.0
+# Project memory — AI Programming Tutor v0.8.0 development
 
 This is the maintainer handoff and continuity record for the project. It contains
 only public-safe decisions and implementation state. Private tutoring exports,
@@ -54,7 +54,7 @@ must never be copied into this document or the repository.
 
 ## Release history
 
-| Version | Stable outcome |
+| Version | Outcome |
 | --- | --- |
 | 0.1.0 | Five C exercises, eight labels, GCC runner, progressive hints, 480 synthetic programs, first grouped ML baseline |
 | 0.2.0 | Ten exercises, twelve labels, menus/program state/mixed input, 880 programs, separate ML/rule/hybrid reporting |
@@ -68,8 +68,9 @@ must never be copied into this document or the repository.
 | 0.6.2 | Locale-switch fix: visible hint depth, edited source, feedback, and run status remain synchronized |
 | 0.6.3 | Finished-exam timer snapshot and tab-scoped source recovery across refresh |
 | 0.7.0 | Profile-specific favorites, opt-in bounded numeric attempt history, last/best summaries, a derived concept/exercise view, and strict JSON transfer |
+| 0.8.0-dev | Strict project-authored file contracts, a fresh disposable directory per test, and bounded regular-file result checks; no file exercise or upload UI yet |
 
-## Current v0.7.0 capabilities
+## Current v0.8.0.dev0 capabilities
 
 - 14 original C17 exercises; every exercise has two public and three hidden tests.
 - 13 semantic diagnostic labels plus compiler errors and unknown fallbacks.
@@ -86,6 +87,11 @@ must never be copied into this document or the repository.
   checking `feof` before a read. Warnings preserve source and compiler diagnostics.
 - Dependency-free local HTTP server, optional FastAPI adapter, CLI, installable
   wheel, deterministic dataset generator, and optional scikit-learn baseline.
+- Strict project-authored text fixtures and expected-file contracts with portable
+  flat names, eight combined entries at most, per-entry and per-test byte limits,
+  fresh per-test work directories, structured file statuses, and hidden-content
+  redaction. This runner foundation does not add arbitrary browser uploads or a
+  public execution boundary.
 
 ## Current exercise catalog
 
@@ -105,8 +111,8 @@ must never be copied into this document or the repository.
 14. vector command menu.
 
 The practice exam uses interval parity, odd-digit count, sentinel average, and
-perfect squares. File-based exercises remain deferred until the runner can provide
-isolated fixtures cleanly.
+perfect squares. The isolated file-fixture foundation is ready; the first original
+file-based browser exercise and its presentation remain deferred to the next slice.
 
 ## Data and evaluation state
 
@@ -142,6 +148,12 @@ natural-data evaluation. The browser currently uses rules without loading the mo
   source-free storage, profile isolation, and deletion; the browser regression
   also verifies the complete favorite/history interaction, the derived bilingual
   concept/exercise view, and strict source-free JSON export/import.
+- The first v0.8.0 development slice passes 65/65 automated tests. New regressions
+  cover exact schema parsing, portable filename and byte bounds, a fresh workspace
+  for every test, missing/wrong/oversized/invalid-UTF-8 output files, POSIX
+  symbolic-link rejection, and hidden file-name/content redaction. Every existing
+  reference and generated solution style continues to pass its original
+  stdin/stdout tests.
 - The first v0.7.0 feature slice also passed its complete manual Windows protocol.
   Profile-specific favorites, opt-in history, latest/best results, forced-refresh
   persistence, history disablement, full progress clearing, and cross-profile
@@ -183,7 +195,8 @@ numeric result and edited source survive a same-tab refresh, and temporary exam
 source disappears after the tab is closed when permanent drafts are disabled.
 
 The public-safe evidence records are in `docs/ACCEPTANCE_V063.md` and
-`docs/ACCEPTANCE_V070_LOCAL_PROGRESS.md`.
+`docs/ACCEPTANCE_V070_LOCAL_PROGRESS.md`. The v0.8.0 development schema and
+automated acceptance boundary are in `docs/FILE_TEST_CONTRACT.md`.
 
 ## Recommended next step
 
@@ -193,8 +206,13 @@ summaries, refresh persistence, and immediate profile-scoped deletion. The compa
 concept/exercise view and strict active-profile JSON transfer are also accepted.
 Accounts and a server database remain deliberately outside this sprint.
 
-Next, prioritize a file-aware isolated runner and consented natural-code
-evaluation before improving the model or deploying public code execution.
+The file-aware runner foundation is now implemented. Next, add one original basic
+file-processing exercise with authored fixtures, hidden cases, hints, tested answer
+styles, and explicit browser rendering for file contracts and results. Keep learner
+uploads out of scope.
+
+In parallel planning, prioritize consented natural-code evaluation before improving
+the model or deploying public code execution.
 
 The completed local sprint validates the future account/history/favorites experience
 cheaply and privately.

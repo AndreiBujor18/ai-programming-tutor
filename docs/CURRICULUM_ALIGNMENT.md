@@ -1,4 +1,4 @@
-# Curriculum alignment v0.6.0
+# Curriculum alignment — v0.8.0 development
 
 ## Scope and privacy boundary
 
@@ -20,12 +20,13 @@ project.
 | Character arrays and strings | palindrome, number-plus-line input | Symmetric indices, length, token versus line input |
 | Matrices | diagonal average, matrix menu | Rectangular dimensions, diagonal positions, row operations |
 | Functions, parameters, and menus | vector menu, matrix menu | Contracts, pointer output, dispatch, and valid program state |
-| Basic file processing | deferred | Needs a file-aware disposable runner before becoming a browser exercise |
+| Basic file processing | runner foundation ready; exercise deferred | Strict project-authored text fixtures and expected files now run in a fresh directory per test; the first browser exercise and its presentation remain the next slice |
 
-The four v0.6.0 additions intentionally strengthen foundations before introducing
-file fixtures or larger algorithms. Greedy, backtracking, dynamic allocation,
-records, and recursion remain future curriculum layers rather than being squeezed
-into the first diagnostic benchmark.
+The four v0.6.0 additions intentionally strengthened foundations before file-aware
+tests. The v0.8.0 development runner now supplies that infrastructure without yet
+claiming browser-level file-exercise acceptance. Greedy, backtracking, dynamic
+allocation, records, and recursion remain future curriculum layers rather than
+being squeezed into the first diagnostic benchmark.
 
 ## Compatibility layer
 

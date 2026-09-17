@@ -1,4 +1,4 @@
-# Project brief v0.6.0
+# Project brief — v0.8.0 development
 
 ## Product hypothesis
 
@@ -29,14 +29,18 @@ outside the current product experiment.
 8. During a practice exam, the browser keeps the timer, active task, and numeric
    best-attempt score locally without adding source code to the exam record.
 
-The v0.6.0 prototype implements this flow in a dependency-free localhost website,
-CLI, and optional FastAPI service for 14 exercises. No account or server-side attempt
-history is persisted; optional drafts and exam state never leave browser storage.
+The stable v0.7.0 prototype implements this flow in a dependency-free localhost
+website, CLI, and optional FastAPI service for 14 exercises. No account or
+server-side attempt history is persisted; optional drafts, bounded numeric progress,
+and exam state never leave browser storage. The v0.8.0 development branch adds the
+file-aware runner contract before exposing a file exercise in that interface.
 
 ## In scope for V1
 
 - C17/GCC for the classic-C PCLP1 workflow;
 - fixed, versioned exercises and tests;
+- bounded project-authored text fixtures and expected output files, each test in a
+  fresh disposable working directory;
 - 13 semantic bug labels plus compilation errors;
 - rule baseline, TF-IDF/logistic-regression baseline, and later a pretrained code
   encoder comparison;
@@ -57,8 +61,9 @@ history is persisted; optional drafts and exam state never leave browser storage
 - arbitrary user-authored problems;
 - Python support before the C workflow is validated;
 - C++ and degree-program-specific mixed-language modes in the current experiment;
-- authentication, saved history, favorites, social features, mobile apps, or
-  plagiarism detection;
+- authentication, server-side history, social features, mobile apps, or plagiarism
+  detection;
+- arbitrary learner file uploads in the local browser;
 - generated arbitrary full solutions or semantic imitation of learner code;
 - public execution of untrusted code inside the API process.
 
@@ -115,7 +120,7 @@ Target product metrics:
 - experiment tracking: dataset versions plus MLflow or an equivalent tool;
 - delivery: Docker Compose and GitHub Actions.
 
-## v0.6.0 acceptance criteria
+## Established acceptance criteria
 
 - 14 baseline C references and every complete-solution style pass all exercise tests;
 - personalized references for both controlled and natural contrasting profiles pass
@@ -141,13 +146,22 @@ Target product metrics:
   source are included; benchmark claims remain limited to controlled mutations;
 - local HTTP execution is opt-in and rejects cross-origin requests.
 
+The first v0.8.0 development slice additionally requires exact file-contract keys,
+portable flat names, eight combined entries at most, bounded authored content, a
+fresh work directory for every test, regular-file-only result inspection, hidden
+content redaction, and unchanged behavior for all existing stdin/stdout exercises.
+
 ## Next sprint
 
 The v0.7.0 local-progress sprint and its manual acceptance protocol are complete.
-The next engineering slice adds project-authored file fixtures in a fresh directory
-for every test, with strict names and size bounds, before any file-based exercise is
-added to the browser catalog. This remains a trusted-local runner improvement, not a
-public sandbox claim.
+The first v0.8.0 engineering slice now provides strict project-authored file
+fixtures, bounded expected-file checks, and a fresh disposable work directory for
+every test. This remains a trusted-local runner improvement, not a public sandbox
+claim.
+
+Next, add one original basic file-processing exercise, its hints and tested answer
+variants, and explicit browser rendering for public file contracts and file-result
+statuses. Do not add arbitrary uploads or broaden the execution boundary.
 
 In parallel planning, design a consented, de-identified natural-code evaluation,
 especially for sentinel handling. Before public code execution, move the runner

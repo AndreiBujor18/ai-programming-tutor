@@ -3,6 +3,7 @@ from __future__ import annotations
 import os
 import shutil
 import signal
+import stat
 import subprocess
 import sys
 import tempfile
@@ -14,6 +15,9 @@ from ai_programming_tutor.models import (
     CompilationResult,
     EvaluationResult,
     Exercise,
+    FileResult,
+    TestCase,
+    TestFile,
     TestResult,
 )
 
@@ -80,15 +84,53 @@ def _program_resource_limiter() -> Callable[[], None] | None:
 
 
 def _terminate_group(process: subprocess.Popen[bytes]) -> None:
-    if process.poll() is not None:
-        return
     try:
         if sys.platform == "win32":
-            process.kill()
+            if process.poll() is None:
+                process.kill()
         else:
+            # The group may still contain descendants after its leader exits.
             os.killpg(process.pid, signal.SIGKILL)
-    except ProcessLookupError:
+    except OSError:
         pass
+
+
+def _read_regular_file(path: Path, max_bytes: int) -> tuple[str | None, bytes]:
+    """Read a bounded regular file without following a final symbolic link."""
+    try:
+        path_stat = path.lstat()
+    except FileNotFoundError:
+        return "missing", b""
+    except OSError:
+        return "unreadable", b""
+    if not stat.S_ISREG(path_stat.st_mode):
+        return "invalid_type", b""
+
+    flags = os.O_RDONLY | getattr(os, "O_BINARY", 0) | getattr(os, "O_NOFOLLOW", 0)
+    try:
+        descriptor = os.open(path, flags)
+    except FileNotFoundError:
+        return "missing", b""
+    except OSError:
+        return "unreadable", b""
+    try:
+        opened_stat = os.fstat(descriptor)
+        if not stat.S_ISREG(opened_stat.st_mode) or (
+            opened_stat.st_dev,
+            opened_stat.st_ino,
+        ) != (path_stat.st_dev, path_stat.st_ino):
+            return "invalid_type", b""
+        with os.fdopen(descriptor, "rb") as stream:
+            descriptor = -1
+            content = stream.read(max_bytes + 1)
+    except OSError:
+        return "unreadable", b""
+    finally:
+        if descriptor >= 0:
+            os.close(descriptor)
+    if len(content) > max_bytes:
+        return "output_limit", content
+    return None, content
 
 
 class CRunner:
@@ -132,11 +174,32 @@ class CRunner:
             if not compilation.succeeded:
                 return EvaluationResult(exercise.id, compilation)
 
-            results = tuple(
-                self._run_test(executable_path, case.name, case.input, case.expected, case.hidden, workdir)
-                for case in exercise.tests
-            )
-            return EvaluationResult(exercise.id, compilation, results)
+            results = []
+            for index, case in enumerate(exercise.tests):
+                with tempfile.TemporaryDirectory(
+                    prefix=f"case-{index:03d}-", dir=workdir
+                ) as case_directory:
+                    case_workdir = Path(case_directory)
+                    try:
+                        for fixture in case.fixtures:
+                            with (case_workdir / fixture.name).open("xb") as stream:
+                                stream.write(fixture.content.encode("utf-8"))
+                    except OSError:
+                        results.append(
+                            TestResult(
+                                case.name,
+                                case.hidden,
+                                "runtime_error",
+                                case.expected,
+                                "",
+                                "The test workspace could not be prepared.",
+                                None,
+                                0.0,
+                            )
+                        )
+                    else:
+                        results.append(self._run_test(executable_path, case, case_workdir))
+            return EvaluationResult(exercise.id, compilation, tuple(results))
 
     def _compile(
         self, source: Path, executable: Path, workdir: Path, dialect: str
@@ -194,10 +257,7 @@ class CRunner:
     def _run_test(
         self,
         executable: Path,
-        name: str,
-        test_input: str,
-        expected: str,
-        hidden: bool,
+        case: TestCase,
         workdir: Path,
     ) -> TestResult:
         started = time.perf_counter()
@@ -216,17 +276,29 @@ class CRunner:
                     env=_process_environment(workdir),
                 )
             except OSError as exc:
-                return TestResult(name, hidden, "runtime_error", expected, "", str(exc), None, 0.0)
+                return TestResult(
+                    case.name,
+                    case.hidden,
+                    "runtime_error",
+                    case.expected,
+                    "",
+                    str(exc),
+                    None,
+                    0.0,
+                )
 
             try:
                 process.communicate(
-                    input=test_input.encode("utf-8"), timeout=self.run_timeout_seconds
+                    input=case.input.encode("utf-8"), timeout=self.run_timeout_seconds
                 )
                 timed_out = False
             except subprocess.TimeoutExpired:
                 _terminate_group(process)
                 process.communicate()
                 timed_out = True
+            finally:
+                if sys.platform != "win32":
+                    _terminate_group(process)
 
             stdout_file.seek(0)
             stderr_file.seek(0)
@@ -236,24 +308,53 @@ class CRunner:
         duration_ms = (time.perf_counter() - started) * 1000
         actual_text = self._decode(stdout)
         stderr_text = self._decode(stderr)
+        file_results = tuple(
+            self._inspect_file(workdir, expected_file)
+            for expected_file in case.expected_files
+        )
         if timed_out:
             status = "timeout"
         elif process.returncode != 0:
             status = "runtime_error"
-        elif _normalise_output(actual_text) == _normalise_output(expected):
+        elif (
+            _normalise_output(actual_text) == _normalise_output(case.expected)
+            and all(result.status == "passed" for result in file_results)
+        ):
             status = "passed"
         else:
             status = "wrong_answer"
         return TestResult(
-            name,
-            hidden,
+            case.name,
+            case.hidden,
             status,
-            expected,
+            case.expected,
             actual_text,
             stderr_text,
             process.returncode,
             round(duration_ms, 3),
+            file_results,
         )
+
+    def _inspect_file(self, workdir: Path, expected_file: TestFile) -> FileResult:
+        read_status, content = _read_regular_file(
+            workdir / expected_file.name, self.max_output_bytes
+        )
+        if read_status is not None:
+            actual = self._decode(content)
+            status = read_status
+        else:
+            try:
+                actual = content.decode("utf-8")
+            except UnicodeDecodeError:
+                actual = self._decode(content)
+                status = "invalid_encoding"
+            else:
+                status = (
+                    "passed"
+                    if _normalise_output(actual) == _normalise_output(expected_file.content)
+                    else "wrong_answer"
+                )
+        return FileResult(expected_file.name, status, expected_file.content, actual)
 
     def _decode(self, value: bytes) -> str:
         decoded = value[: self.max_output_bytes].decode("utf-8", errors="replace")

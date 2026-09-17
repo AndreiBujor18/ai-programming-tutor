@@ -8,6 +8,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from ai_programming_tutor.catalog import get_exercise, list_exercises
+from ai_programming_tutor.models import Exercise
 from ai_programming_tutor.runner import CRunner
 
 # Dataset provenance changes only when mutation logic changes, not on a UI release.
@@ -390,6 +391,31 @@ def _fingerprint(parts: list[str]) -> str:
     return hashlib.sha256(payload).hexdigest()[:16]
 
 
+def _test_suite_fingerprint(exercise: Exercise) -> str:
+    return _fingerprint(
+        [
+            json.dumps(
+                {
+                    "name": case.name,
+                    "input": case.input,
+                    "expected": case.expected,
+                    "hidden": case.hidden,
+                    "fixtures": [
+                        {"name": item.name, "content": item.content}
+                        for item in case.fixtures
+                    ],
+                    "expected_files": [
+                        {"name": item.name, "content": item.content}
+                        for item in case.expected_files
+                    ],
+                },
+                sort_keys=True,
+            )
+            for case in exercise.tests
+        ]
+    )
+
+
 def _compiler_identity(compiler: str) -> str:
     try:
         process = subprocess.run(
@@ -420,20 +446,7 @@ def iter_samples(variants: int = 16, evaluate: bool = True):
                 exercise.reference_solution,
             ]
         )
-        test_suite_fingerprint = _fingerprint(
-            [
-                json.dumps(
-                    {
-                        "name": case.name,
-                        "input": case.input,
-                        "expected": case.expected,
-                        "hidden": case.hidden,
-                    },
-                    sort_keys=True,
-                )
-                for case in exercise.tests
-            ]
-        )
+        test_suite_fingerprint = _test_suite_fingerprint(exercise)
         for rule in MUTATION_RULES[exercise.id]:
             mutated = rule.apply(exercise.reference_solution)
             for variant in range(variants):

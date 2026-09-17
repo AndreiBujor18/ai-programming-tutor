@@ -8,7 +8,20 @@ complete, explained, tested reference solution as a separate action.
 The repository name is intentionally neutral. Product branding can change later
 without renaming the Python package or rewriting the architecture.
 
-## What works in v0.7.0
+## Unreleased v0.8.0 development
+
+The runner now understands bounded, project-authored text fixtures and expected
+output files. Each test receives a fresh disposable working directory; output-file
+checks reject missing, oversized, unreadable, and non-regular entries, including
+symbolic links. Test-suite fingerprints include these file contracts, and hidden
+file names and contents are redacted from learner-facing results.
+
+This is infrastructure only. The 14-item browser catalog remains unchanged, it does
+not accept arbitrary file uploads, and the local runner is still not a security
+sandbox. The next slice can add the first original file-processing exercise and its
+browser presentation on top of this reviewed contract.
+
+## What works in stable v0.7.0
 
 - 14 fixed C exercises with public and hidden tests;
 - an original four-task, 60-minute PCLP1 practice exam with a transparent
@@ -165,7 +178,8 @@ Hint 1: Check the types involved when the sum is divided by the number of values
 The core is deliberately independent of the web framework:
 
 1. `catalog.py` loads versioned exercises and tests.
-2. `runner.py` compiles and evaluates C code locally.
+2. `runner.py` compiles and evaluates C code locally, with a fresh work directory
+   for every test and bounded project-authored file contracts where declared.
 3. `diagnosis.py` ranks likely bug categories from code and test signals.
 4. `hints.py` selects a progressive hint.
 5. `dataset.py` creates labeled controlled mutations.
@@ -186,6 +200,8 @@ two-profile experiment, and execution threat model.
 
 `docs/PROJECT_MEMORY.md` is the concise maintainer handoff: settled decisions,
 release history, current metrics, privacy rules, and the exact next sprint.
+`docs/FILE_TEST_CONTRACT.md` defines the unreleased project-authored fixture schema,
+per-test lifecycle, file-result statuses, and its trusted-local boundary.
 
 ## License
 

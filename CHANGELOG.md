@@ -2,6 +2,21 @@
 
 ## Unreleased
 
+- Added strict project-authored `fixtures` and `expected_files` entries to the
+  exercise test schema: portable flat filenames, at most eight total entries,
+  32,000 bytes per text file, and 64,000 bytes across one test contract.
+- Run every test in a fresh disposable working directory, populate only its
+  declared fixtures, and remove that directory before the next test.
+- Added bounded structured file-result checks for missing, wrong, oversized,
+  unreadable, invalid-UTF-8, and non-regular outputs; symbolic links are not
+  accepted as output files and hidden file names/contents are redacted with the
+  rest of a hidden test.
+- Extended dataset test-suite fingerprints to cover file contracts and added
+  cross-platform regressions for schema validation, workspace isolation, output
+  limits, and file-result serialization.
+- Kept this as trusted-local runner infrastructure. No file-based browser exercise,
+  arbitrary browser upload, or public-sandbox claim is included yet.
+
 ## 0.7.0
 
 - Documented successful manual acceptance of strict JSON transfer, including the

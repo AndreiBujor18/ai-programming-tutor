@@ -11,6 +11,24 @@ processes on a shared host; compilation remains bounded by the other resource
 limits and a wall-clock timeout. These controls reduce accidental damage and make
 automated tests predictable.
 
+The v0.8.0 development runner adds file-aware tests without accepting learner file
+uploads. Fixtures and expected file contents are project-authored text only. Their
+schema allows portable flat filenames, at most eight combined entries per test,
+32,000 UTF-8 bytes per entry, and 64,000 bytes across the complete file contract.
+The runner reserves its stdout/stderr capture names, creates a new disposable
+working directory for each test, writes only that test's fixtures, and deletes the
+directory before continuing.
+
+Expected outputs are read up to the runner's output cap. The checker compares
+`lstat` and `fstat` metadata, accepts regular files only, and opens with
+`O_NOFOLLOW` where the operating system provides it. Missing, unreadable,
+non-regular, oversized, invalid-UTF-8, and wrong outputs are returned as structured
+file results. Hidden file names and contents are redacted from learner-facing
+serialization. On POSIX, the runner also terminates the process group after each
+test so descendants do not keep writing after their parent exits. The Windows
+prototype cannot guarantee equivalent descendant-tree cleanup without a job-object
+worker, reinforcing the trusted-local boundary.
+
 The v0.7.0 dependency-free demo binds only to `127.0.0.1`, checks the Host and Origin
 for local requests, and requires `--enable-local-execution` to run user source.
 The optional FastAPI runner endpoint requires both a loopback client and explicit
@@ -61,7 +79,7 @@ layer should use random attempt identifiers, avoid raw source in logs by default
 encrypt retained code, apply retention limits, and require explicit consent before
 using any submission for model training.
 
-The unreleased local-progress feature keeps favorites separately for each profile.
+The v0.7.0 local-progress feature keeps favorites separately for each profile.
 Its attempt history is off by default and stores only a timestamp, compilation
 status, and passed/total test counts, bounded to the latest 20 attempts per exercise.
 It never stores submitted source, compiler output, diagnoses, hints, or learned
