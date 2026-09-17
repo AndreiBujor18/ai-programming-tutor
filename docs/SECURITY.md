@@ -67,6 +67,10 @@ status, and passed/total test counts, bounded to the latest 20 attempts per exer
 It never stores submitted source, compiler output, diagnoses, hints, or learned
 style evidence. Turning history off deletes its numeric attempts immediately;
 clearing progress deletes both attempts and favorites for the active profile.
+The concept/exercise breakdown is calculated in browser memory from this sanitized
+state and public exercise tags; it does not add fields, identifiers, or another
+storage location. A displayed solved count means only that every local test passed
+at least once, not that the system inferred learner mastery.
 
 The practice-exam session persists only its exam identifier, timer origin, active
 task, and numeric best-attempt results in browser storage. It does not duplicate the

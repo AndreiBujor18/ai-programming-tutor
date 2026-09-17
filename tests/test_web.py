@@ -394,6 +394,9 @@ class LocalWebTests(unittest.TestCase):
             "exam-timer", "exam-score", "exam-task-list", "exam-rubric-list",
             "favorite-exercise", "save-attempt-history", "clear-progress",
             "progress-summary-badge", "progress-summary", "exercise-progress",
+            "progress-breakdown", "concept-progress", "concept-progress-note",
+            "concept-progress-overlap", "exercise-progress-list",
+            "progress-breakdown-empty",
         ):
             self.assertIn(f'id="{control_id}"', html)
         self.assertIn('lang="ro"', html)

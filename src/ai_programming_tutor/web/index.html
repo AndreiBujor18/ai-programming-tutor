@@ -66,6 +66,18 @@
           </label>
           <p id="progress-summary" class="progress-summary"></p>
           <p class="small muted" data-i18n="progressPrivacy">Favoritele sunt salvate numai când le alegi. Istoricul este opțional și păstrează doar momentul și numărul testelor trecute, niciodată codul.</p>
+          <details id="progress-breakdown" class="progress-breakdown">
+            <summary data-i18n="progressBreakdown">Concepte și exerciții</summary>
+            <div class="progress-breakdown-body">
+              <h3 data-i18n="conceptProgressHeading">Concepte</h3>
+              <p id="concept-progress-note" class="small muted"></p>
+              <ul id="concept-progress" class="progress-list"></ul>
+              <p id="concept-progress-overlap" class="small muted" data-i18n="conceptProgressOverlap">Un exercițiu poate apărea la mai multe concepte; „rezolvat” înseamnă doar că toate testele locale au trecut cel puțin o dată.</p>
+              <h3 data-i18n="trackedExercisesHeading">Exerciții urmărite</h3>
+              <ul id="exercise-progress-list" class="progress-list"></ul>
+              <p id="progress-breakdown-empty" class="small muted" data-i18n="progressBreakdownEmpty">Încă nu există favorite sau încercări salvate.</p>
+            </div>
+          </details>
           <button id="clear-progress" class="text-button" type="button" data-i18n="clearProgress">Șterge progresul profilului</button>
           <p id="progress-message" class="small" role="status" aria-live="polite"></p>
         </section>

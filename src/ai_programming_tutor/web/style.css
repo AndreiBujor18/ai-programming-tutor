@@ -141,6 +141,26 @@ button:disabled { cursor: not-allowed; opacity: .55; }
   font-size: 12px;
 }
 .progress-card > .small { margin: 0 0 9px; }
+.progress-breakdown {
+  margin: 12px 0;
+  padding: 11px 0;
+  border-top: 1px solid var(--hairline);
+  border-bottom: 1px solid var(--hairline);
+}
+.progress-breakdown summary { cursor: pointer; font-size: 12px; font-weight: 620; }
+.progress-breakdown-body { padding-top: 12px; }
+.progress-breakdown h3 { margin: 0 0 6px; font-size: 12px; }
+.progress-breakdown h3:not(:first-child) { margin-top: 13px; }
+.progress-breakdown .small { margin: 0 0 8px; }
+.progress-list { margin: 0; padding: 0; list-style: none; }
+.progress-list li {
+  padding: 5px 0;
+  border-top: 1px solid var(--hairline);
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.45;
+}
+.progress-list li:first-child { border-top: 0; }
 #progress-message { min-height: 19px; margin: 8px 0 0; color: var(--success); }
 #progress-message.error { color: var(--danger); }
 .main-column { display: grid; gap: 18px; }

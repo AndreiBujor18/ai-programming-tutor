@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Added a collapsible profile-specific progress view that derives solved/attempted
+  concept coverage from exercise tags and lists only favorited or attempted
+  exercises with their best numeric result; it adds no new stored learner data.
 - Documented successful manual acceptance of the first v0.7.0 local-progress
   slice, including profile isolation, refresh persistence, last/best behavior,
   and immediate profile-scoped deletion.

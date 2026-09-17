@@ -64,7 +64,7 @@ must never be copied into this document or the repository.
 | 0.6.1 | Windows runner fix: private writable compiler temp variables, required toolchain/system paths only, native executable name |
 | 0.6.2 | Locale-switch fix: visible hint depth, edited source, feedback, and run status remain synchronized |
 | 0.6.3 | Finished-exam timer snapshot and tab-scoped source recovery across refresh |
-| 0.7.0 (development) | Profile-specific favorites, opt-in bounded numeric attempt history, and per-exercise last/best summaries |
+| 0.7.0 (development) | Profile-specific favorites, opt-in bounded numeric attempt history, per-exercise last/best summaries, and a derived concept/exercise view |
 
 ## Current v0.6.3 capabilities
 
@@ -136,7 +136,8 @@ natural-data evaluation. The browser currently uses rules without loading the mo
 - The current v0.7.0 development tree passes 52/52 automated tests. The added
   progress-state contract verifies schema sanitization, bounded retention,
   source-free storage, profile isolation, and deletion; the browser regression
-  also verifies the complete favorite/history interaction.
+  also verifies the complete favorite/history interaction and the derived bilingual
+  concept/exercise view.
 - The first v0.7.0 feature slice also passed its complete manual Windows protocol.
   Profile-specific favorites, opt-in history, latest/best results, forced-refresh
   persistence, history disablement, full progress clearing, and cross-profile
@@ -177,10 +178,10 @@ The public-safe evidence records are in `docs/ACCEPTANCE_V063.md` and
 
 The first v0.7.0 local-progress slice is implemented and manually accepted:
 profile-specific favorites, opt-in numeric attempt history, per-exercise last/best
-summaries, refresh persistence, and immediate profile-scoped deletion. Complete
-the sprint with:
+summaries, refresh persistence, and immediate profile-scoped deletion. The compact
+concept/exercise view is implemented and awaits a short manual browser check.
+Complete the sprint with:
 
-- a compact progress view by concept and exercise;
 - JSON export/import with strict schema validation;
 - no accounts or server database yet.
 

@@ -47,6 +47,8 @@ const ids = [
   "progress-heading", "progress-summary-badge", "save-attempt-history",
   "progress-summary", "clear-progress", "progress-message",
   "favorite-exercise", "exercise-progress",
+  "progress-breakdown", "concept-progress", "concept-progress-note",
+  "concept-progress-overlap", "exercise-progress-list", "progress-breakdown-empty",
   "exam-heading", "exam-summary-badge", "start-exam", "finish-exam",
   "exam-session", "exam-timer", "exam-score", "exam-task-list",
   "next-exam-task", "exam-note", "exam-rubric-list"
@@ -84,6 +86,7 @@ const sessionStored = {};
 const exercise = {
   id: "vector_menu", title: "Vector menu", statement: "English statement.",
   input_format: "English input.", output_format: "English output.",
+  tags: ["arrays", "functions", "menus", "program-state"],
   starter_code: "/* Read the array and show a result. */\nint main(void) { return 0; }\n",
   public_tests: [{name: "example A", input: "1\nS", expected: "EMPTY"}],
   solution_styles: ["personalized_c", "pclp1_classic", "classic_c", "commented_c"]
@@ -192,6 +195,9 @@ vm.runInContext(fs.readFileSync(path.join(root, "app.js"), "utf8"), context);
   assert.equal(elements["save-attempt-history"].checked, false);
   assert.equal(elements["exercise-progress"].textContent, "Istoricul încercărilor este oprit.");
   assert.equal(elements["favorite-exercise"].textContent, "☆ Adaugă la favorite");
+  assert.equal(elements["concept-progress"].hidden, true);
+  assert.equal(elements["concept-progress-note"].textContent.includes("Activează istoricul"), true);
+  assert.equal(elements["progress-breakdown-empty"].hidden, false);
   assert.equal(stored["aptutor-v0.7-progress-profile_b"], undefined,
     "disabled history retained an old numeric attempt");
   elements["favorite-exercise"].listeners.click();
@@ -200,11 +206,17 @@ vm.runInContext(fs.readFileSync(path.join(root, "app.js"), "utf8"), context);
   assert.equal(JSON.stringify(progressA).includes("source"), false);
   assert.equal(elements["favorite-exercise"].attributes["aria-pressed"], "true");
   assert.equal(elements["exercise-select"].options[0].textContent.startsWith("★ "), true);
+  assert.equal(elements["exercise-progress-list"].children.length, 1);
+  assert.equal(elements["exercise-progress-list"].children[0].textContent.includes(
+    "★ Meniu de comenzi pentru vector · fără rezultate salvate"
+  ), true);
   elements["save-attempt-history"].checked = true;
   elements["save-attempt-history"].listeners.change({target: elements["save-attempt-history"]});
   assert.equal(stored["aptutor-v0.7-attempt-history-profile_a"], "yes");
   assert.equal(elements["exercise-progress"].textContent,
     "Nicio încercare salvată pentru acest exercițiu.");
+  assert.equal(elements["concept-progress"].hidden, false);
+  assert.equal(elements["concept-progress"].children.length, 2);
   assert.equal(elements["exam-summary-badge"].textContent, "60 min · 10p");
   elements["start-exam"].listeners.click();
   assert.equal(elements["exam-session"].hidden, false);
@@ -250,6 +262,11 @@ vm.runInContext(fs.readFileSync(path.join(root, "app.js"), "utf8"), context);
   assert.equal(JSON.stringify(progressA).includes(ownCodeA), false);
   assert.equal(elements["exercise-progress"].textContent,
     "Ultimul: compilarea a eșuat · Cel mai bun: — · 1 încercare");
+  assert.equal(elements["concept-progress"].children[0].textContent,
+    "Vectori: rezolvate 0/1 · încercate 1");
+  assert.equal(elements["exercise-progress-list"].children[0].textContent.includes(
+    "cel mai bun — · 1 încercare"
+  ), true);
   assert.equal(elements["exam-score"].textContent, "1.00 / 10");
   response.evaluation.compilation.succeeded = true;
   response.evaluation.total_count = 1;
@@ -283,6 +300,8 @@ vm.runInContext(fs.readFileSync(path.join(root, "app.js"), "utf8"), context);
   })`, context);
   assert.equal(elements["exercise-progress"].textContent.includes("Ultimul: 1/1"), true);
   assert.equal(elements["exercise-progress"].textContent.includes("Cel mai bun: 1/1"), true);
+  assert.equal(elements["concept-progress"].children[0].textContent,
+    "Vectori: rezolvate 1/1 · încercate 1");
 
   await vm.runInContext("runCode()", context);
   vm.runInContext("showNextHint()", context);
@@ -303,6 +322,11 @@ vm.runInContext(fs.readFileSync(path.join(root, "app.js"), "utf8"), context);
   assert.equal(elements.hints.children.length, 3, "revealed hint count changed");
   assert.equal(elements.hints.children[0].textContent, "English hint one");
   assert.equal(elements["run-status"].textContent, "Ready");
+  assert.equal(elements["concept-progress"].children[0].textContent,
+    "Arrays: solved 1/1 · attempted 1");
+  assert.equal(elements["exercise-progress-list"].children[0].textContent.includes(
+    "★ Vector menu · best 1/1"
+  ), true);
   assert.equal(elements["profile-summary"].textContent.includes("functions: same-line brace"), true);
   assert.equal(stored["aptutor-v0.5-locale"], "en");
 
@@ -322,9 +346,13 @@ vm.runInContext(fs.readFileSync(path.join(root, "app.js"), "utf8"), context);
   assert.deepStrictEqual(progressA.attempts, {});
   assert.deepStrictEqual(progressA.favorites, ["vector_menu"]);
   assert.equal(stored["aptutor-v0.7-attempt-history-profile_a"], "no");
+  assert.equal(elements["concept-progress"].hidden, true);
+  assert.equal(elements["exercise-progress-list"].children.length, 1);
   elements["clear-progress"].listeners.click();
   assert.equal(stored["aptutor-v0.7-progress-profile_a"], undefined);
   assert.equal(elements["favorite-exercise"].attributes["aria-pressed"], "false");
+  assert.equal(elements["exercise-progress-list"].hidden, true);
+  assert.equal(elements["progress-breakdown-empty"].hidden, false);
 
   elements["theme-toggle"].listeners.click();
   assert.equal(document.documentElement.dataset.theme, "dark");

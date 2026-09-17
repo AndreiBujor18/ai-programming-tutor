@@ -12,6 +12,18 @@ const EXAM_SESSION_KEY = "aptutor-v0.6-exam-session";
 const EXAM_DRAFTS_KEY = "aptutor-v0.6-exam-drafts";
 const PROGRESS_STORAGE_PREFIX = "aptutor-v0.7-progress-";
 const HISTORY_SETTING_PREFIX = "aptutor-v0.7-attempt-history-";
+const PROGRESS_CONCEPTS = [
+  {id: "arrays", tags: ["arrays"]},
+  {id: "loops", tags: ["loops", "sentinels"]},
+  {id: "conditions", tags: ["conditions", "comparisons", "intervals", "boundaries"]},
+  {
+    id: "numeric",
+    tags: ["numeric-types", "arithmetic", "digits", "number-properties", "averages", "counters"]
+  },
+  {id: "strings_input", tags: ["strings", "input", "buffers"]},
+  {id: "matrices", tags: ["matrices"]},
+  {id: "functions_menus", tags: ["functions", "menus"]}
+];
 const PROFILE_DIMENSIONS = {
   function_brace_style: {
     choices: [["function_brace_same_line", "same_line"], ["function_brace_next_line", "next_line"]],
@@ -396,6 +408,70 @@ function exerciseProgressText() {
       + " · Best: " + attemptResultText(summary.best) + " · " + count;
 }
 
+function fullySolved(summary) {
+  return Boolean(
+    summary.best && summary.best.total > 0 && summary.best.passed === summary.best.total
+  );
+}
+
+function trackedExerciseText(exercise, summary, isFavorite) {
+  const title = localizedExerciseTitle(exercise);
+  const prefix = isFavorite ? "★ " : "";
+  if (!summary.count) return prefix + title + " · " + tr("trackedExerciseNoResults");
+  const count = state.locale === "ro"
+    ? summary.count + " " + (summary.count === 1 ? "încercare" : "încercări")
+    : summary.count + " " + (summary.count === 1 ? "attempt" : "attempts");
+  return state.locale === "ro"
+    ? prefix + title + " · cel mai bun " + attemptResultText(summary.best) + " · " + count
+    : prefix + title + " · best " + attemptResultText(summary.best) + " · " + count;
+}
+
+function refreshProgressBreakdown(progress) {
+  const summaries = new Map(state.exercises.map((exercise) => [
+    exercise.id,
+    progressTools.summary(progress, exercise.id, exerciseIds())
+  ]));
+  const conceptList = element("concept-progress");
+  const conceptNote = element("concept-progress-note");
+  const conceptOverlap = element("concept-progress-overlap");
+  conceptList.replaceChildren();
+  const historyEnabled = state.attemptHistoryEnabled[state.profileId];
+  conceptList.hidden = !historyEnabled;
+  conceptOverlap.hidden = !historyEnabled;
+  conceptNote.hidden = historyEnabled;
+  conceptNote.textContent = historyEnabled ? "" : tr("conceptProgressHistoryOff");
+  if (historyEnabled) {
+    for (const concept of PROGRESS_CONCEPTS) {
+      const matching = state.exercises.filter((exercise) =>
+        Array.isArray(exercise.tags) && exercise.tags.some((tag) => concept.tags.includes(tag))
+      );
+      if (!matching.length) continue;
+      const attempted = matching.filter((exercise) => summaries.get(exercise.id).count > 0).length;
+      const solved = matching.filter((exercise) => fullySolved(summaries.get(exercise.id))).length;
+      const label = translations.progressConcepts[state.locale][concept.id];
+      const text = state.locale === "ro"
+        ? label + ": rezolvate " + solved + "/" + matching.length + " · încercate " + attempted
+        : label + ": solved " + solved + "/" + matching.length + " · attempted " + attempted;
+      addTextItem(conceptList, text);
+    }
+  }
+
+  const favorites = new Set(progress.favorites);
+  const tracked = state.exercises.filter((exercise) =>
+    favorites.has(exercise.id) || summaries.get(exercise.id).count > 0
+  );
+  const exerciseList = element("exercise-progress-list");
+  exerciseList.replaceChildren();
+  for (const exercise of tracked) {
+    addTextItem(
+      exerciseList,
+      trackedExerciseText(exercise, summaries.get(exercise.id), favorites.has(exercise.id))
+    );
+  }
+  exerciseList.hidden = tracked.length === 0;
+  element("progress-breakdown-empty").hidden = tracked.length > 0;
+}
+
 function refreshProgress() {
   const progress = currentLearningProgress();
   const totals = progressTools.totals(progress, exerciseIds());
@@ -409,6 +485,7 @@ function refreshProgress() {
   favoriteButton.textContent = tr(isFavorite ? "favoriteRemove" : "favoriteAdd");
   favoriteButton.setAttribute("aria-pressed", String(isFavorite));
   element("exercise-progress").textContent = exerciseProgressText();
+  refreshProgressBreakdown(progress);
   setProgressMessage(state.progressMessageKey, state.progressMessageError);
 }
 

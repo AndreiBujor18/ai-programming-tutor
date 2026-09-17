@@ -29,6 +29,13 @@ window.APT_I18N = {
       progressHeading: "Progres local",
       saveAttemptHistory: "Salvează rezultatele încercărilor",
       progressPrivacy: "Favoritele sunt salvate numai când le alegi. Istoricul este opțional și păstrează doar momentul și numărul testelor trecute, niciodată codul.",
+      progressBreakdown: "Concepte și exerciții",
+      conceptProgressHeading: "Concepte",
+      conceptProgressHistoryOff: "Activează istoricul numeric pentru a vedea progresul pe concepte.",
+      conceptProgressOverlap: "Un exercițiu poate apărea la mai multe concepte; „rezolvat” înseamnă doar că toate testele locale au trecut cel puțin o dată.",
+      trackedExercisesHeading: "Exerciții urmărite",
+      progressBreakdownEmpty: "Încă nu există favorite sau încercări salvate.",
+      trackedExerciseNoResults: "fără rezultate salvate",
       clearProgress: "Șterge progresul profilului",
       favoriteAdd: "☆ Adaugă la favorite",
       favoriteRemove: "★ Elimină din favorite",
@@ -180,6 +187,13 @@ window.APT_I18N = {
       progressHeading: "Local progress",
       saveAttemptHistory: "Save attempt results",
       progressPrivacy: "Favorites are stored only when you choose them. Attempt history is optional and keeps only the time and test count, never source code.",
+      progressBreakdown: "Concepts and exercises",
+      conceptProgressHeading: "Concepts",
+      conceptProgressHistoryOff: "Enable numeric attempt history to see concept progress.",
+      conceptProgressOverlap: "An exercise may appear under several concepts; “solved” only means that every local test passed at least once.",
+      trackedExercisesHeading: "Tracked exercises",
+      progressBreakdownEmpty: "There are no saved favorites or attempts yet.",
+      trackedExerciseNoResults: "no saved results",
       clearProgress: "Delete this profile's progress",
       favoriteAdd: "☆ Add to favorites",
       favoriteRemove: "★ Remove from favorites",
@@ -304,6 +318,26 @@ window.APT_I18N = {
       pclpPresetNote: "A safe C17 preset based on recurring PCLP1 conventions was applied. No source or wording was copied from the original materials.",
       generalError: "Something went wrong. Please try again.",
       executionDisabled: "Local code execution is disabled. Restart with --enable-local-execution; never expose the runner publicly."
+    }
+  },
+  progressConcepts: {
+    ro: {
+      arrays: "Vectori",
+      loops: "Bucle și santinele",
+      conditions: "Condiții și limite",
+      numeric: "Calcul numeric",
+      strings_input: "Șiruri și intrare",
+      matrices: "Matrice",
+      functions_menus: "Funcții și meniuri"
+    },
+    en: {
+      arrays: "Arrays",
+      loops: "Loops and sentinels",
+      conditions: "Conditions and boundaries",
+      numeric: "Numeric computation",
+      strings_input: "Strings and input",
+      matrices: "Matrices",
+      functions_menus: "Functions and menus"
     }
   },
   compatibilityWarnings: {
