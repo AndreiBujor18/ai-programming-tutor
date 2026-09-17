@@ -143,15 +143,12 @@ Target product metrics:
 
 ## Next sprint
 
-The v0.6.3 practice-simulation and two-profile acceptance protocol is complete.
-Before feature work, resolve the hosted GCC timeouts and 15-minute GitHub Actions
-cancellation while preserving the runner's local safety limits.
+The v0.7.0 local-progress sprint and its manual acceptance protocol are complete.
+The next engineering slice adds project-authored file fixtures in a fresh directory
+for every test, with strict names and size bounds, before any file-based exercise is
+added to the browser catalog. This remains a trusted-local runner improvement, not a
+public sandbox claim.
 
-The feature sprint then adds opt-in local learning progress: favorite exercises,
-attempt history, last/best results, a small concept/exercise progress view, one-click
-deletion, and JSON export/import. It deliberately avoids accounts and a server
-database while the retention and deletion behavior is validated locally.
-
-After that sprint, design a consented, de-identified natural-code evaluation,
+In parallel planning, design a consented, de-identified natural-code evaluation,
 especially for sentinel handling. Before public code execution, move the runner
 behind a disposable worker boundary.

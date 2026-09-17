@@ -11,7 +11,7 @@ processes on a shared host; compilation remains bounded by the other resource
 limits and a wall-clock timeout. These controls reduce accidental damage and make
 automated tests predictable.
 
-The v0.6.3 dependency-free demo binds only to `127.0.0.1`, checks the Host and Origin
+The v0.7.0 dependency-free demo binds only to `127.0.0.1`, checks the Host and Origin
 for local requests, and requires `--enable-local-execution` to run user source.
 The optional FastAPI runner endpoint requires both a loopback client and explicit
 `APTUTOR_ENABLE_LOCAL_EXECUTION=1`; launch it with `--host 127.0.0.1`. Neither

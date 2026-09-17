@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.7.0
+
 - Documented successful manual acceptance of strict JSON transfer, including the
   source-free envelope, confirmation flow, profile isolation, cleanup, and bilingual
   interface states; the planned v0.7.0 local-progress sprint is complete.

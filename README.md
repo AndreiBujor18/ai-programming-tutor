@@ -8,7 +8,7 @@ complete, explained, tested reference solution as a separate action.
 The repository name is intentionally neutral. Product branding can change later
 without renaming the Python package or rewriting the architecture.
 
-## What works in v0.6.3
+## What works in v0.7.0
 
 - 14 fixed C exercises with public and hidden tests;
 - an original four-task, 60-minute PCLP1 practice exam with a transparent
@@ -21,6 +21,10 @@ without renaming the Python package or rewriting the architecture.
 - a deliberately narrow classic-C17/GCC workflow for PCLP1/Computer Engineering;
 - two local test profiles with separate drafts and explicit, opt-in persistence on
   the current device;
+- profile-specific favorites, opt-in bounded numeric attempt history, and a compact
+  concept/exercise progress view that never stores submitted source;
+- strict JSON export/import for only the active profile's sanitized progress, with
+  confirmation before replacement and rejection of unknown fields or exercises;
 - explicit style learning from code chosen by the learner: separate function and
   control braces; prefix, postfix, compound, or explicit updates; two/four-space
   indentation; comment syntax and placement; `main` signature; loop declarations;

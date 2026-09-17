@@ -1,4 +1,4 @@
-# Project memory — AI Programming Tutor v0.7.0 development
+# Project memory — AI Programming Tutor v0.7.0
 
 This is the maintainer handoff and continuity record for the project. It contains
 only public-safe decisions and implementation state. Private tutoring exports,
@@ -19,8 +19,8 @@ must never be copied into this document or the repository.
 - Current scope is Computer Engineering-style classic C17/GCC. Mixed introductory
   C/C++ material and IETTI-specific shortcuts are excluded from the current mode.
 - Python, C++, accounts, server-side history, plagiarism detection, and arbitrary
-  user-authored problems are future work, not current claims. Device-local
-  favorites and numeric attempt history are the current v0.7.0 development focus.
+  user-authored problems are future work, not current claims. The accepted local
+  progress feature stores only the deliberately bounded device-local state below.
 
 ## User and privacy decisions
 
@@ -67,9 +67,9 @@ must never be copied into this document or the repository.
 | 0.6.1 | Windows runner fix: private writable compiler temp variables, required toolchain/system paths only, native executable name |
 | 0.6.2 | Locale-switch fix: visible hint depth, edited source, feedback, and run status remain synchronized |
 | 0.6.3 | Finished-exam timer snapshot and tab-scoped source recovery across refresh |
-| 0.7.0 (development) | Profile-specific favorites, opt-in bounded numeric attempt history, last/best summaries, a derived concept/exercise view, and strict JSON transfer |
+| 0.7.0 | Profile-specific favorites, opt-in bounded numeric attempt history, last/best summaries, a derived concept/exercise view, and strict JSON transfer |
 
-## Current v0.6.3 capabilities
+## Current v0.7.0 capabilities
 
 - 14 original C17 exercises; every exercise has two public and three hidden tests.
 - 13 semantic diagnostic labels plus compiler errors and unknown fallbacks.
@@ -136,8 +136,9 @@ natural-data evaluation. The browser currently uses rules without loading the mo
   revealed hints, an open complete solution, both locale transitions, exact
   edited-source retention, frozen finished time, and tab-scoped exam-source
   recovery. The Windows compiler-environment regressions remain covered.
-- The current v0.7.0 development tree passes 52/52 automated tests. The added
-  progress-state contract verifies schema sanitization, bounded retention,
+- The v0.7.0 release tree passes 53/53 automated tests, including a package/project
+  version-consistency check. The progress-state contract verifies schema sanitization,
+  bounded retention,
   source-free storage, profile isolation, and deletion; the browser regression
   also verifies the complete favorite/history interaction, the derived bilingual
   concept/exercise view, and strict source-free JSON export/import.
@@ -155,9 +156,9 @@ natural-data evaluation. The browser currently uses rules without loading the mo
   transfer states correctly.
 - All 14 reference solutions and every complete-solution style pass their exercise
   tests; generated variants compile without warnings in the tested matrix.
-- The release wheel installs as version 0.6.3 and exposes all 14 exercises plus the
+- The release wheel installs as version 0.7.0 and exposes all 14 exercises plus the
   four-task, 10-point practice exam.
-- The v0.6.3 release privacy scan found no uploaded archive, private filename, Library ID,
+- The v0.7.0 release privacy scan found no uploaded archive, private filename, Library ID,
   workspace path, PDF, image, office document, or raw tutoring export.
 - The six-stage manual Windows acceptance protocol is complete. The final regression
   confirmed frozen finished time, same-tab source recovery, and removal of temporary

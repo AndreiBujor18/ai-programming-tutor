@@ -9,6 +9,7 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
+from ai_programming_tutor import __version__
 from ai_programming_tutor.catalog import get_exercise, list_exercises
 from ai_programming_tutor.exam import get_practice_exam
 from ai_programming_tutor.solutions import reference_answer
@@ -18,7 +19,7 @@ from ai_programming_tutor.webserver import public_exercise, submit_payload
 
 app = FastAPI(
     title="AI Programming Tutor API",
-    version="0.6.3",
+    version=__version__,
     description="Local PCLP1 learning prototype. The runner is not a public execution sandbox.",
     docs_url=None,
     redoc_url=None,

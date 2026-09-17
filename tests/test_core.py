@@ -1,13 +1,15 @@
 from __future__ import annotations
 
-import shutil
 import os
+import shutil
 import sys
 import tempfile
+import tomllib
 import unittest
 from pathlib import Path
 from unittest import mock
 
+from ai_programming_tutor import __version__
 from ai_programming_tutor.catalog import get_exercise, list_exercises
 from ai_programming_tutor.dataset import iter_samples
 from ai_programming_tutor.diagnosis import diagnose
@@ -21,6 +23,15 @@ from ai_programming_tutor.service import TutorService
 
 
 GCC_AVAILABLE = shutil.which("gcc") is not None
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+
+
+class VersionTests(unittest.TestCase):
+    def test_package_and_project_versions_match(self) -> None:
+        with (PROJECT_ROOT / "pyproject.toml").open("rb") as stream:
+            metadata = tomllib.load(stream)
+        self.assertEqual(__version__, "0.7.0")
+        self.assertEqual(metadata["project"]["version"], __version__)
 
 
 class CatalogTests(unittest.TestCase):
