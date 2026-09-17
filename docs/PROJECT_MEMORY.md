@@ -137,6 +137,11 @@ natural-data evaluation. The browser currently uses rules without loading the mo
   progress-state contract verifies schema sanitization, bounded retention,
   source-free storage, profile isolation, and deletion; the browser regression
   also verifies the complete favorite/history interaction.
+- The first v0.7.0 feature slice also passed its complete manual Windows protocol.
+  Profile-specific favorites, opt-in history, latest/best results, forced-refresh
+  persistence, history disablement, full progress clearing, and cross-profile
+  deletion isolation behaved as intended. See
+  `docs/ACCEPTANCE_V070_LOCAL_PROGRESS.md`.
 - All 14 reference solutions and every complete-solution style pass their exercise
   tests; generated variants compile without warnings in the tested matrix.
 - The release wheel installs as version 0.6.3 and exposes all 14 exercises plus the
@@ -165,13 +170,15 @@ Test 6 confirms the complete v0.6.3 lifecycle: finished time remains frozen, the
 numeric result and edited source survive a same-tab refresh, and temporary exam
 source disappears after the tab is closed when permanent drafts are disabled.
 
-The public-safe evidence record is in `docs/ACCEPTANCE_V063.md`.
+The public-safe evidence records are in `docs/ACCEPTANCE_V063.md` and
+`docs/ACCEPTANCE_V070_LOCAL_PROGRESS.md`.
 
 ## Recommended next step
 
-The first v0.7.0 local-progress slice is implemented: profile-specific favorites,
-opt-in numeric attempt history, per-exercise last/best summaries, and immediate
-deletion. Manually accept that slice on Windows, then complete the sprint with:
+The first v0.7.0 local-progress slice is implemented and manually accepted:
+profile-specific favorites, opt-in numeric attempt history, per-exercise last/best
+summaries, refresh persistence, and immediate profile-scoped deletion. Complete
+the sprint with:
 
 - a compact progress view by concept and exercise;
 - JSON export/import with strict schema validation;

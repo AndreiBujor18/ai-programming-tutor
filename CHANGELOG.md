@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Documented successful manual acceptance of the first v0.7.0 local-progress
+  slice, including profile isolation, refresh persistence, last/best behavior,
+  and immediate profile-scoped deletion.
 - Added profile-specific favorite exercises and a compact local progress summary.
 - Added opt-in, device-local attempt history with bounded last/best numeric results;
   stored attempts contain only a timestamp, compilation status, and passed/total
