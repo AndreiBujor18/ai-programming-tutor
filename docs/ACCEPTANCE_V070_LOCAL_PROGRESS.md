@@ -2,7 +2,7 @@
 
 Date: 2026-09-17
 
-This record covers the first two v0.7.0 feature slices. It contains only public-safe
+This record covers all three v0.7.0 feature slices. It contains only public-safe
 results. No learner source, screenshot, local path, private material, filename,
 identity, or browser-storage dump is included.
 
@@ -17,7 +17,7 @@ disabled by default.
 
 The development tree passed 52/52 automated tests before manual acceptance. The
 tests cover schema sanitization, bounded retention, source-free storage, profile
-isolation, result summaries, and deletion behavior.
+isolation, result summaries, deletion behavior, and strict JSON transfer.
 
 ## Manual protocol and outcome
 
@@ -54,6 +54,23 @@ The compact concept/exercise view then passed a separate bilingual check:
 14. The expanded view remained readable in the dark theme and did not disturb the
     editor or the separately persisted draft controls.
 
+The strict JSON transfer then passed its final bilingual and cross-profile check:
+
+15. Exporting Profile A produced the success state without changing its one favorite
+    or two numeric attempts.
+16. The exported object had exactly the documented format/version, history setting,
+    favorites, and attempts fields. It contained no source, compiler output, draft,
+    style evidence, or personal identifier.
+17. Importing that object into the empty Profile B required confirmation and replaced
+    only Profile B with the expected favorite, enabled history setting, and two
+    attempts.
+18. Returning to Profile A showed its original progress unchanged, confirming active-
+    profile isolation.
+19. Clearing Profile B and disabling its history restored its zero-favorite,
+    zero-attempt state without changing Profile A.
+20. The empty summary, transfer controls, privacy explanation, and deletion feedback
+    were correct in English as well as Romanian.
+
 ## Accepted privacy and deletion boundary
 
 - No source code, compiler output, diagnosis, hint, style evidence, or personal
@@ -66,9 +83,12 @@ The compact concept/exercise view then passed a separate bilingual check:
 - Concept/exercise counts are derived in browser memory and add no storage fields.
 - A displayed solved count means only that all local tests passed at least once; it
   is not a learner-mastery or official-grade claim.
+- JSON transfer includes only the active profile's favorites, history setting, and
+  bounded numeric attempts. Import requires confirmation and rejects extra fields.
+- Import cannot alter drafts, style profiles, exam state, or the other profile.
 
 ## Result
 
-The first two v0.7.0 local-progress slices are manually accepted: profile-specific
-favorites and bounded history, followed by the derived concept/exercise view. JSON
-export/import with strict validation is the remaining feature in this sprint.
+All three v0.7.0 local-progress slices are manually accepted: profile-specific
+favorites and bounded history, the derived concept/exercise view, and strict JSON
+export/import. The planned local-progress sprint is complete.

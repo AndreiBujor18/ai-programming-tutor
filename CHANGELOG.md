@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Documented successful manual acceptance of strict JSON transfer, including the
+  source-free envelope, confirmation flow, profile isolation, cleanup, and bilingual
+  interface states; the planned v0.7.0 local-progress sprint is complete.
 - Added active-profile JSON export/import for favorites, the history setting, and
   bounded numeric attempts. Import requires confirmation and rejects unknown
   fields, unknown exercises, duplicate favorites, invalid results, oversized

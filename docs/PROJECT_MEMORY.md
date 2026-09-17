@@ -149,6 +149,10 @@ natural-data evaluation. The browser currently uses rules without loading the mo
 - The derived concept/exercise view passed its bilingual manual check as well. Its
   seven concept groups, tracked-exercise rows, empty-history state, and profile
   isolation remained correct across Romanian/English and A/B switches.
+- Strict JSON transfer passed its manual check. Export produced the documented
+  source-free envelope; confirmed import replaced only the active profile, Profile A
+  remained unchanged, Profile B was restored to empty, and both locales rendered the
+  transfer states correctly.
 - All 14 reference solutions and every complete-solution style pass their exercise
   tests; generated variants compile without warnings in the tested matrix.
 - The release wheel installs as version 0.6.3 and exposes all 14 exercises plus the
@@ -182,14 +186,13 @@ The public-safe evidence records are in `docs/ACCEPTANCE_V063.md` and
 
 ## Recommended next step
 
-The first v0.7.0 local-progress slice is implemented and manually accepted:
+The complete v0.7.0 local-progress sprint is implemented and manually accepted:
 profile-specific favorites, opt-in numeric attempt history, per-exercise last/best
 summaries, refresh persistence, and immediate profile-scoped deletion. The compact
-concept/exercise view is also implemented and manually accepted. Strict JSON
-export/import is implemented and awaits a short manual browser check. Accounts and
-a server database remain deliberately outside this sprint.
+concept/exercise view and strict active-profile JSON transfer are also accepted.
+Accounts and a server database remain deliberately outside this sprint.
 
-After that check, prioritize a file-aware isolated runner and consented natural-code
+Next, prioritize a file-aware isolated runner and consented natural-code
 evaluation before improving the model or deploying public code execution.
 
 The completed local sprint validates the future account/history/favorites experience
