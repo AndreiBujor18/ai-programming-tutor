@@ -373,6 +373,12 @@ function progressTotalsText(totals) {
     + (totals.solvedCount === 1 ? "exercise" : "exercises");
 }
 
+function attemptResultText(attempt) {
+  if (!attempt) return "—";
+  if (!attempt.compiled) return tr("attemptCompilationFailed");
+  return attempt.passed + "/" + attempt.total;
+}
+
 function exerciseProgressText() {
   if (!state.active) return "";
   if (!state.attemptHistoryEnabled[state.profileId]) return tr("attemptHistoryOff");
@@ -384,10 +390,10 @@ function exerciseProgressText() {
     ? summary.count + " " + (summary.count === 1 ? "încercare" : "încercări")
     : summary.count + " " + (summary.count === 1 ? "attempt" : "attempts");
   return state.locale === "ro"
-    ? "Ultimul: " + summary.last.passed + "/" + summary.last.total
-      + " · Cel mai bun: " + summary.best.passed + "/" + summary.best.total + " · " + count
-    : "Last: " + summary.last.passed + "/" + summary.last.total
-      + " · Best: " + summary.best.passed + "/" + summary.best.total + " · " + count;
+    ? "Ultimul: " + attemptResultText(summary.last)
+      + " · Cel mai bun: " + attemptResultText(summary.best) + " · " + count
+    : "Last: " + attemptResultText(summary.last)
+      + " · Best: " + attemptResultText(summary.best) + " · " + count;
 }
 
 function refreshProgress() {

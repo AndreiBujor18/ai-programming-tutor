@@ -103,6 +103,11 @@ window.APT_PROGRESS = (() => {
     return left.at >= right.at ? left : right;
   }
 
+  function bestScoredAttempt(history) {
+    const scored = history.filter((attempt) => attempt.compiled && attempt.total > 0);
+    return scored.length ? scored.reduce(betterAttempt) : null;
+  }
+
   function summary(value, exerciseId, exerciseIds) {
     const progress = sanitise(value, exerciseIds);
     const history = progress.attempts[exerciseId] || [];
@@ -110,7 +115,7 @@ window.APT_PROGRESS = (() => {
     return {
       count: history.length,
       last: history[history.length - 1],
-      best: history.reduce(betterAttempt)
+      best: bestScoredAttempt(history)
     };
   }
 
@@ -122,8 +127,8 @@ window.APT_PROGRESS = (() => {
       const history = progress.attempts[id] || [];
       attemptCount += history.length;
       if (history.length) {
-        const best = history.reduce(betterAttempt);
-        if (best.total > 0 && best.passed === best.total) solvedCount += 1;
+        const best = bestScoredAttempt(history);
+        if (best && best.passed === best.total) solvedCount += 1;
       }
     }
     return {favoriteCount: progress.favorites.length, attemptCount, solvedCount};

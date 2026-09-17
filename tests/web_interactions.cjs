@@ -237,6 +237,8 @@ vm.runInContext(fs.readFileSync(path.join(root, "app.js"), "utf8"), context);
   assert.equal(elements["profile-summary"].textContent.includes("comentarii lângă blocul explicat"), true);
   assert.ok(stored["aptutor-v0.5-style-profile_a"]);
 
+  response.evaluation.compilation.succeeded = false;
+  response.evaluation.total_count = 0;
   await vm.runInContext("runCode()", context);
   progressA = JSON.parse(stored["aptutor-v0.7-progress-profile_a"]);
   assert.equal(progressA.attempts.vector_menu.length, 1);
@@ -244,8 +246,13 @@ vm.runInContext(fs.readFileSync(path.join(root, "app.js"), "utf8"), context);
     Object.keys(progressA.attempts.vector_menu[0]).sort(),
     ["at", "compiled", "passed", "total"]
   );
+  assert.equal(progressA.attempts.vector_menu[0].compiled, false);
   assert.equal(JSON.stringify(progressA).includes(ownCodeA), false);
+  assert.equal(elements["exercise-progress"].textContent,
+    "Ultimul: compilarea a eșuat · Cel mai bun: — · 1 încercare");
   assert.equal(elements["exam-score"].textContent, "1.00 / 10");
+  response.evaluation.compilation.succeeded = true;
+  response.evaluation.total_count = 1;
   vm.runInContext("showNextHint()", context);
   assert.equal(elements.hints.children.length, 2);
   assert.equal(elements.hints.children[0].textContent,

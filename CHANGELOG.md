@@ -10,6 +10,8 @@
   saved attempts while retaining favorites, and the clear action removes both.
 - Added schema sanitization and browser-state regressions for profile isolation,
   bounded retention, source-free storage, and deletion behavior.
+- Report failed compilations explicitly in per-exercise progress instead of as
+  `0/0`, and exclude attempts without test results from the best-result field.
 - Kept the evaluated program's process cap while removing the user-wide
   `RLIMIT_NPROC` cap from GCC, allowing compiler helper processes to start on
   shared Linux and GitHub-hosted runners.

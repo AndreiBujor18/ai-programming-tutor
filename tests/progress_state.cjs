@@ -54,6 +54,17 @@ assert.deepStrictEqual(JSON.parse(JSON.stringify(progress.totals(value, ids))), 
   favoriteCount: 1, attemptCount: 20, solvedCount: 1
 });
 
+const compileFailure = progress.recordAttempt(progress.blank(), "alpha", {
+  compilation: {succeeded: false}, passed_count: 0, total_count: 0
+}, ids, now);
+const failedSummary = progress.summary(compileFailure, "alpha", ids);
+assert.equal(failedSummary.count, 1);
+assert.equal(failedSummary.last.compiled, false);
+assert.equal(failedSummary.best, null);
+assert.deepStrictEqual(JSON.parse(JSON.stringify(progress.totals(compileFailure, ids))), {
+  favoriteCount: 0, attemptCount: 1, solvedCount: 0
+});
+
 const cleared = JSON.parse(JSON.stringify(progress.clearAttempts(value, ids)));
 assert.deepStrictEqual(cleared.favorites, ["beta"]);
 assert.deepStrictEqual(cleared.attempts, {});
