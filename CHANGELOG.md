@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Documented successful bilingual manual acceptance of the compact concept/exercise
+  view, including profile isolation and the empty-history state.
 - Added a collapsible profile-specific progress view that derives solved/attempted
   concept coverage from exercise tags and lists only favorited or attempted
   exercises with their best numeric result; it adds no new stored learner data.
