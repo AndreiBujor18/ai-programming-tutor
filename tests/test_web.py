@@ -273,7 +273,7 @@ class LocalWebTests(unittest.TestCase):
         status, _, payload = self.fetch("/exercises")
         self.assertEqual(status, 200)
         exercises = json.loads(payload)
-        self.assertEqual(len(exercises), 14)
+        self.assertEqual(len(exercises), 15)
         self.assertNotIn("reference_solution", exercises[0])
         self.assertEqual(exercises[0]["course"], "PCLP1")
         self.assertEqual(
@@ -526,6 +526,40 @@ for (const [stored, systemDark, expected] of [
         hidden = [case for case in response["evaluation"]["tests"] if case["hidden"]]
         self.assertTrue(all(case["name"].startswith("hidden-test-") for case in hidden))
         self.assertTrue(all(not case["expected"] and not case["actual"] for case in hidden))
+
+    @unittest.skipUnless(shutil.which("gcc"), "GCC required")
+    def test_file_contract_and_results_are_exposed_without_hidden_content(self) -> None:
+        status, _, payload = self.fetch("/exercises")
+        self.assertEqual(status, 200)
+        exercise = next(
+            item for item in json.loads(payload) if item["id"] == "file_number_summary"
+        )
+        public_case = exercise["public_tests"][0]
+        self.assertEqual(public_case["fixtures"][0]["name"], "numbers.txt")
+        self.assertEqual(public_case["expected_files"][0]["name"], "summary.txt")
+
+        source = get_exercise("file_number_summary").reference_solution.replace(
+            'fprintf(output_file, "%lld %lld %lld\\n", minimum, maximum, total);',
+            'fputs("0 0 0\\n", output_file);',
+        )
+        status, _, payload = self.fetch(
+            "/exercises/file_number_summary/submit", {"source": source, "dialect": "c17"}
+        )
+        self.assertEqual(status, 200)
+        response = json.loads(payload)
+        public_results = [
+            case for case in response["evaluation"]["tests"] if not case["hidden"]
+        ]
+        hidden_results = [
+            case for case in response["evaluation"]["tests"] if case["hidden"]
+        ]
+        self.assertTrue(all(case["file_results"][0]["name"] == "summary.txt"
+                            for case in public_results))
+        self.assertTrue(all(case["file_results"][0]["name"] == "hidden-file-1"
+                            for case in hidden_results))
+        self.assertTrue(all(case["file_results"][0]["expected"] == ""
+                            and case["file_results"][0]["actual"] == ""
+                            for case in hidden_results))
 
     @unittest.skipUnless(shutil.which("gcc"), "GCC required")
     def test_submit_returns_source_free_legacy_compatibility_warnings(self) -> None:

@@ -124,6 +124,19 @@ const exercise = {
   public_tests: [{name: "example A", input: "1\nS", expected: "EMPTY"}],
   solution_styles: ["personalized_c", "pclp1_classic", "classic_c", "commented_c"]
 };
+const fileExercise = {
+  id: "file_number_summary", title: "Summarize numbers from a file",
+  statement: "Read a file and write its summary.",
+  input_format: "Read numbers.txt.", output_format: "Write summary.txt.",
+  tags: ["files"],
+  starter_code: "/* Read and summarize the file. */\nint main(void) { return 0; }\n",
+  public_tests: [{
+    name: "small file", input: "", expected: "",
+    fixtures: [{name: "numbers.txt", content: "2\n3 5\n"}],
+    expected_files: [{name: "summary.txt", content: "3 5 8\n"}]
+  }],
+  solution_styles: ["personalized_c", "pclp1_classic", "classic_c", "commented_c"]
+};
 const exam = {
   id: "smoke-exam", title: "Smoke exam", duration_minutes: 60,
   base_points: 1, maximum_points: 10,
@@ -136,7 +149,12 @@ const response = {
   evaluation: {
     compilation: {succeeded: true, stderr: ""}, passed_count: 0,
     total_count: 1, all_passed: false,
-    tests: [{hidden: true, name: "hidden-test-1", status: "wrong_answer"}]
+    tests: [{
+      hidden: true, name: "hidden-test-1", status: "wrong_answer",
+      file_results: [{
+        name: "hidden-file-1", status: "missing", expected: "", actual: ""
+      }]
+    }]
   },
   candidates: [{category: "menu_dispatch", evidence: "menu case mismatch"}],
   progressive_hints: ["English hint one", "English hint two", "English hint three"],
@@ -200,7 +218,7 @@ const context = vm.createContext({
   setInterval: () => 1,
   clearInterval: () => {},
   fetch: async (url, options = {}) => {
-    if (url === "/exercises") return {ok: true, json: async () => [exercise]};
+    if (url === "/exercises") return {ok: true, json: async () => [exercise, fileExercise]};
     if (url === "/exam") return {ok: true, json: async () => exam};
     if (url.endsWith("/submit")) return {ok: true, json: async () => response};
     if (url === "/style-profile/learn") {
@@ -222,6 +240,18 @@ vm.runInContext(fs.readFileSync(path.join(root, "app.js"), "utf8"), context);
   assert.equal(document.documentElement.lang, "ro");
   assert.equal(elements["language-toggle"].textContent, "English");
   assert.equal(elements["exercise-title"].textContent, "Meniu de comenzi pentru vector");
+  vm.runInContext(
+    'renderPublicTests(state.exercises.find((item) => item.id === "file_number_summary"))',
+    context
+  );
+  const romanianFileExample = elements["public-tests"].children[0];
+  assert.equal(romanianFileExample.children.length, 2);
+  assert.equal(romanianFileExample.children[0].children[0].textContent,
+    "Fișier de intrare: numbers.txt");
+  assert.equal(romanianFileExample.children[0].children[1].textContent, "2\n3 5\n");
+  assert.equal(romanianFileExample.children[1].children[0].textContent,
+    "Fișier rezultat așteptat: summary.txt");
+  vm.runInContext("renderPublicTests(state.active)", context);
   assert.equal(elements["profile-select"].value, "profile_a");
   assert.equal(elements["profile-summary"].textContent.includes("Încă nu există"), true);
   assert.equal(elements["profile-message"].textContent.includes("resetate o singură dată"), true);
@@ -251,7 +281,7 @@ vm.runInContext(fs.readFileSync(path.join(root, "app.js"), "utf8"), context);
   assert.equal(elements["exercise-progress"].textContent,
     "Nicio încercare salvată pentru acest exercițiu.");
   assert.equal(elements["concept-progress"].hidden, false);
-  assert.equal(elements["concept-progress"].children.length, 2);
+  assert.equal(elements["concept-progress"].children.length, 3);
   assert.equal(elements["exam-summary-badge"].textContent, "60 min · 10p");
   elements["start-exam"].listeners.click();
   assert.equal(elements["exam-session"].hidden, false);
@@ -297,6 +327,9 @@ vm.runInContext(fs.readFileSync(path.join(root, "app.js"), "utf8"), context);
   assert.equal(JSON.stringify(progressA).includes(ownCodeA), false);
   assert.equal(elements["exercise-progress"].textContent,
     "Ultimul: compilarea a eșuat · Cel mai bun: — · 1 încercare");
+  let fileResultList = elements["test-results"].children[0].children[1];
+  assert.equal(fileResultList.children[0].children[0].textContent, "Fișier ascuns 1");
+  assert.equal(fileResultList.children[0].children[1].textContent, "fișier lipsă");
   assert.equal(elements["concept-progress"].children[0].textContent,
     "Vectori: rezolvate 0/1 · încercate 1");
   assert.equal(elements["exercise-progress-list"].children[0].textContent.includes(
@@ -357,6 +390,19 @@ vm.runInContext(fs.readFileSync(path.join(root, "app.js"), "utf8"), context);
   assert.equal(elements.hints.children.length, 3, "revealed hint count changed");
   assert.equal(elements.hints.children[0].textContent, "English hint one");
   assert.equal(elements["run-status"].textContent, "Ready");
+  fileResultList = elements["test-results"].children[0].children[1];
+  assert.equal(fileResultList.children[0].children[0].textContent, "Hidden file 1");
+  assert.equal(fileResultList.children[0].children[1].textContent, "missing file");
+  vm.runInContext(
+    'renderPublicTests(state.exercises.find((item) => item.id === "file_number_summary"))',
+    context
+  );
+  const englishFileExample = elements["public-tests"].children[0];
+  assert.equal(englishFileExample.children[0].children[0].textContent,
+    "Input file: numbers.txt");
+  assert.equal(englishFileExample.children[1].children[0].textContent,
+    "Expected result file: summary.txt");
+  vm.runInContext("renderPublicTests(state.active)", context);
   assert.equal(elements["concept-progress"].children[0].textContent,
     "Arrays: solved 1/1 · attempted 1");
   assert.equal(elements["exercise-progress-list"].children[0].textContent.includes(

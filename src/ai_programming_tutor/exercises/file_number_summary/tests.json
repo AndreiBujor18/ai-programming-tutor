@@ -1,0 +1,42 @@
+[
+  {
+    "name": "mixed-values",
+    "input": "",
+    "expected": "",
+    "hidden": false,
+    "fixtures": [{"name": "numbers.txt", "content": "5\n4 -2 7 7 1\n"}],
+    "expected_files": [{"name": "summary.txt", "content": "-2 7 17\n"}]
+  },
+  {
+    "name": "single-value",
+    "input": "",
+    "expected": "",
+    "hidden": false,
+    "fixtures": [{"name": "numbers.txt", "content": "1\n-9\n"}],
+    "expected_files": [{"name": "summary.txt", "content": "-9 -9 -9\n"}]
+  },
+  {
+    "name": "all-negative",
+    "input": "",
+    "expected": "",
+    "hidden": true,
+    "fixtures": [{"name": "numbers.txt", "content": "4\n-8 -3 -11 -5\n"}],
+    "expected_files": [{"name": "summary.txt", "content": "-11 -3 -27\n"}]
+  },
+  {
+    "name": "last-extremes",
+    "input": "",
+    "expected": "",
+    "hidden": true,
+    "fixtures": [{"name": "numbers.txt", "content": "6\n10 0 -10 5 -5 2\n"}],
+    "expected_files": [{"name": "summary.txt", "content": "-10 10 2\n"}]
+  },
+  {
+    "name": "wide-total",
+    "input": "",
+    "expected": "",
+    "hidden": true,
+    "fixtures": [{"name": "numbers.txt", "content": "5\n1000000000 1000000000 -1000000000 3 -3\n"}],
+    "expected_files": [{"name": "summary.txt", "content": "-1000000000 1000000000 1000000000\n"}]
+  }
+]

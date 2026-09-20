@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+- Added the original `file_number_summary` exercise with two public and three
+  hidden authored `numbers.txt`/`summary.txt` contracts, existing-category
+  diagnosis, and tested classic, commented, PCLP1, and personalized solutions.
+- Render public fixture and expected-file contents explicitly in Romanian and
+  English, show nested per-file result statuses, and keep hidden file names and
+  contents redacted in both locales.
+- Added Files to the derived progress concepts and kept generator 0.3.0 frozen at
+  14 exercises and 1,136 programs until an independent second file family can
+  support honest held-out evaluation.
 - Added strict project-authored `fixtures` and `expected_files` entries to the
   exercise test schema: portable flat filenames, at most eight total entries,
   32,000 bytes per text file, and 64,000 bytes across one test contract.
@@ -14,8 +23,8 @@
 - Extended dataset test-suite fingerprints to cover file contracts and added
   cross-platform regressions for schema validation, workspace isolation, output
   limits, and file-result serialization.
-- Kept this as trusted-local runner infrastructure. No file-based browser exercise,
-  arbitrary browser upload, or public-sandbox claim is included yet.
+- Kept the fixed file exercise within the trusted-local boundary. No arbitrary
+  browser upload or public-sandbox claim is included.
 
 ## 0.7.0
 

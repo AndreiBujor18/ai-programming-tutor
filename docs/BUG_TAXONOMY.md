@@ -31,8 +31,10 @@ warnings for removed, undefined, or commonly non-portable constructs; they are n
 classifier labels and do not alter the submitted source.
 
 `file_cursor_state` is evidence-backed but deferred because only one independent
-exercise family currently supports it. Adding it now would make the held-out score
-structurally impossible rather than informative.
+exercise family, `file_number_summary`, currently supports it. The tutor reuses
+existing initialization, comparison, accumulator, update, and loop categories for
+that exercise, but generator 0.3.0 excludes it. Adding a file-specific label now
+would make the held-out score structurally impossible rather than informative.
 
 ## Labeling rules
 

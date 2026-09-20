@@ -16,10 +16,16 @@ checks reject missing, oversized, unreadable, and non-regular entries, including
 symbolic links. Test-suite fingerprints include these file contracts, and hidden
 file names and contents are redacted from learner-facing results.
 
-This is infrastructure only. The 14-item browser catalog remains unchanged, it does
-not accept arbitrary file uploads, and the local runner is still not a security
-sandbox. The next slice can add the first original file-processing exercise and its
-browser presentation on top of this reviewed contract.
+The development catalog now contains 15 exercises. The original
+`file_number_summary` exercise reads `numbers.txt`, writes `summary.txt`, and has
+two public plus three hidden authored file cases. The Romanian/English browser shows
+public fixture and expected-file contents, then reports each result-file status while
+redacting hidden names and contents. The progress view includes a Files concept.
+
+This remains a fixed, trusted-local exercise: there are no arbitrary file uploads,
+and the local runner is still not a security sandbox. The frozen diagnostic
+benchmark remains the reviewed 14-exercise, 1,136-program v0.3 dataset; the first
+file family is not presented as independent evidence for a new classifier label.
 
 ## What works in stable v0.7.0
 
@@ -83,6 +89,11 @@ track reaches 0.6375 macro-F1 and 0.8750 top-3 recall. In particular, the new
 `sentinel_handling` class receives 0.0 F1 from ML alone, while the explicit rule
 recognises its authored mutations. This is useful evidence that the current model
 does not yet generalise reliably to the expanded curriculum.
+
+These figures cover the 14 exercises in generator 0.3.0, not the newer file
+exercise. That exercise reuses existing diagnostic concepts in the tutor but stays
+outside the frozen benchmark until another independent file family supports a
+meaningful held-out evaluation.
 
 Rule-only accuracy is 1.0 on the controlled mutations that those rules helped
 define; that is an integration check, not evidence about real student code. The

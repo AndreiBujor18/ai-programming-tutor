@@ -11,7 +11,7 @@ from unittest import mock
 
 from ai_programming_tutor import __version__
 from ai_programming_tutor.catalog import get_exercise, list_exercises
-from ai_programming_tutor.dataset import iter_samples
+from ai_programming_tutor.dataset import BENCHMARK_EXCLUDED_EXERCISES, iter_samples
 from ai_programming_tutor.diagnosis import diagnose
 from ai_programming_tutor.runner import (
     CRunner,
@@ -30,14 +30,14 @@ class VersionTests(unittest.TestCase):
     def test_package_and_project_versions_match(self) -> None:
         with (PROJECT_ROOT / "pyproject.toml").open("rb") as stream:
             metadata = tomllib.load(stream)
-        self.assertEqual(__version__, "0.8.0.dev0")
+        self.assertEqual(__version__, "0.8.0.dev1")
         self.assertEqual(metadata["project"]["version"], __version__)
 
 
 class CatalogTests(unittest.TestCase):
-    def test_catalog_contains_fourteen_exercises(self) -> None:
+    def test_catalog_contains_fifteen_exercises(self) -> None:
         exercises = list_exercises()
-        self.assertEqual(len(exercises), 14)
+        self.assertEqual(len(exercises), 15)
         self.assertEqual({len(exercise.tests) for exercise in exercises}, {5})
         self.assertTrue(all(sum(test.hidden for test in exercise.tests) == 3 for exercise in exercises))
 
@@ -100,6 +100,28 @@ class RunnerTests(unittest.TestCase):
         candidates = diagnose(buggy, result)
         self.assertEqual(candidates[0].category, "sentinel_handling")
 
+    def test_file_summary_initialization_bug_is_diagnosed(self) -> None:
+        exercise = get_exercise("file_number_summary")
+        buggy = exercise.reference_solution.replace(
+            "long long total = value;",
+            "long long total = 0;",
+        )
+        result = self.runner.evaluate(buggy, exercise)
+        candidates = diagnose(buggy, result)
+        self.assertFalse(result.all_passed)
+        self.assertEqual(candidates[0].category, "wrong_initialization")
+
+    def test_file_summary_results_preserve_public_names_and_redact_hidden_names(self) -> None:
+        exercise = get_exercise("file_number_summary")
+        result = self.runner.evaluate(exercise.reference_solution, exercise)
+        payload = result.to_dict(reveal_hidden=False)
+        public = [test for test in payload["tests"] if not test["hidden"]]
+        hidden = [test for test in payload["tests"] if test["hidden"]]
+        self.assertTrue(result.all_passed, result.to_dict(reveal_hidden=True))
+        self.assertTrue(all(test["file_results"][0]["name"] == "summary.txt" for test in public))
+        self.assertTrue(all(test["file_results"][0]["name"] == "hidden-file-1" for test in hidden))
+        self.assertTrue(all(test["file_results"][0]["expected"] == "" for test in hidden))
+
     def test_hidden_values_are_redacted(self) -> None:
         exercise = get_exercise("vector_average")
         buggy = exercise.reference_solution.replace(
@@ -131,6 +153,9 @@ class DatasetTests(unittest.TestCase):
         self.assertTrue(all(sample["evidence_basis"] for sample in samples))
         self.assertEqual({sample["dataset_schema_version"] for sample in samples}, {"0.3"})
         self.assertEqual({sample["generator_version"] for sample in samples}, {"0.3.0"})
+        benchmark_ids = {sample["exercise_id"] for sample in samples}
+        catalog_ids = {exercise.id for exercise in list_exercises()}
+        self.assertEqual(catalog_ids - benchmark_ids, set(BENCHMARK_EXCLUDED_EXERCISES))
         self.assertTrue(all(len(sample["exercise_fingerprint"]) == 16 for sample in samples))
         self.assertTrue(all(len(sample["test_suite_fingerprint"]) == 16 for sample in samples))
         self.assertEqual(

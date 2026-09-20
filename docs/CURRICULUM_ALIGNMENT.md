@@ -20,13 +20,14 @@ project.
 | Character arrays and strings | palindrome, number-plus-line input | Symmetric indices, length, token versus line input |
 | Matrices | diagonal average, matrix menu | Rectangular dimensions, diagonal positions, row operations |
 | Functions, parameters, and menus | vector menu, matrix menu | Contracts, pointer output, dispatch, and valid program state |
-| Basic file processing | runner foundation ready; exercise deferred | Strict project-authored text fixtures and expected files now run in a fresh directory per test; the first browser exercise and its presentation remain the next slice |
+| Basic file processing | `file_number_summary` | Open fixed text files safely, read a counted sequence, compute minimum/maximum/sum, write a result file, and close both streams; public contracts and file results are shown bilingually |
 
 The four v0.6.0 additions intentionally strengthened foundations before file-aware
-tests. The v0.8.0 development runner now supplies that infrastructure without yet
-claiming browser-level file-exercise acceptance. Greedy, backtracking, dynamic
-allocation, records, and recursion remain future curriculum layers rather than
-being squeezed into the first diagnostic benchmark.
+tests. The first v0.8.0 file exercise now uses that infrastructure, but remains
+outside generator 0.3.0 until a second independent file family supports meaningful
+held-out evaluation. Greedy, backtracking, dynamic allocation, records, and
+recursion remain future curriculum layers rather than being squeezed into the first
+diagnostic benchmark.
 
 ## Compatibility layer
 

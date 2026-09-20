@@ -15,7 +15,7 @@ outside the current product experiment.
 
 ## V1 experience
 
-1. The student chooses one of 14 curated exercises or starts the four-task practice exam.
+1. The student chooses one of 15 curated exercises or starts the four-task practice exam.
 2. They choose local Profile A or Profile B and write classic C in the browser.
 3. They run public and hidden tests; hidden expected and actual output stay private.
 4. The system suggests likely C bug categories.
@@ -33,7 +33,8 @@ The stable v0.7.0 prototype implements this flow in a dependency-free localhost
 website, CLI, and optional FastAPI service for 14 exercises. No account or
 server-side attempt history is persisted; optional drafts, bounded numeric progress,
 and exam state never leave browser storage. The v0.8.0 development branch adds the
-file-aware runner contract before exposing a file exercise in that interface.
+file-aware runner contract and a fifteenth original file exercise with bilingual
+contract and result rendering.
 
 ## In scope for V1
 
@@ -87,7 +88,9 @@ The synthetic generator creates 1,136 examples by default: 71 exercise/mutation
 pairs times 16 source variants. It stores compiler and test signals, origin, and an
 abstract evidence basis alongside each sample. Synthetic coverage is a seed dataset,
 not evidence of real-world quality. Private source material is excluded according
-to docs/DATA_PROVENANCE.md.
+to docs/DATA_PROVENANCE.md. Generator 0.3.0 remains frozen on the 14 pre-file
+exercises; one file family is insufficient for a new label or independent held-out
+claim.
 
 ## Evaluation design
 
@@ -122,7 +125,7 @@ Target product metrics:
 
 ## Established acceptance criteria
 
-- 14 baseline C references and every complete-solution style pass all exercise tests;
+- all 15 C references and every complete-solution style pass all exercise tests;
 - personalized references for both controlled and natural contrasting profiles pass
   every test;
 - Profile A and Profile B keep separate aggregate preferences and drafts;
@@ -150,18 +153,22 @@ The first v0.8.0 development slice additionally requires exact file-contract key
 portable flat names, eight combined entries at most, bounded authored content, a
 fresh work directory for every test, regular-file-only result inspection, hidden
 content redaction, and unchanged behavior for all existing stdin/stdout exercises.
+The second slice additionally requires one original five-case file exercise,
+bilingual public fixture/expected-file blocks, nested file-result statuses, generic
+hidden-file labels, a Files progress concept, and no arbitrary upload surface.
 
 ## Next sprint
 
 The v0.7.0 local-progress sprint and its manual acceptance protocol are complete.
-The first v0.8.0 engineering slice now provides strict project-authored file
-fixtures, bounded expected-file checks, and a fresh disposable work directory for
-every test. This remains a trusted-local runner improvement, not a public sandbox
-claim.
+The first two v0.8.0 engineering slices now provide strict project-authored file
+fixtures, bounded expected-file checks, a fresh disposable work directory for every
+test, and one fixed browser exercise. This remains a trusted-local improvement, not
+a public sandbox claim.
 
-Next, add one original basic file-processing exercise, its hints and tested answer
-variants, and explicit browser rendering for public file contracts and file-result
-statuses. Do not add arbitrary uploads or broaden the execution boundary.
+Next, manually accept the complete file workflow on Windows in both locales,
+including public contracts, per-file statuses, profile/draft continuity, and the
+Files progress group. Do not add arbitrary uploads or broaden the execution
+boundary. A file-specific label must wait for another independent exercise family.
 
 In parallel planning, design a consented, de-identified natural-code evaluation,
 especially for sentinel handling. Before public code execution, move the runner

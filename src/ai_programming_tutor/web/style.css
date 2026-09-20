@@ -221,6 +221,8 @@ select:disabled { color: var(--muted); }
   color: var(--text);
   font-size: 11px;
 }
+.file-contract { margin-top: 9px; }
+.file-contract > strong { color: var(--muted); font-size: 11px; }
 .side-note {
   margin: 17px 5px 0;
   padding-left: 12px;
@@ -349,16 +351,27 @@ textarea:focus { outline: 2px solid var(--focus); outline-offset: 1px; }
   font-size: 13px;
 }
 .test-results { padding: 0; margin: 17px 0 0; list-style: none; }
-.test-results li {
-  display: flex;
-  justify-content: space-between;
-  gap: 15px;
+.test-results > li {
   padding: 10px 0;
   border-top: 1px solid var(--hairline);
   font-size: 13px;
 }
+.test-result-summary, .test-results .file-results li {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+}
+.test-results .file-results {
+  margin: 8px 0 0 10px;
+  padding: 5px 0 0 12px;
+  border-left: 2px solid var(--hairline);
+  list-style: none;
+}
+.test-results .file-results li { padding: 4px 0; color: var(--muted); font-size: 12px; }
 .test-results .passed { color: var(--success); }
-.test-results .wrong_answer, .test-results .runtime_error, .test-results .timeout { color: var(--danger); }
+.test-results .wrong_answer, .test-results .runtime_error, .test-results .timeout,
+.test-results .missing, .test-results .unreadable, .test-results .invalid_type,
+.test-results .invalid_encoding, .test-results .output_limit { color: var(--danger); }
 .hint-area { margin-top: 22px; padding-top: 20px; border-top: 1px solid var(--hairline); }
 .hint-area ol, .solution-answer ol { margin: 12px 0 16px; padding-left: 22px; }
 .hint-area li { margin: 12px 0; font-size: 13px; }

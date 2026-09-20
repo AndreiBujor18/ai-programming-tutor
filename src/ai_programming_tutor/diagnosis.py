@@ -67,7 +67,7 @@ def diagnose(source: str, evaluation: EvaluationResult) -> tuple[DiagnosisCandid
         ):
             add("accumulator_misuse", 0.93, "The result is replaced by the current element inside a loop.")
 
-    if exercise_id == "min_max":
+    if exercise_id in {"min_max", "file_number_summary"}:
         if re.search(
             r"(?:value|values|numbers|elements|data|array).*?>\s*"
             r"(?:minimum|min_value|smallest|low)",
@@ -82,6 +82,34 @@ def diagnose(source: str, evaluation: EvaluationResult) -> tuple[DiagnosisCandid
             add("relational_operator", 0.88, "The comparison used to update the maximum points downward.")
         if re.search(r"\b(?:minimum|min_value|smallest|low)\s*=\s*0\s*;", code):
             add("wrong_initialization", 0.78, "The minimum is seeded with a fixed zero despite arbitrary input.")
+
+    if exercise_id == "file_number_summary":
+        if re.search(
+            r"\b(?:total|sum|aggregate|running_total)\s*=\s*0\s*;", code
+        ):
+            add(
+                "wrong_initialization",
+                0.96,
+                "The running sum omits the first value used to seed the file summary.",
+            )
+        if re.search(
+            r"for\s*\([^)]*\)\s*\{.*\b(?:total|sum|aggregate|running_total)\s*=\s*"
+            r"(?:value|input_value|current_value|read_value)\s*;",
+            code,
+        ):
+            add(
+                "accumulator_misuse",
+                0.96,
+                "The running sum is replaced by the latest value read from the file.",
+            )
+        if re.search(
+            r"\(\s*void\s*\)\s*(?:value|input_value|current_value|read_value)\s*;", code
+        ):
+            add(
+                "missing_update",
+                0.95,
+                "A value is read from the file but is not added to the running sum.",
+            )
 
     if exercise_id == "palindrome":
         if re.search(

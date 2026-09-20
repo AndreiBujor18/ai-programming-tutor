@@ -28,7 +28,7 @@ class TutorService:
             raise ValueError("Dialect must be c17 or cpp17.")
         exercise = get_exercise(exercise_id)
         evaluation = self.runner.evaluate(source, exercise, dialect=dialect)
-        # The 12-category classifier was trained on C17; it is not validated on C++.
+        # The 13-category classifier was trained on C17; it is not validated on C++.
         if dialect == "cpp17":
             candidates = () if evaluation.all_passed else (
                 DiagnosisCandidate(

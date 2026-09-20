@@ -323,6 +323,12 @@ MUTATION_RULES: dict[str, tuple[MutationRule, ...]] = {
 }
 
 
+# One file family cannot support an informative held-out file-specific claim yet.
+# Keeping this allowlist explicit prevents future catalog additions from silently
+# disappearing from the benchmark.
+BENCHMARK_EXCLUDED_EXERCISES = frozenset({"file_number_summary"})
+
+
 IDENTIFIER_OPTIONS: dict[str, tuple[str, str, str, str]] = {
     "item_count": ("item_count", "size", "element_count", "number_of_items"),
     "position": ("position", "index", "cursor", "pos"),
@@ -437,6 +443,15 @@ def iter_samples(variants: int = 16, evaluate: bool = True):
     runner = CRunner()
     compiler_identity = _compiler_identity(runner.compiler) if evaluate else "not-evaluated"
     for exercise in list_exercises():
+        if exercise.id in BENCHMARK_EXCLUDED_EXERCISES:
+            continue
+        try:
+            rules = MUTATION_RULES[exercise.id]
+        except KeyError as exc:
+            raise ValueError(
+                f"Exercise {exercise.id!r} needs reviewed mutation rules or an explicit "
+                "benchmark-exclusion decision."
+            ) from exc
         exercise_fingerprint = _fingerprint(
             [
                 exercise.id,
@@ -447,7 +462,7 @@ def iter_samples(variants: int = 16, evaluate: bool = True):
             ]
         )
         test_suite_fingerprint = _test_suite_fingerprint(exercise)
-        for rule in MUTATION_RULES[exercise.id]:
+        for rule in rules:
             mutated = rule.apply(exercise.reference_solution)
             for variant in range(variants):
                 source = _style_variant(mutated, variant)

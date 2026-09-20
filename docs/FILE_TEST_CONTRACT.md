@@ -75,4 +75,7 @@ expected contents, actual contents, and stderr are redacted from normal response
 The automated contract covers strict parsing, name/count/byte limits, public versus
 hidden serialization, test-suite fingerprints, fresh workspaces, matching and
 missing files, oversized and invalid-UTF-8 output, and POSIX symbolic-link rejection.
-No file-based catalog exercise or browser rendering is accepted in this slice.
+The `file_number_summary` catalog exercise exercises the contract with two public
+and three hidden cases. Browser regressions cover bilingual public fixture and
+expected-file rendering, nested result-file statuses, and generic hidden-file
+labels. Arbitrary uploads and public execution remain outside this boundary.

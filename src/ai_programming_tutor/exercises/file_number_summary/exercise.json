@@ -1,0 +1,8 @@
+{
+  "id": "file_number_summary",
+  "title": "Summarize numbers from a file",
+  "statement": "Read a nonempty sequence of signed integers from numbers.txt. Its first value is n, followed by n values. Create summary.txt containing the minimum, maximum, and sum in this order.",
+  "input_format": "The text file numbers.txt contains n (1 <= n <= 1000), followed by n integers. Standard input is not used.",
+  "output_format": "Create summary.txt and write the minimum, maximum, and sum separated by spaces. Standard output is not used.",
+  "tags": ["files", "loops", "comparisons", "numeric-types"]
+}

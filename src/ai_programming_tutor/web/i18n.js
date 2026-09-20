@@ -61,6 +61,10 @@ window.APT_I18N = {
       exerciseLabel: "Alege o problemă",
       input: "Intrare",
       output: "Ieșire",
+      fixtureFile: "Fișier de intrare",
+      expectedFile: "Fișier rezultat așteptat",
+      resultFile: "Fișier rezultat",
+      hiddenFile: "Fișier ascuns",
       publicExamples: "Vezi exemplele publice",
       courseNoteTitle: "Domeniul actual:",
       courseNoteText: "C clasic pentru PCLP1/Calculatoare, cu scanf, printf și FILE*. Sintaxa C++ rămâne în afara acestui experiment.",
@@ -146,6 +150,11 @@ window.APT_I18N = {
       wrong_answer: "răspuns greșit",
       runtime_error: "eroare la rulare",
       timeout: "timp depășit",
+      missing: "fișier lipsă",
+      unreadable: "fișier ilizibil",
+      invalid_type: "tip de fișier invalid",
+      invalid_encoding: "codare invalidă",
+      output_limit: "limită de ieșire depășită",
       compilationFailed: "Compilarea a eșuat",
       compilationSucceeded: "Compilarea a reușit.",
       possibleIssue: "Problemă posibilă",
@@ -227,6 +236,10 @@ window.APT_I18N = {
       exerciseLabel: "Choose a problem",
       input: "Input",
       output: "Output",
+      fixtureFile: "Input file",
+      expectedFile: "Expected result file",
+      resultFile: "Result file",
+      hiddenFile: "Hidden file",
       publicExamples: "See public examples",
       courseNoteTitle: "Current scope:",
       courseNoteText: "Classic C for PCLP1/Computer Engineering, using scanf, printf, and FILE*. C++ syntax stays outside this experiment.",
@@ -312,6 +325,11 @@ window.APT_I18N = {
       wrong_answer: "wrong answer",
       runtime_error: "runtime error",
       timeout: "timeout",
+      missing: "missing file",
+      unreadable: "unreadable file",
+      invalid_type: "invalid file type",
+      invalid_encoding: "invalid encoding",
+      output_limit: "output limit exceeded",
       compilationFailed: "Compilation failed",
       compilationSucceeded: "Compilation succeeded.",
       possibleIssue: "Possible issue",
@@ -344,7 +362,8 @@ window.APT_I18N = {
       numeric: "Calcul numeric",
       strings_input: "Șiruri și intrare",
       matrices: "Matrice",
-      functions_menus: "Funcții și meniuri"
+      functions_menus: "Funcții și meniuri",
+      files: "Fișiere"
     },
     en: {
       arrays: "Arrays",
@@ -353,7 +372,8 @@ window.APT_I18N = {
       numeric: "Numeric computation",
       strings_input: "Strings and input",
       matrices: "Matrices",
-      functions_menus: "Functions and menus"
+      functions_menus: "Functions and menus",
+      files: "Files"
     }
   },
   compatibilityWarnings: {
@@ -414,6 +434,12 @@ window.APT_I18N = {
       statement: "Numără de câte ori apare o valoare întreagă într-un vector.",
       input_format: "Prima linie conține n (1 ≤ n ≤ 1000), a doua linie conține n numere întregi, iar a treia valoarea căutată.",
       output_format: "Afișează numărul de apariții ale valorii căutate."
+    },
+    file_number_summary: {
+      title: "Rezumatul numerelor dintr-un fișier",
+      statement: "Citește din numbers.txt o secvență nevidă de numere întregi cu semn. Prima valoare este n, urmată de n valori. Creează summary.txt cu minimul, maximul și suma, în această ordine.",
+      input_format: "Fișierul text numbers.txt conține n (1 ≤ n ≤ 1000), urmat de n numere întregi. Intrarea standard nu este folosită.",
+      output_format: "Creează summary.txt și scrie minimul, maximul și suma, separate prin spații. Ieșirea standard nu este folosită."
     },
     interval_parity: {
       title: "Paritatea unui interval închis",
@@ -520,6 +546,7 @@ window.APT_I18N = {
     delete_occurrences: ["Citește vectorul și valoarea de șters; păstrează separat dimensiunea logică și capacitatea.", "La o potrivire, mută elementele următoare la stânga și micșorează dimensiunea. Verifică din nou aceeași poziție pentru apariții consecutive.", "Afișează câte elemente ai șters, noua dimensiune și numai elementele rămase."],
     diagonal_average: ["Citește matricea pătratică linie cu linie.", "Pentru fiecare indice i, adună elementul aflat simultan pe linia și coloana i.", "Transformă tipul înainte de împărțire ca să păstrezi partea fracționară; afișează două zecimale."],
     frequency_count: ["Citește vectorul și valoarea a cărei frecvență vrei s-o afli.", "Pornește contorul de la zero și parcurge fiecare poziție validă o singură dată.", "Crește contorul doar când elementul curent este egal cu valoarea căutată; apoi afișează-l."],
+    file_number_summary: ["Deschide numbers.txt pentru citire și summary.txt pentru scriere; oprește programul în siguranță dacă unul dintre fișiere nu poate fi deschis.", "Citește prima valoare, folosește-o pentru a inițializa minimul, maximul și suma, apoi procesează o singură dată fiecare valoare rămasă.", "Scrie cele trei rezultate în summary.txt, în ordinea cerută, și închide ambele fișiere."],
     interval_parity: ["Citește cele două capete ale intervalului închis.", "Scade capătul inferior din cel superior și adaugă unu, deoarece ambele capete aparțin intervalului.", "Verifică restul împărțirii numărului de valori la doi și afișează rezultatul cerut."],
     line_after_number: ["Citește mai întâi numărul întreg cu scanf.", "Consumă restul primei linii, astfel încât fgets să citească textul propriu-zis, nu caracterul de rând nou rămas.", "Citește rândul complet, elimină rândul nou de la final dacă există și afișează valorile cerute."],
     matrix_menu: ["Păstrează dimensiunile matricei și un indicator care spune dacă ai citit deja o matrice.", "R citește matricea; X verifică mai întâi starea și apoi caută maximul pe fiecare linie.", "Pornește maximul de la primul element al fiecărei linii și compară celelalte coloane."],
@@ -536,6 +563,7 @@ window.APT_I18N = {
     delete_occurrences: ["Citește vectorul și valoarea, șterge toate aparițiile și afișează rezultatul cerut."],
     diagonal_average: ["Citește matricea și calculează media diagonalei principale."],
     frequency_count: ["Citește valorile și ținta, apoi numără aparițiile."],
+    file_number_summary: ["Citește numerele din numbers.txt, apoi scrie minimul, maximul și suma în summary.txt."],
     interval_parity: ["Calculează numărul valorilor din intervalul închis și afișează-i paritatea."],
     line_after_number: ["Citește întregul rând care urmează, fără să păstrezi caracterul de rând nou rămas."],
     matrix_menu: ["Adaugă funcții mici pentru citirea matricei și determinarea maximului pe fiecare linie.", "Citește comenzile și alege operația potrivită."],

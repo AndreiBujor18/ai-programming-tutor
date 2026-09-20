@@ -68,11 +68,12 @@ must never be copied into this document or the repository.
 | 0.6.2 | Locale-switch fix: visible hint depth, edited source, feedback, and run status remain synchronized |
 | 0.6.3 | Finished-exam timer snapshot and tab-scoped source recovery across refresh |
 | 0.7.0 | Profile-specific favorites, opt-in bounded numeric attempt history, last/best summaries, a derived concept/exercise view, and strict JSON transfer |
-| 0.8.0-dev | Strict project-authored file contracts, a fresh disposable directory per test, and bounded regular-file result checks; no file exercise or upload UI yet |
+| 0.8.0-dev0 | Strict project-authored file contracts, a fresh disposable directory per test, and bounded regular-file result checks |
+| 0.8.0-dev1 | First original file exercise, bilingual file-contract/result rendering, Files progress concept, and an explicitly frozen 14-exercise benchmark |
 
-## Current v0.8.0.dev0 capabilities
+## Current v0.8.0.dev1 capabilities
 
-- 14 original C17 exercises; every exercise has two public and three hidden tests.
+- 15 original C17 exercises; every exercise has two public and three hidden tests.
 - 13 semantic diagnostic labels plus compiler errors and unknown fallbacks.
 - Three progressive hint levels and a separate complete-solution action.
 - Four complete-solution styles: active profile, PCLP1 classic, plain classic C,
@@ -90,8 +91,11 @@ must never be copied into this document or the repository.
 - Strict project-authored text fixtures and expected-file contracts with portable
   flat names, eight combined entries at most, per-entry and per-test byte limits,
   fresh per-test work directories, structured file statuses, and hidden-content
-  redaction. This runner foundation does not add arbitrary browser uploads or a
-  public execution boundary.
+  redaction.
+- One fixed file exercise reads `numbers.txt` and writes `summary.txt`; the browser
+  presents public contracts and nested file-result statuses in Romanian and English,
+  and the derived progress view includes Files. This does not add arbitrary browser
+  uploads or a public execution boundary.
 
 ## Current exercise catalog
 
@@ -108,16 +112,20 @@ must never be copied into this document or the repository.
 11. sentinel-controlled average;
 12. vector average;
 13. vector insertion;
-14. vector command menu.
+14. vector command menu;
+15. summarize numbers from a file.
 
 The practice exam uses interval parity, odd-digit count, sentinel average, and
-perfect squares. The isolated file-fixture foundation is ready; the first original
-file-based browser exercise and its presentation remain deferred to the next slice.
+perfect squares. The file exercise is a separate practice item and does not alter
+the four-task exam.
 
 ## Data and evaluation state
 
 - Dataset schema: 0.3; generator: 0.3.0.
 - 71 reviewed exercise/mutation pairs × 16 identifier/layout variants = 1,136 rows.
+- The benchmark deliberately remains on the 14 pre-file exercises. The single file
+  family is excluded until an independent second family makes held-out evaluation
+  and any file-specific label scientifically meaningful.
 - Every row is a controlled single-bug mutation of a project-authored reference.
 - Release audit: 1,136 unique IDs; every row compiles, fails at least one test, and
   surfaces its intended label in the rule layer's top three.
@@ -154,6 +162,12 @@ natural-data evaluation. The browser currently uses rules without loading the mo
   symbolic-link rejection, and hidden file-name/content redaction. Every existing
   reference and generated solution style continues to pass its original
   stdin/stdout tests.
+- The second v0.8.0 development slice passes 68/68 automated tests and adds the
+  fifteenth reference plus file-aware browser regressions. It verifies the authored
+  public/hidden file contracts,
+  existing-category diagnosis, all four generated solution styles, bilingual public
+  file blocks, nested file-result statuses, hidden redaction, and the Files progress
+  concept.
 - The first v0.7.0 feature slice also passed its complete manual Windows protocol.
   Profile-specific favorites, opt-in history, latest/best results, forced-refresh
   persistence, history disablement, full progress clearing, and cross-profile
@@ -166,7 +180,7 @@ natural-data evaluation. The browser currently uses rules without loading the mo
   source-free envelope; confirmed import replaced only the active profile, Profile A
   remained unchanged, Profile B was restored to empty, and both locales rendered the
   transfer states correctly.
-- All 14 reference solutions and every complete-solution style pass their exercise
+- All 15 reference solutions and every complete-solution style pass their exercise
   tests; generated variants compile without warnings in the tested matrix.
 - The release wheel installs as version 0.7.0 and exposes all 14 exercises plus the
   four-task, 10-point practice exam.
@@ -206,10 +220,12 @@ summaries, refresh persistence, and immediate profile-scoped deletion. The compa
 concept/exercise view and strict active-profile JSON transfer are also accepted.
 Accounts and a server database remain deliberately outside this sprint.
 
-The file-aware runner foundation is now implemented. Next, add one original basic
-file-processing exercise with authored fixtures, hidden cases, hints, tested answer
-styles, and explicit browser rendering for file contracts and results. Keep learner
-uploads out of scope.
+The file-aware runner foundation and first original browser exercise are now
+implemented. Next, run the focused manual Windows acceptance for public file
+contracts, per-file statuses, both locales, draft/profile behavior, and the Files
+progress concept. Keep learner uploads out of scope. A file-specific diagnostic
+label must wait for a second independent exercise family and a new reviewed
+benchmark version.
 
 In parallel planning, prioritize consented natural-code evaluation before improving
 the model or deploying public code execution.

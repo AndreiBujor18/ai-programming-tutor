@@ -29,6 +29,11 @@ SOLUTION_STEPS: dict[str, tuple[str, ...]] = {
         "Start the frequency at zero and visit each valid vector position once.",
         "Increase the counter only when the current element equals the target; print the counter.",
     ),
+    "file_number_summary": (
+        "Open numbers.txt for reading and summary.txt for writing, and stop safely if either file cannot be opened.",
+        "Read the first value, use it to initialize the minimum, maximum, and sum, then process every remaining value once.",
+        "Write the three results to summary.txt in the required order and close both files.",
+    ),
     "interval_parity": (
         "Read the two boundaries of the valid closed interval.",
         "Subtract the lower boundary from the upper one and add one because both ends belong to the interval.",
@@ -103,6 +108,11 @@ SHORT_IDENTIFIER_MAPS: dict[str, dict[str, str]] = {
         "item_count": "n", "values": "v", "position": "i", "target": "x",
         "frequency": "f",
     },
+    "file_number_summary": {
+        "input_file": "fin", "output_file": "fout", "item_count": "n",
+        "value": "x", "minimum": "min", "maximum": "max", "total": "s",
+        "position": "i",
+    },
     "interval_parity": {
         "lower_bound": "a", "upper_bound": "b", "item_count": "n",
     },
@@ -146,6 +156,11 @@ ROMANIAN_IDENTIFIER_MAPS: dict[str, dict[str, str]] = {
     "frequency_count": {
         "item_count": "numar_elemente", "values": "valori", "position": "pozitie",
         "target": "valoare_cautata", "frequency": "frecventa",
+    },
+    "file_number_summary": {
+        "input_file": "fisier_intrare", "output_file": "fisier_iesire",
+        "item_count": "numar_valori", "value": "valoare", "minimum": "minim",
+        "maximum": "maxim", "total": "suma", "position": "pozitie",
     },
     "interval_parity": {
         "lower_bound": "limita_stanga", "upper_bound": "limita_dreapta",
@@ -213,6 +228,11 @@ INLINE_COMMENT_ANCHORS: dict[str, tuple[tuple[str, int], ...]] = {
     "frequency_count": (
         ('scanf("%d", &item_count);', 0), ('int frequency = 0;', 1),
         ('printf("%d\\n", frequency);', 2),
+    ),
+    "file_number_summary": (
+        ('FILE *input_file = fopen("numbers.txt", "r");', 0),
+        ('long long minimum = value;', 1),
+        ('fprintf(output_file, "%lld %lld %lld\\n", minimum, maximum, total);', 2),
     ),
     "interval_parity": (
         ('scanf("%lld %lld", &lower_bound, &upper_bound);', 0),

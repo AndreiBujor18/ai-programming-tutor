@@ -23,7 +23,8 @@ const PROGRESS_CONCEPTS = [
   },
   {id: "strings_input", tags: ["strings", "input", "buffers"]},
   {id: "matrices", tags: ["matrices"]},
-  {id: "functions_menus", tags: ["functions", "menus"]}
+  {id: "functions_menus", tags: ["functions", "menus"]},
+  {id: "files", tags: ["files"]}
 ];
 const PROFILE_DIMENSIONS = {
   function_brace_style: {
@@ -942,11 +943,36 @@ function renderPublicTests(exercise) {
   exercise.public_tests.forEach((example, index) => {
     const name = state.locale === "ro" ? tr("example") + " " + (index + 1) : example.name;
     const item = addTextItem(list, name);
-    const input = document.createElement("pre");
-    input.textContent = tr("input") + ": " + example.input;
-    const output = document.createElement("pre");
-    output.textContent = tr("output") + ": " + example.expected;
-    item.append(input, output);
+    if (example.input) {
+      const input = document.createElement("pre");
+      input.textContent = tr("input") + ": " + example.input;
+      item.append(input);
+    }
+    for (const fixture of example.fixtures || []) {
+      const contract = document.createElement("div");
+      contract.className = "file-contract";
+      const label = document.createElement("strong");
+      label.textContent = tr("fixtureFile") + ": " + fixture.name;
+      const content = document.createElement("pre");
+      content.textContent = fixture.content;
+      contract.append(label, content);
+      item.append(contract);
+    }
+    if (example.expected) {
+      const output = document.createElement("pre");
+      output.textContent = tr("output") + ": " + example.expected;
+      item.append(output);
+    }
+    for (const expectedFile of example.expected_files || []) {
+      const contract = document.createElement("div");
+      contract.className = "file-contract";
+      const label = document.createElement("strong");
+      label.textContent = tr("expectedFile") + ": " + expectedFile.name;
+      const content = document.createElement("pre");
+      content.textContent = expectedFile.content;
+      contract.append(label, content);
+      item.append(contract);
+    }
   });
 }
 
@@ -1101,6 +1127,9 @@ function renderFeedback(response, revealed = 1) {
   let hiddenIndex = 0;
   for (const test of result.tests) {
     const item = document.createElement("li");
+    item.className = "test-result";
+    const summary = document.createElement("div");
+    summary.className = "test-result-summary";
     const name = document.createElement("span");
     if (state.locale === "ro") {
       name.textContent = test.hidden
@@ -1112,7 +1141,25 @@ function renderFeedback(response, revealed = 1) {
     const status = document.createElement("strong");
     status.className = test.status;
     status.textContent = tr(test.status).replaceAll("_", " ");
-    item.append(name, status);
+    summary.append(name, status);
+    item.append(summary);
+    if (Array.isArray(test.file_results) && test.file_results.length) {
+      const fileList = document.createElement("ul");
+      fileList.className = "file-results";
+      test.file_results.forEach((fileResult, index) => {
+        const fileItem = document.createElement("li");
+        const fileName = document.createElement("span");
+        fileName.textContent = test.hidden
+          ? tr("hiddenFile") + " " + (index + 1)
+          : tr("resultFile") + ": " + fileResult.name;
+        const fileStatus = document.createElement("strong");
+        fileStatus.className = fileResult.status;
+        fileStatus.textContent = tr(fileResult.status).replaceAll("_", " ");
+        fileItem.append(fileName, fileStatus);
+        fileList.append(fileItem);
+      });
+      item.append(fileList);
+    }
     tests.append(item);
   }
   state.hints = candidate && state.locale === "ro"
