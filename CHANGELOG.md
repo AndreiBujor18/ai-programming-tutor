@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+- Added the independent `file_longest_word` exercise with two public and three
+  hidden `words.txt`/`longest.txt` contracts, including first-on-tie and maximum
+  100-character boundary cases.
+- Added Romanian/English problem text, all four tested solution styles, Files and
+  Strings progress coverage, and an existing-category diagnostic for replacing the
+  first longest word when lengths are equal.
+- Kept both file exercises outside frozen generator 0.3.0. The second family makes
+  a file-specific benchmark review possible, but does not itself justify a new label
+  or a revised metric claim.
+
 ## 0.9.0
 
 - Completed focused Windows visual acceptance for the editor and workspace refresh

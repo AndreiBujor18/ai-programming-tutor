@@ -1,4 +1,4 @@
-# Curriculum alignment — v0.8.0
+# Curriculum alignment — current tree
 
 ## Scope and privacy boundary
 
@@ -20,14 +20,15 @@ project.
 | Character arrays and strings | palindrome, number-plus-line input | Symmetric indices, length, token versus line input |
 | Matrices | diagonal average, matrix menu | Rectangular dimensions, diagonal positions, row operations |
 | Functions, parameters, and menus | vector menu, matrix menu | Contracts, pointer output, dispatch, and valid program state |
-| Basic file processing | `file_number_summary` | Open fixed text files safely, read a counted sequence, compute minimum/maximum/sum, write a result file, and close both streams; public contracts and file results are shown bilingually |
+| Basic file processing | `file_number_summary`, `file_longest_word` | Open fixed text files safely, read counted numeric and string sequences, aggregate values or retain the first longest word, write result files, and close both streams; public contracts and file results are shown bilingually |
 
 The four v0.6.0 additions intentionally strengthened foundations before file-aware
-tests. The first v0.8.0 file exercise now uses that infrastructure, but remains
-outside generator 0.3.0 until a second independent file family supports meaningful
-held-out evaluation. Greedy, backtracking, dynamic allocation, records, and
-recursion remain future curriculum layers rather than being squeezed into the first
-diagnostic benchmark.
+tests. The two later file exercises use that infrastructure and now provide distinct
+numeric and string families. They remain outside generator 0.3.0 until reviewed
+mutations, category definitions, and a versioned held-out evaluation are added;
+merely expanding the catalog does not revise an existing metric. Greedy,
+backtracking, dynamic allocation, records, and recursion remain future curriculum
+layers rather than being squeezed into the first diagnostic benchmark.
 
 ## Compatibility layer
 

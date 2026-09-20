@@ -323,10 +323,11 @@ MUTATION_RULES: dict[str, tuple[MutationRule, ...]] = {
 }
 
 
-# One file family cannot support an informative held-out file-specific claim yet.
-# Keeping this allowlist explicit prevents future catalog additions from silently
-# disappearing from the benchmark.
-BENCHMARK_EXCLUDED_EXERCISES = frozenset({"file_number_summary"})
+# The two file families remain outside frozen generator 0.3.0 until their mutation
+# rules and any file-specific category receive an explicit benchmark review.
+# Keeping this allowlist explicit prevents catalog additions from disappearing
+# from the benchmark silently.
+BENCHMARK_EXCLUDED_EXERCISES = frozenset({"file_longest_word", "file_number_summary"})
 
 
 IDENTIFIER_OPTIONS: dict[str, tuple[str, str, str, str]] = {

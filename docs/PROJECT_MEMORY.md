@@ -1,4 +1,4 @@
-# Project memory — AI Programming Tutor v0.9.0
+# Project memory — AI Programming Tutor post-v0.9.0 development
 
 This is the maintainer handoff and continuity record for the project. It contains
 only public-safe decisions and implementation state. Private tutoring exports,
@@ -70,10 +70,11 @@ must never be copied into this document or the repository.
 | 0.7.0 | Profile-specific favorites, opt-in bounded numeric attempt history, last/best summaries, a derived concept/exercise view, and strict JSON transfer |
 | 0.8.0 | Strict project-authored file contracts, isolated per-test directories, the first original file exercise, bilingual file feedback, Files progress, and a frozen 14-exercise benchmark |
 | 0.9.0 | Locally bundled CodeMirror 6 C editor, Exercises/Practice exam/Progress modes, side-by-side desktop workbench, progressive disclosure, and responsive manual acceptance |
+| Unreleased | Second independent fixed-file family for bounded string processing, with first-on-tie behavior and the benchmark boundary preserved |
 
-## Current v0.9.0 capabilities
+## Current development capabilities
 
-- 15 original C17 exercises; every exercise has two public and three hidden tests.
+- 16 original C17 exercises; every exercise has two public and three hidden tests.
 - 13 semantic diagnostic labels plus compiler errors and unknown fallbacks.
 - Three progressive hint levels and a separate complete-solution action.
 - Locally bundled CodeMirror 6 editor with C17 highlighting, line numbers, bracket
@@ -99,10 +100,12 @@ must never be copied into this document or the repository.
   flat names, eight combined entries at most, per-entry and per-test byte limits,
   fresh per-test work directories, structured file statuses, and hidden-content
   redaction.
-- One fixed file exercise reads `numbers.txt` and writes `summary.txt`; the browser
-  presents public contracts and nested file-result statuses in Romanian and English,
-  and the derived progress view includes Files. This does not add arbitrary browser
-  uploads or a public execution boundary.
+- Two fixed file exercises provide independent numeric and string families. One
+  reads `numbers.txt` and writes `summary.txt`; the other reads bounded words from
+  `words.txt` and writes the first longest word plus its length to `longest.txt`.
+  The browser presents public contracts and nested file-result statuses in Romanian
+  and English, and the derived progress view includes Files. This does not add
+  arbitrary browser uploads or a public execution boundary.
 
 ## Current exercise catalog
 
@@ -120,19 +123,20 @@ must never be copied into this document or the repository.
 12. vector average;
 13. vector insertion;
 14. vector command menu;
-15. summarize numbers from a file.
+15. summarize numbers from a file;
+16. find the first longest word in a file.
 
 The practice exam uses interval parity, odd-digit count, sentinel average, and
-perfect squares. The file exercise is a separate practice item and does not alter
+perfect squares. The file exercises are separate practice items and do not alter
 the four-task exam.
 
 ## Data and evaluation state
 
 - Dataset schema: 0.3; generator: 0.3.0.
 - 71 reviewed exercise/mutation pairs × 16 identifier/layout variants = 1,136 rows.
-- The benchmark deliberately remains on the 14 pre-file exercises. The single file
-  family is excluded until an independent second family makes held-out evaluation
-  and any file-specific label scientifically meaningful.
+- The benchmark deliberately remains on the 14 pre-file exercises. Both file
+  families are excluded until reviewed controlled mutations and any proposed
+  file-specific label can be evaluated in a new, explicitly versioned held-out run.
 - Every row is a controlled single-bug mutation of a project-authored reference.
 - Release audit: 1,136 unique IDs; every row compiles, fails at least one test, and
   surfaces its intended label in the rule layer's top three.
@@ -173,6 +177,10 @@ natural-data evaluation. The browser currently uses rules without loading the mo
   from Progress, active-exam navigation and timer status, and locale changes without
   losing edited source or visible feedback. The committed editor bundle rebuilds
   byte-for-byte from its source configuration.
+- The current development tree passes 71/71 automated tests. The sixteenth
+  reference and every generated solution style pass all five string-file cases; the
+  first-on-tie mutation is diagnosed through the existing relational-operator
+  category, and the built wheel includes the complete second exercise family.
 - The first v0.7.0 feature slice also passed its complete manual Windows protocol.
   Profile-specific favorites, opt-in history, latest/best results, forced-refresh
   persistence, history disablement, full progress clearing, and cross-profile
@@ -249,9 +257,10 @@ contracts, structured file statuses, hidden redaction, profile-specific drafts a
 progress, and the Files concept behave as intended. Learner uploads remain out of
 scope.
 
-On the curriculum/evaluation track, add a second independent file-processing family
-before deciding whether a file-specific diagnostic label and a new reviewed
-benchmark version are justified.
+On the curriculum/evaluation track, the second independent file-processing family
+is now implemented. Complete its focused Windows acceptance, then review controlled
+mutations across both families before deciding whether a file-specific diagnostic
+label and a new benchmark version are justified.
 Accounts and a server database remain deliberately outside the current local scope.
 
 In parallel planning, prioritize consented natural-code evaluation before improving

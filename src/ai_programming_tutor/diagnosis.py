@@ -111,6 +111,16 @@ def diagnose(source: str, evaluation: EvaluationResult) -> tuple[DiagnosisCandid
                 "A value is read from the file but is not added to the running sum.",
             )
 
+    if exercise_id == "file_longest_word":
+        current_length = r"(?:current_length|candidate_length|word_length|lungime_curenta|lg)"
+        longest_length = r"(?:longest_length|maximum_length|best_length|lungime_maxima|lg_max)"
+        if re.search(rf"{current_length}\s*>=\s*{longest_length}", code):
+            add(
+                "relational_operator",
+                0.98,
+                "An equal-length later word replaces the first longest word.",
+            )
+
     if exercise_id == "palindrome":
         if re.search(
             r"\bint\s+(?:is_palindrome|palindrome|palindrome_flag|valid|matches|ok)\s*=\s*0\s*;",

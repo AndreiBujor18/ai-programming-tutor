@@ -1,4 +1,4 @@
-# Project brief — v0.9.0
+# Project brief — post-v0.9.0 development
 
 ## Product hypothesis
 
@@ -15,7 +15,7 @@ outside the current product experiment.
 
 ## V1 experience
 
-1. The student chooses one of 15 curated exercises or starts the four-task practice exam.
+1. The student chooses one of 16 curated exercises or starts the four-task practice exam.
 2. They choose local Profile A or Profile B and write classic C in the browser.
 3. They run public and hidden tests; hidden expected and actual output stay private.
 4. The system suggests likely C bug categories.
@@ -29,13 +29,15 @@ outside the current product experiment.
 8. During a practice exam, the browser keeps the timer, active task, and numeric
    best-attempt score locally without adding source code to the exam record.
 
-The stable v0.9.0 prototype implements this flow in a dependency-free localhost
-website, CLI, and optional FastAPI service for 15 exercises. No account or
-server-side attempt history is persisted; optional drafts, bounded numeric progress,
-and exam state never leave browser storage. The fixed file workflow adds a strict
-project-authored runner contract and an original file exercise with bilingual
-contract and result rendering. The browser uses a locally bundled, C-aware editor
-and separates Exercises, Practice exam, and Progress into focused top-level modes.
+The stable v0.9.0 release implemented this flow for 15 exercises. The current
+development tree extends the dependency-free localhost website, CLI, and optional
+FastAPI service to 16 exercises with a second independent fixed-file family. No
+account or server-side attempt history is persisted; optional drafts, bounded
+numeric progress, and exam state never leave browser storage. The file workflow
+uses strict project-authored runner contracts and two original exercises with
+bilingual contract and result rendering. The browser uses a locally bundled,
+C-aware editor and separates Exercises, Practice exam, and Progress into focused
+top-level modes.
 
 ## In scope for V1
 
@@ -94,8 +96,9 @@ pairs times 16 source variants. It stores compiler and test signals, origin, and
 abstract evidence basis alongside each sample. Synthetic coverage is a seed dataset,
 not evidence of real-world quality. Private source material is excluded according
 to docs/DATA_PROVENANCE.md. Generator 0.3.0 remains frozen on the 14 pre-file
-exercises; one file family is insufficient for a new label or independent held-out
-claim.
+exercises. The two later file families are both excluded until reviewed mutation
+rules, any proposed file-specific label, and a versioned held-out evaluation are
+designed together.
 
 ## Evaluation design
 
@@ -131,7 +134,7 @@ Target product metrics:
 
 ## Established acceptance criteria
 
-- all 15 C references and every complete-solution style pass all exercise tests;
+- all 16 C references and every complete-solution style pass all exercise tests;
 - personalized references for both controlled and natural contrasting profiles pass
   every test;
 - Profile A and Profile B keep separate aggregate preferences and drafts;
@@ -166,6 +169,9 @@ content redaction, and unchanged behavior for all existing stdin/stdout exercise
 The second slice additionally requires one original five-case file exercise,
 bilingual public fixture/expected-file blocks, nested file-result statuses, generic
 hidden-file labels, a Files progress concept, and no arbitrary upload surface.
+The current follow-on slice adds a second five-case family based on bounded strings,
+preserves the first word on equal maximum lengths, reuses reviewed diagnostic
+categories, and leaves the frozen benchmark unchanged pending a separate review.
 
 ## Next sprint
 
@@ -180,9 +186,11 @@ disposable work directory for every test, bilingual file feedback, profile/draft
 continuity, and Files progress are accepted. This remains a trusted-local
 improvement, not a public sandbox claim.
 
-Next, add a second independent file-processing exercise family before considering
-a file-specific diagnostic label or a new reviewed benchmark version. Do not add
-arbitrary uploads or broaden the execution boundary.
+The second independent file-processing family is implemented and awaits focused
+Windows acceptance in both locales. After that pass, review controlled mutations
+across both file families before deciding whether a file-specific diagnostic label
+or a new benchmark version is justified. Do not add arbitrary uploads or broaden
+the execution boundary.
 
 In parallel planning, design a consented, de-identified natural-code evaluation,
 especially for sentinel handling. Before public code execution, move the runner

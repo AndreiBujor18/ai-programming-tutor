@@ -280,7 +280,7 @@ class LocalWebTests(unittest.TestCase):
         status, _, payload = self.fetch("/exercises")
         self.assertEqual(status, 200)
         exercises = json.loads(payload)
-        self.assertEqual(len(exercises), 15)
+        self.assertEqual(len(exercises), 16)
         self.assertNotIn("reference_solution", exercises[0])
         self.assertEqual(exercises[0]["course"], "PCLP1")
         self.assertEqual(
@@ -570,8 +570,9 @@ for (const [stored, systemDark, expected] of [
     def test_file_contract_and_results_are_exposed_without_hidden_content(self) -> None:
         status, _, payload = self.fetch("/exercises")
         self.assertEqual(status, 200)
+        catalog = json.loads(payload)
         exercise = next(
-            item for item in json.loads(payload) if item["id"] == "file_number_summary"
+            item for item in catalog if item["id"] == "file_number_summary"
         )
         public_case = exercise["public_tests"][0]
         self.assertEqual(public_case["fixtures"][0]["name"], "numbers.txt")
@@ -599,6 +600,14 @@ for (const [stored, systemDark, expected] of [
         self.assertTrue(all(case["file_results"][0]["expected"] == ""
                             and case["file_results"][0]["actual"] == ""
                             for case in hidden_results))
+
+        longest = next(
+            item for item in catalog if item["id"] == "file_longest_word"
+        )
+        self.assertEqual(longest["public_tests"][0]["fixtures"][0]["name"], "words.txt")
+        self.assertEqual(
+            longest["public_tests"][0]["expected_files"][0]["name"], "longest.txt"
+        )
 
     @unittest.skipUnless(shutil.which("gcc"), "GCC required")
     def test_submit_returns_source_free_legacy_compatibility_warnings(self) -> None:

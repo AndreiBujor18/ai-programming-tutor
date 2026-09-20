@@ -30,20 +30,24 @@ checks reject missing, oversized, unreadable, and non-regular entries, including
 symbolic links. Test-suite fingerprints include these file contracts, and hidden
 file names and contents are redacted from learner-facing results.
 
-The catalog now contains 15 exercises. The original
-`file_number_summary` exercise reads `numbers.txt`, writes `summary.txt`, and has
-two public plus three hidden authored file cases. The Romanian/English browser shows
-public fixture and expected-file contents, then reports each result-file status while
-redacting hidden names and contents. The progress view includes a Files concept.
+The current catalog contains 16 exercises and two independent file-processing
+families. `file_number_summary` reads `numbers.txt` and writes `summary.txt`;
+`file_longest_word` reads bounded words from `words.txt` and writes the first
+longest word plus its length to `longest.txt`. Each has two public plus three hidden
+authored file cases. The Romanian/English browser shows public fixture and
+expected-file contents, then reports each result-file status while redacting hidden
+names and contents. The progress view includes a Files concept.
 
 This remains a fixed, trusted-local exercise: there are no arbitrary file uploads,
 and the local runner is still not a security sandbox. The frozen diagnostic
-benchmark remains the reviewed 14-exercise, 1,136-program v0.3 dataset; the first
-file family is not presented as independent evidence for a new classifier label.
+benchmark remains the reviewed 14-exercise, 1,136-program v0.3 dataset. Adding a
+second family broadens curriculum coverage, but is not by itself evidence for a new
+classifier label; both file exercises stay outside the frozen benchmark pending an
+explicit mutation and evaluation review.
 
-## What works in v0.9.0
+## What works in the current tree
 
-- 15 fixed C exercises with public and hidden tests;
+- 16 fixed C exercises with public and hidden tests;
 - an original four-task, 60-minute PCLP1 practice exam with a transparent
   10-point rubric and browser-only progress;
 - a local browser interface: editor, test feedback, three hint levels, and an
@@ -67,7 +71,7 @@ file family is not presented as independent evidence for a new classifier label.
   indentation; comment syntax and placement; `main` signature; loop declarations;
   control spacing; declaration layout; and aggregate identifier
   style/language/`snake_case`/`camelCase`;
-- personalized, PCLP1-classic, plain, and explained C references for all 15 exercises;
+- personalized, PCLP1-classic, plain, and explained C references for all 16 exercises;
 - source-free warnings for five legacy or non-portable C patterns without silently
   rewriting the learner's program;
 - local GCC runner with time, memory, process, source-size, and output limits;
@@ -108,10 +112,10 @@ track reaches 0.6375 macro-F1 and 0.8750 top-3 recall. In particular, the new
 recognises its authored mutations. This is useful evidence that the current model
 does not yet generalise reliably to the expanded curriculum.
 
-These figures cover the 14 exercises in generator 0.3.0, not the newer file
-exercise. That exercise reuses existing diagnostic concepts in the tutor but stays
-outside the frozen benchmark until another independent file family supports a
-meaningful held-out evaluation.
+These figures cover the 14 exercises in generator 0.3.0, not the two newer file
+exercises. They reuse existing diagnostic concepts in the tutor but stay outside
+the frozen benchmark until their mutations, labels, and held-out evaluation are
+reviewed together in an explicitly versioned generator update.
 
 Rule-only accuracy is 1.0 on the controlled mutations that those rules helped
 define; that is an integration check, not evidence about real student code. The

@@ -29,6 +29,11 @@ SOLUTION_STEPS: dict[str, tuple[str, ...]] = {
         "Start the frequency at zero and visit each valid vector position once.",
         "Increase the counter only when the current element equals the target; print the counter.",
     ),
+    "file_longest_word": (
+        "Open words.txt for reading and longest.txt for writing, and stop safely if either file cannot be opened.",
+        "Read the first word to initialize the answer, then compare every remaining word using a strict greater-than test so an equal-length word does not replace it.",
+        "Write the first longest word and its length to longest.txt, then close both files.",
+    ),
     "file_number_summary": (
         "Open numbers.txt for reading and summary.txt for writing, and stop safely if either file cannot be opened.",
         "Read the first value, use it to initialize the minimum, maximum, and sum, then process every remaining value once.",
@@ -108,6 +113,11 @@ SHORT_IDENTIFIER_MAPS: dict[str, dict[str, str]] = {
         "item_count": "n", "values": "v", "position": "i", "target": "x",
         "frequency": "f",
     },
+    "file_longest_word": {
+        "input_file": "fin", "output_file": "fout", "item_count": "n",
+        "current_word": "s", "longest_word": "maxim",
+        "current_length": "lg", "longest_length": "lg_max", "position": "i",
+    },
     "file_number_summary": {
         "input_file": "fin", "output_file": "fout", "item_count": "n",
         "value": "x", "minimum": "min", "maximum": "max", "total": "s",
@@ -156,6 +166,12 @@ ROMANIAN_IDENTIFIER_MAPS: dict[str, dict[str, str]] = {
     "frequency_count": {
         "item_count": "numar_elemente", "values": "valori", "position": "pozitie",
         "target": "valoare_cautata", "frequency": "frecventa",
+    },
+    "file_longest_word": {
+        "input_file": "fisier_intrare", "output_file": "fisier_iesire",
+        "item_count": "numar_cuvinte", "current_word": "cuvant_curent",
+        "longest_word": "cel_mai_lung_cuvant", "current_length": "lungime_curenta",
+        "longest_length": "lungime_maxima", "position": "pozitie",
     },
     "file_number_summary": {
         "input_file": "fisier_intrare", "output_file": "fisier_iesire",
@@ -228,6 +244,11 @@ INLINE_COMMENT_ANCHORS: dict[str, tuple[tuple[str, int], ...]] = {
     "frequency_count": (
         ('scanf("%d", &item_count);', 0), ('int frequency = 0;', 1),
         ('printf("%d\\n", frequency);', 2),
+    ),
+    "file_longest_word": (
+        ('FILE *input_file = fopen("words.txt", "r");', 0),
+        ('strcpy(longest_word, current_word);', 1),
+        ('fprintf(output_file, "%s %d\\n", longest_word, longest_length);', 2),
     ),
     "file_number_summary": (
         ('FILE *input_file = fopen("numbers.txt", "r");', 0),

@@ -75,9 +75,12 @@ expected contents, actual contents, and stderr are redacted from normal response
 The automated contract covers strict parsing, name/count/byte limits, public versus
 hidden serialization, test-suite fingerprints, fresh workspaces, matching and
 missing files, oversized and invalid-UTF-8 output, and POSIX symbolic-link rejection.
-The `file_number_summary` catalog exercise exercises the contract with two public
-and three hidden cases. Browser regressions cover bilingual public fixture and
+The `file_number_summary` and `file_longest_word` catalog exercises each exercise
+the contract with two public and three hidden cases, using independent numeric and
+string-processing tasks. Browser regressions cover bilingual public fixture and
 expected-file rendering, nested result-file statuses, and generic hidden-file
-labels. The focused Windows browser protocol also passed in both locales with
-profile-specific draft/progress continuity; see `docs/ACCEPTANCE_V080_FILES.md`.
-Arbitrary uploads and public execution remain outside this boundary.
+labels. The focused v0.8.0 Windows protocol accepted the first family in both
+locales with profile-specific draft/progress continuity; see
+`docs/ACCEPTANCE_V080_FILES.md`. The second family still requires its focused
+manual pass before a release claim. Arbitrary uploads and public execution remain
+outside this boundary.

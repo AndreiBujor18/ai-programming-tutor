@@ -30,11 +30,13 @@ than controlled semantic mutations. v0.6.0 therefore reports source-free operati
 warnings for removed, undefined, or commonly non-portable constructs; they are not
 classifier labels and do not alter the submitted source.
 
-`file_cursor_state` is evidence-backed but deferred because only one independent
-exercise family, `file_number_summary`, currently supports it. The tutor reuses
-existing initialization, comparison, accumulator, update, and loop categories for
-that exercise, but generator 0.3.0 excludes it. Adding a file-specific label now
-would make the held-out score structurally impossible rather than informative.
+`file_cursor_state` remains deferred. Two independent fixed-file families now exist:
+`file_number_summary` covers counted numeric aggregation and `file_longest_word`
+covers bounded string selection with first-on-tie semantics. Generator 0.3.0 has no
+reviewed file-specific mutations for either family, however, and catalog breadth
+alone is not evidence that a new label is reliable. Both exercises therefore reuse
+existing categories and remain excluded until a versioned mutation review can test
+the proposed category across both held-out families.
 
 ## Labeling rules
 

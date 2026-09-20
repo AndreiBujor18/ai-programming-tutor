@@ -1,0 +1,42 @@
+[
+  {
+    "name": "mixed-lengths",
+    "input": "",
+    "expected": "",
+    "hidden": false,
+    "fixtures": [{"name": "words.txt", "content": "5\nana programare c vector matrice\n"}],
+    "expected_files": [{"name": "longest.txt", "content": "programare 10\n"}]
+  },
+  {
+    "name": "single-word",
+    "input": "",
+    "expected": "",
+    "hidden": false,
+    "fixtures": [{"name": "words.txt", "content": "1\nalgoritm\n"}],
+    "expected_files": [{"name": "longest.txt", "content": "algoritm 8\n"}]
+  },
+  {
+    "name": "first-longest-on-tie",
+    "input": "",
+    "expected": "",
+    "hidden": true,
+    "fixtures": [{"name": "words.txt", "content": "5\nmere pere nori teza luna\n"}],
+    "expected_files": [{"name": "longest.txt", "content": "mere 4\n"}]
+  },
+  {
+    "name": "last-word-is-longest",
+    "input": "",
+    "expected": "",
+    "hidden": true,
+    "fixtures": [{"name": "words.txt", "content": "5\nc cod bucla matrice compilator\n"}],
+    "expected_files": [{"name": "longest.txt", "content": "compilator 10\n"}]
+  },
+  {
+    "name": "maximum-word-length",
+    "input": "",
+    "expected": "",
+    "hidden": true,
+    "fixtures": [{"name": "words.txt", "content": "2\nscurt abcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghij\n"}],
+    "expected_files": [{"name": "longest.txt", "content": "abcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghij 100\n"}]
+  }
+]

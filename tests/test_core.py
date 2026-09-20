@@ -35,9 +35,9 @@ class VersionTests(unittest.TestCase):
 
 
 class CatalogTests(unittest.TestCase):
-    def test_catalog_contains_fifteen_exercises(self) -> None:
+    def test_catalog_contains_sixteen_exercises(self) -> None:
         exercises = list_exercises()
-        self.assertEqual(len(exercises), 15)
+        self.assertEqual(len(exercises), 16)
         self.assertEqual({len(exercise.tests) for exercise in exercises}, {5})
         self.assertTrue(all(sum(test.hidden for test in exercise.tests) == 3 for exercise in exercises))
 
@@ -111,6 +111,17 @@ class RunnerTests(unittest.TestCase):
         self.assertFalse(result.all_passed)
         self.assertEqual(candidates[0].category, "wrong_initialization")
 
+    def test_file_longest_word_tie_bug_is_diagnosed(self) -> None:
+        exercise = get_exercise("file_longest_word")
+        buggy = exercise.reference_solution.replace(
+            "if (current_length > longest_length)",
+            "if (current_length >= longest_length)",
+        )
+        result = self.runner.evaluate(buggy, exercise)
+        candidates = diagnose(buggy, result)
+        self.assertFalse(result.all_passed)
+        self.assertEqual(candidates[0].category, "relational_operator")
+
     def test_file_summary_results_preserve_public_names_and_redact_hidden_names(self) -> None:
         exercise = get_exercise("file_number_summary")
         result = self.runner.evaluate(exercise.reference_solution, exercise)
@@ -121,6 +132,14 @@ class RunnerTests(unittest.TestCase):
         self.assertTrue(all(test["file_results"][0]["name"] == "summary.txt" for test in public))
         self.assertTrue(all(test["file_results"][0]["name"] == "hidden-file-1" for test in hidden))
         self.assertTrue(all(test["file_results"][0]["expected"] == "" for test in hidden))
+
+    def test_second_file_family_uses_an_independent_string_contract(self) -> None:
+        exercise = get_exercise("file_longest_word")
+        self.assertIn("strings", exercise.tags)
+        self.assertTrue(all(case.fixtures[0].name == "words.txt" for case in exercise.tests))
+        self.assertTrue(all(case.expected_files[0].name == "longest.txt" for case in exercise.tests))
+        result = self.runner.evaluate(exercise.reference_solution, exercise)
+        self.assertTrue(result.all_passed, result.to_dict(reveal_hidden=True))
 
     def test_hidden_values_are_redacted(self) -> None:
         exercise = get_exercise("vector_average")

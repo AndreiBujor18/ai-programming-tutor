@@ -1,0 +1,8 @@
+{
+  "id": "file_longest_word",
+  "title": "Find the longest word in a file",
+  "statement": "Read a nonempty sequence of lowercase words from words.txt. Its first value is n, followed by n words. Create longest.txt containing the first word of maximum length and that length.",
+  "input_format": "The text file words.txt contains n (1 <= n <= 1000), followed by n lowercase ASCII words of 1 to 100 characters. Standard input is not used.",
+  "output_format": "Create longest.txt and write the first longest word and its length, separated by a space. Standard output is not used.",
+  "tags": ["files", "strings", "loops", "comparisons"]
+}
