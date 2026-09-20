@@ -216,13 +216,22 @@ The v0.8.0 schema and automated acceptance boundary are in
 
 ## Recommended next step
 
+An unreleased interface sprint is now in progress. Its first slice replaces the
+plain textarea with a locally bundled, C-aware CodeMirror 6 editor while preserving
+profile/exercise drafts, locale changes, test submissions, theme state, and the
+strict CSP through per-page style nonces. The next slice should reorganize the
+ordinary-practice workspace into a side-by-side problem/editor view and move the
+exam and detailed progress into separate top-level modes; this is an information-
+architecture change, not a reason to alter the accepted local privacy schemas.
+
 The v0.8.0 file-aware runner and first original browser exercise are implemented,
 automatically verified, and manually accepted on Windows in both locales. Public
 contracts, structured file statuses, hidden redaction, profile-specific drafts and
 progress, and the Files concept behave as intended. Learner uploads remain out of
 scope.
 
-Next, add a second independent file-processing family before deciding whether a
+On the curriculum/evaluation track, add a second independent file-processing family
+before deciding whether a
 file-specific diagnostic label and a new reviewed benchmark version are justified.
 Accounts and a server database remain deliberately outside the current local scope.
 

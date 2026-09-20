@@ -2,6 +2,17 @@
 
 ## Unreleased
 
+- Replaced the plain learner textarea with a locally bundled CodeMirror 6 editor
+  for C17 syntax highlighting, line numbers, active-line and bracket feedback,
+  automatic closing, profile-aware two/four-space indentation, and `Ctrl+F`
+  search. The original textarea remains as a no-enhancement fallback.
+- Routed editor reads and writes through a small adapter so exercise, profile,
+  locale, draft, exam, test, and complete-solution state keep their existing
+  behavior.
+- Kept the strict content-security policy: CodeMirror's generated styles receive
+  a per-page nonce, and no remote script/style source or `unsafe-inline` exception
+  was introduced.
+
 ## 0.8.0
 
 - Completed the focused Windows manual acceptance of the fixed file workflow:

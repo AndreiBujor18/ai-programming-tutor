@@ -154,7 +154,55 @@ const state = {
   }
 };
 
+let codeEditor = null;
+
 function tr(key) { return translations.static[state.locale][key] || key; }
+
+function currentSource() {
+  return codeEditor ? codeEditor.getValue() : element("code").value;
+}
+
+function replaceSource(value) {
+  const source = typeof value === "string" ? value : String(value ?? "");
+  if (codeEditor) codeEditor.setValue(source);
+  else element("code").value = source;
+}
+
+function handleSourceChange(source = currentSource()) {
+  if (state.active) {
+    const key = draftKey();
+    state.edited.add(key);
+    storeDraft(key, source);
+  }
+  clearFeedback();
+  setStatus("draftChanged");
+  setProfileMessage("");
+}
+
+function syncCodeEditorSettings() {
+  if (!codeEditor) return;
+  codeEditor.setTheme(document.documentElement.dataset.theme === "dark" ? "dark" : "light");
+  codeEditor.setIndentSize(currentProfile()?.preferences?.indent_width === 2 ? 2 : 4);
+}
+
+function mountCodeEditor() {
+  const factory = window.APT_CODE_EDITOR;
+  if (!factory || typeof factory.create !== "function") return;
+  try {
+    codeEditor = factory.create({
+      parent: element("code-editor"),
+      textarea: element("code"),
+      theme: document.documentElement.dataset.theme,
+      indentSize: currentProfile()?.preferences?.indent_width,
+      labelledBy: "editor-heading",
+      describedBy: "editor-help",
+      onChange: handleSourceChange
+    });
+    syncCodeEditorSettings();
+  } catch (_) {
+    codeEditor = null;
+  }
+}
 
 function notice(message, isError = false) {
   const box = element("notice");
@@ -502,6 +550,7 @@ function refreshHeader() {
   themeButton.textContent = tr(isDark ? "lightMode" : "darkMode");
   themeButton.setAttribute("aria-label", themeButton.textContent);
   themeButton.setAttribute("aria-pressed", String(isDark));
+  syncCodeEditorSettings();
 }
 
 function traitWithOrigin(label, origin) {
@@ -586,6 +635,7 @@ function refreshProfile() {
   element("profile-select").value = state.profileId;
   element("profile-summary").textContent = profileSummary(currentProfile());
   setProfileMessage(state.profileMessageKey, state.profileMessageError);
+  syncCodeEditorSettings();
 }
 
 function translateStatic() {
@@ -990,8 +1040,8 @@ function refreshExercise() {
     : state.exercises.length + " curated exercises · 2 public examples each";
   const key = draftKey(exercise.id);
   if (!state.edited.has(key)) {
-    element("code").value = displayStarter(exercise);
-    state.drafts.set(key, element("code").value);
+    replaceSource(displayStarter(exercise));
+    state.drafts.set(key, currentSource());
   }
   renderPublicTests(exercise);
   refreshProgress();
@@ -1000,10 +1050,10 @@ function refreshExercise() {
 function selectExercise(id) {
   if (state.active) {
     const currentKey = draftKey();
-    state.drafts.set(currentKey, element("code").value);
+    state.drafts.set(currentKey, currentSource());
     if (state.edited.has(currentKey)) {
-      writePersistedDraft(currentKey, element("code").value);
-      writeExamDraft(currentKey, element("code").value);
+      writePersistedDraft(currentKey, currentSource());
+      writeExamDraft(currentKey, currentSource());
     }
   }
   const exercise = state.exercises.find((candidate) => candidate.id === id);
@@ -1018,9 +1068,9 @@ function selectExercise(id) {
   }
   const key = draftKey(id);
   const savedDraft = loadDraft(key);
-  element("code").value = state.edited.has(key)
+  replaceSource(state.edited.has(key)
     ? savedDraft ?? ""
-    : displayStarter(exercise);
+    : displayStarter(exercise));
   refreshExercise();
   clearFeedback();
   setStatus("");
@@ -1034,10 +1084,10 @@ function switchProfile(id) {
   if (!["profile_a", "profile_b"].includes(id) || id === state.profileId) return;
   if (state.active) {
     const currentKey = draftKey();
-    state.drafts.set(currentKey, element("code").value);
+    state.drafts.set(currentKey, currentSource());
     if (state.edited.has(currentKey)) {
-      writePersistedDraft(currentKey, element("code").value);
-      writeExamDraft(currentKey, element("code").value);
+      writePersistedDraft(currentKey, currentSource());
+      writeExamDraft(currentKey, currentSource());
     }
   }
   state.profileId = id;
@@ -1045,9 +1095,9 @@ function switchProfile(id) {
   if (state.active) {
     const key = draftKey();
     const savedDraft = loadDraft(key);
-    element("code").value = state.edited.has(key)
+    replaceSource(state.edited.has(key)
       ? savedDraft ?? ""
-      : displayStarter(state.active);
+      : displayStarter(state.active));
   }
   clearFeedback();
   setStatus("");
@@ -1231,14 +1281,14 @@ function switchLanguage() {
   // as a new draft.
   const revealedHints = element("hints").children.length;
   const statusKey = state.statusKey;
-  const source = element("code").value;
+  const source = currentSource();
   const keepEditedSource = state.active && state.edited.has(draftKey());
   state.locale = state.locale === "ro" ? "en" : "ro";
   rememberPreference("locale", state.locale);
   translateStatic();
   refreshExerciseOptions();
   refreshExercise();
-  if (keepEditedSource) element("code").value = source;
+  if (keepEditedSource) replaceSource(source);
   if (state.lastResponse) renderFeedback(state.lastResponse, revealedHints);
   if (state.lastAnswer) renderAnswer(state.lastAnswer);
   renderExam();
@@ -1260,7 +1310,7 @@ function localizedError(error) {
 }
 
 async function learnStyle() {
-  const source = element("code").value;
+  const source = currentSource();
   if (!source.trim()) {
     setProfileMessage("codeRequired", true);
     return;
@@ -1275,7 +1325,7 @@ async function learnStyle() {
       method: "POST", headers: {"Content-Type": "application/json"},
       body: JSON.stringify({source, profile: currentProfile()})
     });
-    if (state.profileId !== profileId || element("code").value !== source) return;
+    if (state.profileId !== profileId || currentSource() !== source) return;
     if (result.accepted) {
       state.profiles[profileId] = sanitiseProfile(result.profile);
       saveCurrentProfile();
@@ -1440,7 +1490,7 @@ function resetDraft() {
   state.edited.delete(key);
   const starter = displayStarter(state.active);
   state.drafts.set(key, starter);
-  element("code").value = starter;
+  replaceSource(starter);
   clearFeedback();
   setStatus("");
   setProfileMessage("");
@@ -1451,7 +1501,7 @@ async function runCode() {
   if (!state.active) return;
   const exerciseId = state.active.id;
   const profileId = state.profileId;
-  const source = element("code").value;
+  const source = currentSource();
   if (!source.trim()) { notice(tr("codeRequired"), true); return; }
   const button = element("run");
   button.disabled = true;
@@ -1463,7 +1513,7 @@ async function runCode() {
       body: JSON.stringify({source, dialect: "c17"})
     });
     if (!state.active || state.active.id !== exerciseId || state.profileId !== profileId ||
-        element("code").value !== source) return;
+        currentSource() !== source) return;
     state.lastResponse = response;
     renderFeedback(response);
     recordLearningAttempt(profileId, exerciseId, response.evaluation);
@@ -1480,7 +1530,7 @@ async function runCode() {
 async function showSolution() {
   if (!state.active) return;
   const exerciseId = state.active.id;
-  const source = element("code").value;
+  const source = currentSource();
   const style = element("style").value;
   const profileId = state.profileId;
   const button = element("show-solution");
@@ -1493,7 +1543,7 @@ async function showSolution() {
       body: JSON.stringify({style, source, profile: currentProfile()})
     });
     if (!state.active || state.active.id !== exerciseId ||
-        state.profileId !== profileId || element("code").value !== source ||
+        state.profileId !== profileId || currentSource() !== source ||
         element("style").value !== style) return;
     state.lastAnswer = answer;
     renderAnswer(answer);
@@ -1514,6 +1564,7 @@ async function start() {
   state.profiles.profile_a = loadProfile("profile_a");
   state.profiles.profile_b = loadProfile("profile_b");
   translateStatic();
+  mountCodeEditor();
   element("language-toggle").addEventListener("click", switchLanguage);
   element("theme-toggle").addEventListener("click", switchTheme);
   element("profile-select").addEventListener("change", (event) => switchProfile(event.target.value));
@@ -1536,16 +1587,7 @@ async function start() {
   element("finish-exam").addEventListener("click", () => finishExam(false));
   element("next-exam-task").addEventListener("click", nextExamTask);
   element("exercise-select").addEventListener("change", (event) => selectExercise(event.target.value));
-  element("code").addEventListener("input", () => {
-    if (state.active) {
-      const key = draftKey();
-      state.edited.add(key);
-      storeDraft(key, element("code").value);
-    }
-    clearFeedback();
-    setStatus("draftChanged");
-    setProfileMessage("");
-  });
+  element("code").addEventListener("input", () => handleSourceChange());
   element("style").addEventListener("change", () => {
     rememberPreference("style", element("style").value);
     state.lastAnswer = null;

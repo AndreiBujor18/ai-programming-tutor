@@ -4,11 +4,13 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
+  <meta name="aptutor-csp-nonce" content="__APTUTOR_CSP_NONCE__">
   <title>Tutor de programare · PCLP1</title>
   <script src="/static/theme.js"></script>
   <link rel="stylesheet" href="/static/style.css">
   <script src="/static/progress.js" defer></script>
   <script src="/static/i18n.js" defer></script>
+  <script src="/static/editor.js" defer></script>
   <script src="/static/app.js" defer></script>
 </head>
 <body>
@@ -133,6 +135,7 @@
           <div class="section-head"><h2 id="editor-heading" data-i18n="editorHeading">Codul tău</h2><span id="file-label" class="file-pill">main.c · C17 / gcc</span></div>
           <label for="code" class="visually-hidden" data-i18n="sourceCode">Cod sursă</label>
           <textarea id="code" spellcheck="false" autocomplete="off" autocapitalize="off" aria-describedby="editor-help"></textarea>
+          <div id="code-editor" class="code-editor-shell" hidden></div>
           <div class="draft-controls">
             <label class="draft-toggle"><input id="save-drafts" type="checkbox"> <span data-i18n="saveDrafts">Salvează ciornele pe acest dispozitiv</span></label>
             <button id="reset-draft" class="text-button" type="button" data-i18n="resetDraft">Reia șablonul exercițiului</button>

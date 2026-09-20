@@ -9,6 +9,27 @@ permissions:
   contents: read
 
 jobs:
+  web-assets:
+    name: Web editor bundle
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Install locked web build dependencies
+        run: npm ci
+
+      - name: Verify the committed editor bundle
+        run: npm run check:editor
+
   core:
     name: Core · Python ${{ matrix.python-version }}
     runs-on: ubuntu-latest

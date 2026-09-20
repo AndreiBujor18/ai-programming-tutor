@@ -34,6 +34,8 @@ file family is not presented as independent evidence for a new classifier label.
   10-point rubric and browser-only progress;
 - a local browser interface: editor, test feedback, three hint levels, and an
   explicitly requested full reference solution;
+- a locally bundled CodeMirror 6 C editor with syntax highlighting, line numbers,
+  bracket matching, search, light/dark themes, and profile-aware indentation;
 - Romanian interface by default, English switch in the top-right corner, and
   a comfortable light/dark palette inspired by USV/FIESC public-facing blue
   colors (not official brand codes or logos);
@@ -135,6 +137,12 @@ Program-required output tokens
 display language changes.
 Do not forward this port or use the local runner on a public website.
 
+The prebuilt browser editor is included in the Python package, so Node.js is not
+required to run the tutor. Maintainers who change `frontend/editor-entry.js` can
+rebuild the committed asset with `npm install` followed by
+`npm run build:editor`. The bundled third-party licenses are recorded in
+`THIRD_PARTY_NOTICES.md`.
+
 For the CLI and unit tests:
 
 ```bash
@@ -143,6 +151,13 @@ python -m ai_programming_tutor.cli list
 python -m ai_programming_tutor.cli evaluate vector_average examples/buggy_average.c
 python -m ai_programming_tutor.cli evaluate line_after_number examples/buggy_line_input.c
 python -m unittest discover -s tests -v
+```
+
+To verify that the committed editor asset matches its source:
+
+```bash
+npm ci
+npm run check:editor
 ```
 
 Generate the initial dataset and train the baseline (scikit-learn and joblib are

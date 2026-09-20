@@ -70,6 +70,7 @@ const ids = [
   "solution-answer", "hint-area", "next-hint", "public-tests",
   "exercise-select", "exercise-title", "exercise-statement", "input-format",
   "output-format", "exercise-count", "code", "style", "style-help", "hints",
+  "code-editor",
   "run", "file-label", "show-solution", "copy-solution", "result-count",
   "language-warning", "compiler-output", "diagnosis", "test-results",
   "solution-meta", "solution-code", "solution-explanation", "solution-note",
@@ -198,7 +199,29 @@ const answer = {
     }
   }
 };
-const browserWindow = {confirm: () => true};
+let enhancedEditor = null;
+const editorObservations = {themes: [], indentSizes: []};
+const browserWindow = {
+  confirm: () => true,
+  APT_CODE_EDITOR: {
+    create({textarea, onChange, theme, indentSize}) {
+      const adapter = {
+        getValue: () => textarea.value,
+        setValue(value) { textarea.value = value; },
+        setTheme(value) { editorObservations.themes.push(value); },
+        setIndentSize(value) { editorObservations.indentSizes.push(value); },
+        simulateInput(value) {
+          textarea.value = value;
+          onChange(value);
+        }
+      };
+      editorObservations.themes.push(theme);
+      editorObservations.indentSizes.push(indentSize);
+      enhancedEditor = adapter;
+      return adapter;
+    }
+  }
+};
 const context = vm.createContext({
   window: browserWindow,
   document,
@@ -240,6 +263,8 @@ vm.runInContext(fs.readFileSync(path.join(root, "app.js"), "utf8"), context);
   assert.equal(document.documentElement.lang, "ro");
   assert.equal(elements["language-toggle"].textContent, "English");
   assert.equal(elements["exercise-title"].textContent, "Meniu de comenzi pentru vector");
+  assert.ok(enhancedEditor, "enhanced editor was not mounted");
+  assert.equal(enhancedEditor.getValue().includes("int main(void)"), true);
   vm.runInContext(
     'renderPublicTests(state.exercises.find((item) => item.id === "file_number_summary"))',
     context
@@ -306,8 +331,7 @@ vm.runInContext(fs.readFileSync(path.join(root, "app.js"), "utf8"), context);
   assert.equal(elements["editor-help"].textContent.includes("salvată local"), true);
 
   const ownCodeA = "int main() {\n    int v[10], n, i;\n    // pas 1\n    // pas 2\n    for (i = 0; i < n; i++) {\n    }\n}\n";
-  elements.code.value = ownCodeA;
-  elements.code.listeners.input();
+  enhancedEditor.simulateInput(ownCodeA);
   assert.equal(stored["aptutor-v0.5-draft-profile_a:vector_menu"], ownCodeA);
   await elements["learn-style"].listeners.click();
   assert.equal(elements["profile-summary"].textContent.includes("funcții: acoladă pe aceeași linie"), true);
@@ -349,8 +373,7 @@ vm.runInContext(fs.readFileSync(path.join(root, "app.js"), "utf8"), context);
   assert.equal(elements["favorite-exercise"].attributes["aria-pressed"], "false");
   assert.equal(elements["save-attempt-history"].checked, false);
   const ownCodeB = "int main() {\n    int n;\n    for ( int i = 0; i < n; i = i + 1 )\n    {\n    }\n}\n";
-  elements.code.value = ownCodeB;
-  elements.code.listeners.input();
+  enhancedEditor.simulateInput(ownCodeB);
   await elements["learn-style"].listeners.click();
   assert.equal(elements["profile-summary"].textContent.includes("actualizare explicită"), true);
   assert.equal(elements["profile-summary"].textContent.includes("for/if/while: acoladă pe linie nouă"), true);
@@ -492,8 +515,8 @@ vm.runInContext(fs.readFileSync(path.join(root, "app.js"), "utf8"), context);
   assert.equal(stored["aptutor-v0.5-theme"], "dark");
   elements["theme-toggle"].listeners.click();
   assert.equal(document.documentElement.dataset.theme, "light");
-  elements.code.value = "";
-  elements.code.listeners.input();
+  assert.equal(editorObservations.themes.at(-1), "light");
+  enhancedEditor.simulateInput("");
   assert.equal(stored["aptutor-v0.5-draft-profile_a:vector_menu"], "");
   vm.runInContext("state.drafts.clear(); state.edited.clear();", context);
   const emptyDraft = vm.runInContext('loadDraft("profile_a:vector_menu")', context);
@@ -513,8 +536,7 @@ vm.runInContext(fs.readFileSync(path.join(root, "app.js"), "utf8"), context);
   // disabled. Finishing snapshots the remaining time so it cannot resume after
   // a reload, while the source remains available for review in the same tab.
   const examReviewCode = "int main(void) {\n  int rezultat = 42;\n  return rezultat == 42 ? 0 : 1;\n}\n";
-  elements.code.value = examReviewCode;
-  elements.code.listeners.input();
+  enhancedEditor.simulateInput(examReviewCode);
   assert.equal(stored["aptutor-v0.5-draft-profile_a:vector_menu"], undefined);
   assert.equal(JSON.parse(sessionStored["aptutor-v0.6-exam-drafts"])
     .drafts["profile_a:vector_menu"], examReviewCode);

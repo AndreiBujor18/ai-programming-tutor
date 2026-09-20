@@ -264,10 +264,17 @@ class LocalWebTests(unittest.TestCase):
         status, headers, html = self.fetch("/")
         self.assertEqual(status, 200)
         self.assertIn("Arată rezolvarea completă".encode("utf-8"), html)
-        self.assertIn("default-src 'none'", headers["Content-Security-Policy"])
+        policy = headers["Content-Security-Policy"]
+        self.assertIn("default-src 'none'", policy)
+        self.assertNotIn("'unsafe-inline'", policy)
+        nonce_match = re.search(rb'name="aptutor-csp-nonce" content="([^"]+)"', html)
+        self.assertIsNotNone(nonce_match)
+        nonce = nonce_match.group(1).decode("ascii")
+        self.assertIn(f"style-src 'self' 'nonce-{nonce}'", policy)
+        self.assertNotIn(b"__APTUTOR_CSP_NONCE__", html)
         for asset in (
             "/static/style.css", "/static/theme.js", "/static/progress.js",
-            "/static/i18n.js", "/static/app.js",
+            "/static/i18n.js", "/static/editor.js", "/static/app.js",
         ):
             self.assertEqual(self.fetch(asset)[0], 200)
         status, _, payload = self.fetch("/exercises")
@@ -389,6 +396,7 @@ class LocalWebTests(unittest.TestCase):
         for control_id in (
             "language-toggle", "theme-toggle", "exercise-select", "profile-select",
             "learn-style", "reset-profile", "save-drafts", "reset-draft", "code",
+            "code-editor",
             "run", "next-hint", "style",
             "show-solution", "start-exam", "finish-exam", "next-exam-task",
             "exam-timer", "exam-score", "exam-task-list", "exam-rubric-list",
@@ -403,12 +411,35 @@ class LocalWebTests(unittest.TestCase):
         self.assertIn('lang="ro"', html)
         self.assertIn("Exersează programarea", html)
         self.assertIn('class="topbar-controls"', html)
+        self.assertLess(html.index('/static/editor.js'), html.index('/static/app.js'))
         self.assertIn(':root[data-theme="dark"]', css)
         self.assertNotIn('id="dialect"', html)
         self.assertNotIn('value="cpp_streams"', html)
         self.assertNotIn("brand-mark", html)
         self.assertNotIn("linear-gradient", css)
         self.assertNotIn("box-shadow", css)
+
+    @unittest.skipUnless(shutil.which("node"), "Node.js required for editor bundle contract")
+    def test_bundled_editor_exposes_a_local_factory(self) -> None:
+        script = r"""
+const fs = require("fs");
+const vm = require("vm");
+const assert = require("assert");
+const source = fs.readFileSync(process.argv[1], "utf8");
+const context = {
+  window: {},
+  document: {documentElement: {style: {}}},
+  navigator: {userAgent: "", vendor: "", platform: ""}
+};
+vm.runInNewContext(source, context);
+assert.strictEqual(typeof context.window.APT_CODE_EDITOR.create, "function");
+assert.ok(!source.includes("https://"), "editor bundle contains a remote dependency");
+"""
+        result = subprocess.run(
+            ["node", "-e", script, str(WEB_ROOT / "editor.js")],
+            capture_output=True, text=True, check=False, timeout=5,
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
 
     def test_primary_text_and_buttons_keep_readable_contrast_in_both_themes(self) -> None:
         css = (WEB_ROOT / "style.css").read_text(encoding="utf-8")

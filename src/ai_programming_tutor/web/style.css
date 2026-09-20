@@ -281,6 +281,19 @@ textarea {
   font: 13px/1.65 ui-monospace, SFMono-Regular, Consolas, monospace;
 }
 textarea:focus { outline: 2px solid var(--focus); outline-offset: 1px; }
+.code-editor-shell {
+  width: 100%;
+  height: 430px;
+  min-height: 360px;
+  max-height: 72vh;
+  overflow: hidden;
+  resize: vertical;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--raised);
+}
+.code-editor-shell:focus-within { outline: 2px solid var(--focus); outline-offset: 1px; }
+.code-editor-shell .cm-editor.cm-focused { outline: none; }
 .editor-card #editor-help { margin: 10px 0 0; }
 .draft-controls {
   display: flex;
@@ -429,4 +442,5 @@ textarea:focus { outline: 2px solid var(--focus); outline-offset: 1px; }
   .editor-actions { align-items: start; flex-direction: column; gap: 8px; }
   .solution-controls > div, .solution-controls button, .solution-controls select { width: 100%; max-width: none; }
   textarea { min-height: 300px; }
+  .code-editor-shell { height: 390px; min-height: 300px; max-height: 68vh; }
 }

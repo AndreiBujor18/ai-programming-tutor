@@ -1,11 +1,12 @@
 from __future__ import annotations
 
 import os
+import secrets
 from pathlib import Path
 from typing import Literal
 
 from fastapi import FastAPI, HTTPException, Request
-from fastapi.responses import FileResponse
+from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
@@ -14,7 +15,12 @@ from ai_programming_tutor.catalog import get_exercise, list_exercises
 from ai_programming_tutor.exam import get_practice_exam
 from ai_programming_tutor.solutions import reference_answer
 from ai_programming_tutor.style_profile import learn_c_style
-from ai_programming_tutor.webserver import public_exercise, submit_payload
+from ai_programming_tutor.webserver import (
+    content_security_policy,
+    public_exercise,
+    rendered_index,
+    submit_payload,
+)
 
 
 app = FastAPI(
@@ -30,13 +36,12 @@ app.mount("/static", StaticFiles(directory=WEB_ROOT), name="static")
 
 @app.middleware("http")
 async def security_headers(request: Request, call_next):
+    nonce = secrets.token_urlsafe(18) if request.url.path == "/" else None
+    request.state.csp_nonce = nonce
     response = await call_next(request)
     response.headers["X-Content-Type-Options"] = "nosniff"
     response.headers["Referrer-Policy"] = "no-referrer"
-    response.headers["Content-Security-Policy"] = (
-        "default-src 'none'; script-src 'self'; style-src 'self'; "
-        "connect-src 'self'; img-src 'self'; base-uri 'none'; form-action 'none'"
-    )
+    response.headers["Content-Security-Policy"] = content_security_policy(nonce)
     if request.url.path.endswith(("/submit", "/solution", "/learn")):
         response.headers["Cache-Control"] = "no-store"
     return response
@@ -75,8 +80,9 @@ def _local_execution_allowed(request: Request) -> bool:
 
 
 @app.get("/", include_in_schema=False)
-def homepage() -> FileResponse:
-    return FileResponse(WEB_ROOT / "index.html")
+def homepage(request: Request) -> HTMLResponse:
+    nonce = request.state.csp_nonce
+    return HTMLResponse(rendered_index(nonce))
 
 
 @app.get("/health")

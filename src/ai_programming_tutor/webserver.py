@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import secrets
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import urlsplit
@@ -18,8 +19,26 @@ from ai_programming_tutor.style_profile import learn_c_style
 
 
 WEB_ROOT = Path(__file__).resolve().parent / "web"
+CSP_NONCE_PLACEHOLDER = "__APTUTOR_CSP_NONCE__"
 MAX_REQUEST_BYTES = 60_000
 SERVICE = TutorService()
+
+
+def content_security_policy(nonce: str | None = None) -> str:
+    style_source = "style-src 'self'"
+    if nonce:
+        style_source += f" 'nonce-{nonce}'"
+    return (
+        "default-src 'none'; script-src 'self'; " + style_source + "; "
+        "connect-src 'self'; img-src 'self'; base-uri 'none'; form-action 'none'"
+    )
+
+
+def rendered_index(nonce: str) -> bytes:
+    page = (WEB_ROOT / "index.html").read_text(encoding="utf-8")
+    if page.count(CSP_NONCE_PLACEHOLDER) != 1:
+        raise RuntimeError("The browser shell must contain exactly one CSP nonce placeholder.")
+    return page.replace(CSP_NONCE_PLACEHOLDER, nonce).encode("utf-8")
 
 
 def public_exercise(exercise_id: str) -> dict[str, object]:
@@ -50,18 +69,16 @@ def submit_payload(
 class LocalHandler(BaseHTTPRequestHandler):
     server: ThreadingHTTPServer
 
-    def _send(self, status: int, content: bytes, content_type: str) -> None:
+    def _send(
+        self, status: int, content: bytes, content_type: str, *, csp_nonce: str | None = None
+    ) -> None:
         self.send_response(status)
         self.send_header("Content-Type", content_type)
         self.send_header("Content-Length", str(len(content)))
         self.send_header("Cache-Control", "no-store")
         self.send_header("X-Content-Type-Options", "nosniff")
         self.send_header("Referrer-Policy", "no-referrer")
-        self.send_header(
-            "Content-Security-Policy",
-            "default-src 'none'; script-src 'self'; style-src 'self'; "
-            "connect-src 'self'; img-src 'self'; base-uri 'none'; form-action 'none'",
-        )
+        self.send_header("Content-Security-Policy", content_security_policy(csp_nonce))
         self.end_headers()
         self.wfile.write(content)
 
@@ -92,12 +109,18 @@ class LocalHandler(BaseHTTPRequestHandler):
             self._error(403, "This demo only accepts direct localhost requests.")
             return
         path = urlsplit(self.path).path
+        if path == "/":
+            nonce = secrets.token_urlsafe(18)
+            self._send(
+                200, rendered_index(nonce), "text/html; charset=utf-8", csp_nonce=nonce
+            )
+            return
         assets = {
-            "/": ("index.html", "text/html; charset=utf-8"),
             "/static/style.css": ("style.css", "text/css; charset=utf-8"),
             "/static/theme.js": ("theme.js", "text/javascript; charset=utf-8"),
             "/static/progress.js": ("progress.js", "text/javascript; charset=utf-8"),
             "/static/i18n.js": ("i18n.js", "text/javascript; charset=utf-8"),
+            "/static/editor.js": ("editor.js", "text/javascript; charset=utf-8"),
             "/static/app.js": ("app.js", "text/javascript; charset=utf-8"),
         }
         if path in assets:

@@ -36,6 +36,12 @@ The optional FastAPI runner endpoint requires both a loopback client and explici
 setting should be combined with port forwarding, reverse proxies, or a public
 deployment. The current browser workflow compiles classic C17 only.
 
+The unreleased enhanced editor is built into the Python package and loads no
+remote scripts, styles, workers, or language services. Its generated style element
+receives a fresh per-page CSP nonce, so the policy does not need `unsafe-inline`.
+The dependency lockfile and committed bundle are checked together in CI, and the
+plain textarea remains available if the enhancement cannot initialize.
+
 Compiler and learner processes receive a deliberately small environment. On all
 platforms, `TMP`, `TEMP`, and `TMPDIR` point to the disposable evaluation directory.
 On Windows, only the current toolchain `PATH` and required system process locations
