@@ -8,6 +8,20 @@ complete, explained, tested reference solution as a separate action.
 The repository name is intentionally neutral. Product branding can change later
 without renaming the Python package or rewriting the architecture.
 
+## Interface refresh in v0.9.0
+
+The browser now uses a locally bundled CodeMirror 6 editor with C17 syntax
+highlighting, line numbers, bracket matching, search, light/dark themes, and
+profile-aware indentation. The committed browser asset runs without Node.js or a
+remote CDN; Node is needed only when a maintainer rebuilds the editor bundle.
+
+Exercises, the practice exam, and local progress now have separate top-level modes.
+On wider screens, the active problem sits beside the editor. Style-profile details
+and the complete solution stay collapsed until requested, the exam keeps its timer
+and score above the same workbench, and narrower windows stack the workspace into a
+single readable column. Existing drafts, profiles, exam state, progress, locale,
+and theme behavior are preserved.
+
 ## File-aware execution in v0.8.0
 
 The runner now understands bounded, project-authored text fixtures and expected
@@ -27,7 +41,7 @@ and the local runner is still not a security sandbox. The frozen diagnostic
 benchmark remains the reviewed 14-exercise, 1,136-program v0.3 dataset; the first
 file family is not presented as independent evidence for a new classifier label.
 
-## What works in v0.8.0
+## What works in v0.9.0
 
 - 15 fixed C exercises with public and hidden tests;
 - an original four-task, 60-minute PCLP1 practice exam with a transparent
@@ -222,6 +236,7 @@ The core is deliberately independent of the web framework:
 
 See `docs/PROJECT_BRIEF.md`, `docs/ACCEPTANCE_V063.md`,
 `docs/ACCEPTANCE_V070_LOCAL_PROGRESS.md`, `docs/ACCEPTANCE_V080_FILES.md`,
+`docs/ACCEPTANCE_V090_INTERFACE.md`,
 `docs/BUG_TAXONOMY.md`,
 `docs/DATA_PROVENANCE.md`, `docs/CURRICULUM_ALIGNMENT.md`,
 `docs/STYLE_PERSONALIZATION.md`, and

@@ -1,4 +1,4 @@
-# Project brief — v0.8.0
+# Project brief — v0.9.0
 
 ## Product hypothesis
 
@@ -29,12 +29,13 @@ outside the current product experiment.
 8. During a practice exam, the browser keeps the timer, active task, and numeric
    best-attempt score locally without adding source code to the exam record.
 
-The stable v0.8.0 prototype implements this flow in a dependency-free localhost
+The stable v0.9.0 prototype implements this flow in a dependency-free localhost
 website, CLI, and optional FastAPI service for 15 exercises. No account or
 server-side attempt history is persisted; optional drafts, bounded numeric progress,
 and exam state never leave browser storage. The fixed file workflow adds a strict
 project-authored runner contract and an original file exercise with bilingual
-contract and result rendering.
+contract and result rendering. The browser uses a locally bundled, C-aware editor
+and separates Exercises, Practice exam, and Progress into focused top-level modes.
 
 ## In scope for V1
 
@@ -47,6 +48,10 @@ contract and result rendering.
   encoder comparison;
 - public/hidden test distinction;
 - progressive hints plus a distinct optional full-solution action;
+- a locally bundled CodeMirror 6 C editor with a plain-text fallback and no runtime
+  dependency on a remote CDN;
+- separate Exercises, Practice exam, and Progress modes, with a side-by-side desktop
+  workbench and a single-column narrow-window layout;
 - curated, tested C answer variants for all exercises;
 - an author-owned practice exam and a separate, author-defined PCLP1 classic preset;
 - source-free compatibility warnings for a small reviewed set of legacy constructs;
@@ -114,7 +119,8 @@ Target product metrics:
 
 ## Technical shape
 
-- present browser prototype: static HTML, CSS, and JavaScript with no build step;
+- present browser prototype: static HTML, CSS, and JavaScript with a committed
+  editor bundle; Node.js is needed only to rebuild that maintainer-owned asset;
 - optional future client: React, TypeScript, Vite, Monaco Editor if the UX needs it;
 - application API: FastAPI and Pydantic;
 - execution: isolated disposable C runner workers;
@@ -147,7 +153,11 @@ Target product metrics:
 - hidden expected/actual values are omitted from user-facing feedback;
 - no private teaching materials, raw text, filenames, authorship, metadata, or copied
   source are included; benchmark claims remain limited to controlled mutations;
-- local HTTP execution is opt-in and rejects cross-origin requests.
+- local HTTP execution is opt-in and rejects cross-origin requests;
+- the enhanced editor preserves exercise, profile, draft, locale, theme, test, and
+  exam state, while the fallback textarea remains usable without enhancement;
+- the three workspace modes keep the problem/editor path primary, put exam context
+  above the same workbench, and give detailed progress a dedicated view.
 
 The first v0.8.0 engineering slice additionally requires exact file-contract keys,
 portable flat names, eight combined entries at most, bounded authored content, a
@@ -158,6 +168,11 @@ bilingual public fixture/expected-file blocks, nested file-result statuses, gene
 hidden-file labels, a Files progress concept, and no arbitrary upload surface.
 
 ## Next sprint
+
+The v0.9.0 interface refresh and its focused Windows manual acceptance are complete.
+The locally bundled editor, both themes and locales, full and half-width desktop
+layouts, and all three workspace modes are accepted without changing local privacy
+or execution boundaries.
 
 The v0.8.0 file workflow and its focused Windows manual acceptance protocol are
 complete. Strict project-authored fixtures, bounded expected-file checks, a fresh

@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 0.9.0
+
+- Completed focused Windows visual acceptance for the editor and workspace refresh
+  in Romanian and English, light and dark themes, and a half-width desktop window.
 - Replaced the plain learner textarea with a locally bundled CodeMirror 6 editor
   for C17 syntax highlighting, line numbers, active-line and bracket feedback,
   automatic closing, profile-aware two/four-space indentation, and `Ctrl+F`

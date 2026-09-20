@@ -1,4 +1,4 @@
-# Project memory — AI Programming Tutor v0.8.0
+# Project memory — AI Programming Tutor v0.9.0
 
 This is the maintainer handoff and continuity record for the project. It contains
 only public-safe decisions and implementation state. Private tutoring exports,
@@ -69,12 +69,20 @@ must never be copied into this document or the repository.
 | 0.6.3 | Finished-exam timer snapshot and tab-scoped source recovery across refresh |
 | 0.7.0 | Profile-specific favorites, opt-in bounded numeric attempt history, last/best summaries, a derived concept/exercise view, and strict JSON transfer |
 | 0.8.0 | Strict project-authored file contracts, isolated per-test directories, the first original file exercise, bilingual file feedback, Files progress, and a frozen 14-exercise benchmark |
+| 0.9.0 | Locally bundled CodeMirror 6 C editor, Exercises/Practice exam/Progress modes, side-by-side desktop workbench, progressive disclosure, and responsive manual acceptance |
 
-## Current v0.8.0 capabilities
+## Current v0.9.0 capabilities
 
 - 15 original C17 exercises; every exercise has two public and three hidden tests.
 - 13 semantic diagnostic labels plus compiler errors and unknown fallbacks.
 - Three progressive hint levels and a separate complete-solution action.
+- Locally bundled CodeMirror 6 editor with C17 highlighting, line numbers, bracket
+  feedback, search, light/dark themes, and profile-aware indentation. The original
+  textarea remains the no-enhancement fallback.
+- Three top-level browser modes for exercises, the practice exam, and progress. The
+  normal desktop workbench places the requirement beside the editor; style settings
+  and the complete solution remain collapsed until requested, and narrower windows
+  stack the workspace into one column.
 - Four complete-solution styles: active profile, PCLP1 classic, plain classic C,
   and C with explanatory comments.
 - Style learning covers contextual braces, update form, indentation, comment density,
@@ -160,6 +168,11 @@ natural-data evaluation. The browser currently uses rules without loading the mo
   file failures, POSIX symbolic-link rejection, hidden redaction, the fifteenth
   reference, all four solution styles, bilingual public file blocks, nested file
   statuses, and the Files progress concept.
+- The v0.9.0 release tree passes 69/69 automated tests. The browser regression also
+  covers the locally bundled editor adapter, three-mode navigation, profile changes
+  from Progress, active-exam navigation and timer status, and locale changes without
+  losing edited source or visible feedback. The committed editor bundle rebuilds
+  byte-for-byte from its source configuration.
 - The first v0.7.0 feature slice also passed its complete manual Windows protocol.
   Profile-specific favorites, opt-in history, latest/best results, forced-refresh
   persistence, history disablement, full progress clearing, and cross-profile
@@ -174,14 +187,18 @@ natural-data evaluation. The browser currently uses rules without loading the mo
   transfer states correctly.
 - All 15 reference solutions and every complete-solution style pass their exercise
   tests; generated variants compile without warnings in the tested matrix.
-- The release wheel installs as version 0.8.0 and exposes all 15 exercises plus the
+- The release wheel installs as version 0.9.0 and exposes all 15 exercises plus the
   four-task, 10-point practice exam.
-- The v0.8.0 release privacy scan found no uploaded archive, private filename, Library ID,
+- The v0.9.0 release privacy scan found no uploaded archive, private filename, Library ID,
   workspace path, PDF, image, office document, or raw tutoring export.
 - The focused v0.8.0 Windows protocol passed the public file contracts, starter
   failure, verified 5/5 solution, Romanian/English continuity, generic hidden-file
   labels, Files progress, and Profile A/B draft and history isolation. See
   `docs/ACCEPTANCE_V080_FILES.md`.
+- The focused v0.9.0 Windows protocol accepted the highlighted C editor, the three
+  top-level modes, side-by-side and half-width layouts, both themes, and both locales
+  without changing the accepted local-state or execution boundaries. See
+  `docs/ACCEPTANCE_V090_INTERFACE.md`.
 - The six-stage manual Windows acceptance protocol is complete. The final regression
   confirmed frozen finished time, same-tab source recovery, and removal of temporary
   exam source after tab closure with permanent drafts disabled. See
@@ -209,21 +226,22 @@ contracts render without empty console blocks, starter and reference results exp
 only the intended per-file detail, both locales preserve active state, Files
 progress is derived correctly, and Profile A/B drafts and history remain isolated.
 
+The focused v0.9.0 protocol confirms the editor and information-architecture
+refresh in Romanian and English, both themes, and full and half-width desktop
+layouts. The coding, exam, and progress workflows remain intact.
+
 The public-safe evidence records are in `docs/ACCEPTANCE_V063.md`,
-`docs/ACCEPTANCE_V070_LOCAL_PROGRESS.md`, and `docs/ACCEPTANCE_V080_FILES.md`.
+`docs/ACCEPTANCE_V070_LOCAL_PROGRESS.md`, `docs/ACCEPTANCE_V080_FILES.md`, and
+`docs/ACCEPTANCE_V090_INTERFACE.md`.
 The v0.8.0 schema and automated acceptance boundary are in
 `docs/FILE_TEST_CONTRACT.md`.
 
 ## Recommended next step
 
-An unreleased interface sprint now includes a locally bundled, C-aware CodeMirror
-6 editor and three top-level modes for exercises, the practice exam, and progress.
-The ordinary workspace places the problem beside the editor on wider screens;
-style settings and the complete answer are collapsed until requested. The exam
-keeps its timer and score above the same workbench, while detailed progress has a
-dedicated view. Drafts, profiles, locale changes, tests, and the accepted local
-privacy schemas remain unchanged. The next step is focused Windows acceptance in
-both themes and locales before choosing the release boundary.
+The v0.9.0 interface sprint is implemented and manually accepted. Its locally
+bundled C editor and three-mode workspace preserve drafts, profiles, locale changes,
+tests, exam state, and the accepted local privacy schemas. No further interface
+migration is required before returning to curriculum and evaluation work.
 
 The v0.8.0 file-aware runner and first original browser exercise are implemented,
 automatically verified, and manually accepted on Windows in both locales. Public
@@ -232,8 +250,8 @@ progress, and the Files concept behave as intended. Learner uploads remain out o
 scope.
 
 On the curriculum/evaluation track, add a second independent file-processing family
-before deciding whether a
-file-specific diagnostic label and a new reviewed benchmark version are justified.
+before deciding whether a file-specific diagnostic label and a new reviewed
+benchmark version are justified.
 Accounts and a server database remain deliberately outside the current local scope.
 
 In parallel planning, prioritize consented natural-code evaluation before improving
