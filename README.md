@@ -36,6 +36,8 @@ file family is not presented as independent evidence for a new classifier label.
   explicitly requested full reference solution;
 - a locally bundled CodeMirror 6 C editor with syntax highlighting, line numbers,
   bracket matching, search, light/dark themes, and profile-aware indentation;
+- a focused three-mode interface for exercises, the practice exam, and local
+  progress, with the problem and editor side by side on wider screens;
 - Romanian interface by default, English switch in the top-right corner, and
   a comfortable light/dark palette inspired by USV/FIESC public-facing blue
   colors (not official brand codes or logos);

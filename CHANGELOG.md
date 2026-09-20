@@ -12,6 +12,13 @@
 - Kept the strict content-security policy: CodeMirror's generated styles receive
   a per-page nonce, and no remote script/style source or `unsafe-inline` exception
   was introduced.
+- Reorganized the browser interface into Exercises, Practice exam, and Progress
+  modes. The problem now sits beside the editor on desktop, while style settings
+  and the complete solution use progressive disclosure instead of occupying the
+  primary workspace permanently.
+- Kept the exam workbench available below its timer and score, added compact
+  navigation badges for an active exam and solved count, and collapsed the layout
+  cleanly on narrower screens.
 
 ## 0.8.0
 

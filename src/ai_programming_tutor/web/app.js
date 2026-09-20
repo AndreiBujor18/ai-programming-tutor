@@ -13,6 +13,7 @@ const EXAM_DRAFTS_KEY = "aptutor-v0.6-exam-drafts";
 const PROGRESS_STORAGE_PREFIX = "aptutor-v0.7-progress-";
 const HISTORY_SETTING_PREFIX = "aptutor-v0.7-attempt-history-";
 const MAX_PROGRESS_IMPORT_BYTES = 100000;
+const WORKSPACE_VIEWS = ["practice", "exam", "progress"];
 const PROGRESS_CONCEPTS = [
   {id: "arrays", tags: ["arrays"]},
   {id: "loops", tags: ["loops", "sentinels"]},
@@ -139,6 +140,7 @@ function sanitiseProfile(value) {
 const state = {
   exercises: [], active: null, drafts: new Map(), edited: new Set(),
   persistDrafts: false,
+  workspaceView: "practice",
   locale: "ro", hints: [], hintIndex: 0, answer: "",
   lastResponse: null, lastAnswer: null, statusKey: "",
   profileId: "profile_a",
@@ -157,6 +159,36 @@ const state = {
 let codeEditor = null;
 
 function tr(key) { return translations.static[state.locale][key] || key; }
+
+function refreshWorkspaceNavigation() {
+  const view = WORKSPACE_VIEWS.includes(state.workspaceView)
+    ? state.workspaceView : "practice";
+  state.workspaceView = view;
+  element("app-shell").dataset.view = view;
+  element("practice-panel").hidden = view === "progress";
+  element("exam-panel").hidden = view !== "exam";
+  element("progress-panel").hidden = view !== "progress";
+  for (const candidate of WORKSPACE_VIEWS) {
+    element("view-" + candidate).setAttribute(
+      "aria-pressed", String(candidate === view)
+    );
+  }
+  const copy = {
+    practice: ["pageTitle", "intro"],
+    exam: ["examPageTitle", "examPageIntro"],
+    progress: ["progressPageTitle", "progressPageIntro"]
+  }[view];
+  element("page-title").textContent = tr(copy[0]);
+  element("intro-copy").textContent = tr(copy[1]);
+  element("workspace-nav").setAttribute("aria-label", tr("workspaceNavLabel"));
+  element("practice-panel").setAttribute("aria-label", tr("workspaceLabel"));
+}
+
+function setWorkspaceView(view) {
+  if (!WORKSPACE_VIEWS.includes(view)) return;
+  state.workspaceView = view;
+  refreshWorkspaceNavigation();
+}
 
 function currentSource() {
   return codeEditor ? codeEditor.getValue() : element("code").value;
@@ -528,6 +560,8 @@ function refreshProgress() {
   element("save-attempt-history").checked = state.attemptHistoryEnabled[state.profileId];
   element("progress-summary-badge").textContent = totals.favoriteCount + " ★ · "
     + totals.solvedCount + "/" + state.exercises.length + " ✓";
+  element("progress-tab-status").textContent = totals.solvedCount + "/"
+    + state.exercises.length;
   element("progress-summary").textContent = progressTotalsText(totals);
   const favoriteButton = element("favorite-exercise");
   const isFavorite = Boolean(state.active && progress.favorites.includes(state.active.id));
@@ -632,8 +666,15 @@ function profileSummary(profile) {
 }
 
 function refreshProfile() {
+  const profile = currentProfile();
   element("profile-select").value = state.profileId;
-  element("profile-summary").textContent = profileSummary(currentProfile());
+  element("profile-summary").textContent = profileSummary(profile);
+  const profileName = tr(state.profileId === "profile_b" ? "profileB" : "profileA");
+  const sampleCount = Number.isInteger(profile?.samples) ? profile.samples : 0;
+  const samples = state.locale === "ro"
+    ? (sampleCount === 1 ? "exemplu" : "exemple")
+    : (sampleCount === 1 ? "example" : "examples");
+  element("profile-panel-badge").textContent = profileName + " · " + sampleCount + " " + samples;
   setProfileMessage(state.profileMessageKey, state.profileMessageError);
   syncCodeEditorSettings();
 }
@@ -649,6 +690,7 @@ function translateStatic() {
   refreshProgress();
   setStatus(state.statusKey);
   renderExam();
+  refreshWorkspaceNavigation();
 }
 
 async function requestJSON(path, options) {
@@ -861,6 +903,9 @@ function renderExam() {
   const hasSession = state.exam.active || state.exam.finished || Object.keys(state.exam.scores).length > 0;
   element("exam-session").hidden = !hasSession;
   element("exam-timer").textContent = formatExamTime(examRemainingMs());
+  element("exam-tab-status").hidden = !state.exam.active;
+  element("exam-tab-status").textContent = state.exam.active
+    ? formatExamTime(examRemainingMs()) : "";
   element("exam-score").textContent = estimatedExamScore().toFixed(2) + " / "
     + examMaximum().toFixed(0);
   const taskList = element("exam-task-list");
@@ -899,6 +944,7 @@ function updateExamClock() {
     return;
   }
   element("exam-timer").textContent = formatExamTime(remaining);
+  element("exam-tab-status").textContent = formatExamTime(remaining);
 }
 
 function startExamClock() {
@@ -920,6 +966,7 @@ function startExam() {
   state.exam.scores = {};
   persistExamSession();
   startExamClock();
+  setWorkspaceView("exam");
   selectExercise(tasks[0].exercise_id);
   renderExam();
   notice(tr("examStarted"));
@@ -1567,6 +1614,9 @@ async function start() {
   mountCodeEditor();
   element("language-toggle").addEventListener("click", switchLanguage);
   element("theme-toggle").addEventListener("click", switchTheme);
+  element("view-practice").addEventListener("click", () => setWorkspaceView("practice"));
+  element("view-exam").addEventListener("click", () => setWorkspaceView("exam"));
+  element("view-progress").addEventListener("click", () => setWorkspaceView("progress"));
   element("profile-select").addEventListener("change", (event) => switchProfile(event.target.value));
   element("learn-style").addEventListener("click", learnStyle);
   element("reset-profile").addEventListener("click", resetProfile);
@@ -1625,6 +1675,7 @@ async function start() {
       : state.exercises.some((exercise) => exercise.id === "vector_menu")
         ? "vector_menu" : state.exercises[0].id;
     selectExercise(initialExercise);
+    setWorkspaceView(state.exam.active ? "exam" : "practice");
     if (state.exam.active) startExamClock();
     renderExam();
     if (state.exam.expired) notice(tr("examExpired"));

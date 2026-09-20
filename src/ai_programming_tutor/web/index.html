@@ -22,105 +22,113 @@
       <button id="theme-toggle" class="header-toggle" type="button" aria-pressed="false" aria-label="Activează modul întunecat">Mod întunecat</button>
     </div>
   </header>
-  <main class="page">
+  <main id="app-shell" class="page" data-view="practice">
     <section class="intro" aria-labelledby="page-title">
       <div>
         <h1 id="page-title" data-i18n="pageTitle">Exersează programarea</h1>
-        <p data-i18n="intro">Alege o problemă, scrie cât poți și rulează testele. Dacă te blochezi, cere un indiciu sau consultă rezolvarea explicată.</p>
+        <p id="intro-copy" data-i18n="intro">Alege o problemă, scrie cât poți și rulează testele. Dacă te blochezi, cere un indiciu sau consultă rezolvarea explicată.</p>
       </div>
     </section>
 
+    <nav id="workspace-nav" class="workspace-nav" aria-label="Secțiunile aplicației">
+      <button id="view-practice" class="workspace-tab" type="button" aria-controls="practice-panel" aria-pressed="true">
+        <span data-i18n="practiceView">Exerciții</span>
+      </button>
+      <button id="view-exam" class="workspace-tab" type="button" aria-controls="exam-panel practice-panel" aria-pressed="false">
+        <span data-i18n="examView">Simulare</span>
+        <span id="exam-tab-status" class="workspace-tab-badge" hidden></span>
+      </button>
+      <button id="view-progress" class="workspace-tab" type="button" aria-controls="progress-panel" aria-pressed="false">
+        <span data-i18n="progressView">Progres</span>
+        <span id="progress-tab-status" class="workspace-tab-badge">0/15</span>
+      </button>
+      <div class="workspace-profile">
+        <label for="profile-select" data-i18n="profileQuickLabel">Profil</label>
+        <select id="profile-select">
+          <option value="profile_a" data-i18n="profileA">Profil A</option>
+          <option value="profile_b" data-i18n="profileB">Profil B</option>
+        </select>
+      </div>
+    </nav>
+
     <div id="notice" class="notice" role="status" aria-live="polite" hidden></div>
-    <div class="workspace">
-      <aside class="exercise-column">
-        <section class="card exam-card" aria-labelledby="exam-heading">
-          <div class="section-head">
-            <h2 id="exam-heading" data-i18n="examHeading">Simulare test</h2>
-            <span id="exam-summary-badge" class="counter">60 min · 10p</span>
+
+    <section id="exam-panel" class="view-panel exam-panel" aria-labelledby="exam-heading" hidden>
+      <section class="card exam-card">
+        <div class="section-head">
+          <h2 id="exam-heading" data-i18n="examHeading">Simulare test</h2>
+          <span id="exam-summary-badge" class="counter">60 min · 10p</span>
+        </div>
+        <p class="exam-intro" data-i18n="examIntro">Patru probleme scurte, cu barem și punctaj orientativ calculat din teste.</p>
+        <div class="exam-actions">
+          <button id="start-exam" class="button button-secondary" type="button" data-i18n="examStart">Începe simularea</button>
+          <button id="finish-exam" class="text-button" type="button" data-i18n="examFinish" hidden>Încheie simularea</button>
+        </div>
+        <div id="exam-session" class="exam-session" hidden>
+          <div class="exam-metrics">
+            <div><span data-i18n="examTime">Timp rămas</span><strong id="exam-timer">60:00</strong></div>
+            <div><span data-i18n="examScore">Punctaj estimat</span><strong id="exam-score">1.00 / 10</strong></div>
           </div>
-          <p class="exam-intro" data-i18n="examIntro">Patru probleme scurte, cu barem și punctaj orientativ calculat din teste.</p>
-          <div class="exam-actions">
-            <button id="start-exam" class="button button-secondary" type="button" data-i18n="examStart">Începe simularea</button>
-            <button id="finish-exam" class="text-button" type="button" data-i18n="examFinish" hidden>Încheie simularea</button>
-          </div>
-          <div id="exam-session" class="exam-session" hidden>
-            <div class="exam-metrics">
-              <div><span data-i18n="examTime">Timp rămas</span><strong id="exam-timer">60:00</strong></div>
-              <div><span data-i18n="examScore">Punctaj estimat</span><strong id="exam-score">1.00 / 10</strong></div>
-            </div>
-            <ol id="exam-task-list" class="exam-task-list"></ol>
+          <ol id="exam-task-list" class="exam-task-list"></ol>
+          <div class="exam-session-actions">
             <button id="next-exam-task" class="button button-outline" type="button" data-i18n="examNext">Următoarea problemă</button>
             <p id="exam-note" class="small muted"></p>
           </div>
-          <details class="exam-rubric">
-            <summary data-i18n="examRubric">Vezi baremul</summary>
-            <ol id="exam-rubric-list"></ol>
-          </details>
-        </section>
-        <section class="card progress-card" aria-labelledby="progress-heading">
-          <div class="section-head">
-            <h2 id="progress-heading" data-i18n="progressHeading">Progres local</h2>
-            <span id="progress-summary-badge" class="counter">0 · 0 · 0</span>
-          </div>
-          <label class="draft-toggle">
-            <input id="save-attempt-history" type="checkbox">
-            <span data-i18n="saveAttemptHistory">Salvează rezultatele încercărilor</span>
-          </label>
-          <p id="progress-summary" class="progress-summary"></p>
-          <p class="small muted" data-i18n="progressPrivacy">Favoritele sunt salvate numai când le alegi. Istoricul este opțional și păstrează doar momentul și numărul testelor trecute, niciodată codul.</p>
-          <details id="progress-breakdown" class="progress-breakdown">
-            <summary data-i18n="progressBreakdown">Concepte și exerciții</summary>
-            <div class="progress-breakdown-body">
-              <h3 data-i18n="conceptProgressHeading">Concepte</h3>
-              <p id="concept-progress-note" class="small muted"></p>
-              <ul id="concept-progress" class="progress-list"></ul>
-              <p id="concept-progress-overlap" class="small muted" data-i18n="conceptProgressOverlap">Un exercițiu poate apărea la mai multe concepte; „rezolvat” înseamnă doar că toate testele locale au trecut cel puțin o dată.</p>
-              <h3 data-i18n="trackedExercisesHeading">Exerciții urmărite</h3>
-              <ul id="exercise-progress-list" class="progress-list"></ul>
-              <p id="progress-breakdown-empty" class="small muted" data-i18n="progressBreakdownEmpty">Încă nu există favorite sau încercări salvate.</p>
-            </div>
-          </details>
-          <div class="progress-transfer-actions">
-            <button id="export-progress" class="text-button" type="button" data-i18n="exportProgress">Exportă JSON</button>
-            <button id="import-progress-trigger" class="text-button" type="button" data-i18n="importProgress">Importă JSON</button>
-            <input id="import-progress" class="visually-hidden" type="file" accept=".json,application/json">
-          </div>
-          <p class="small muted" data-i18n="progressTransferPrivacy">Transferă numai favoritele și rezultatele numerice ale profilului activ; importul înlocuiește progresul lui.</p>
-          <button id="clear-progress" class="text-button" type="button" data-i18n="clearProgress">Șterge progresul profilului</button>
-          <p id="progress-message" class="small" role="status" aria-live="polite"></p>
-        </section>
-        <section class="card exercise-card" aria-labelledby="exercise-heading">
-          <h2 id="exercise-heading" data-i18n="exerciseHeading">Exercițiu</h2>
-          <label for="exercise-select" class="field-label" data-i18n="exerciseLabel">Alege o problemă</label>
-          <select id="exercise-select" aria-describedby="exercise-count"><option>Se încarcă exercițiile…</option></select>
-          <p id="exercise-count" class="small muted"></p>
-          <div class="divider"></div>
-          <div class="exercise-title-row">
-            <h3 id="exercise-title">Se încarcă…</h3>
-            <button id="favorite-exercise" class="text-button favorite-button" type="button" aria-pressed="false">☆ Favorit</button>
-          </div>
-          <p id="exercise-progress" class="small muted"></p>
-          <p id="exercise-statement" class="statement"></p>
-          <dl class="formats"><dt data-i18n="input">Intrare</dt><dd id="input-format"></dd><dt data-i18n="output">Ieșire</dt><dd id="output-format"></dd></dl>
-          <details class="sample-tests"><summary data-i18n="publicExamples">Vezi exemplele publice</summary><ul id="public-tests"></ul></details>
-        </section>
-        <p class="side-note"><strong data-i18n="courseNoteTitle">Domeniul actual:</strong> <span data-i18n="courseNoteText">C clasic pentru PCLP1/Calculatoare, cu scanf, printf și FILE*. Sintaxa C++ rămâne în afara acestui experiment.</span></p>
-      </aside>
+        </div>
+        <details class="exam-rubric">
+          <summary data-i18n="examRubric">Vezi baremul</summary>
+          <ol id="exam-rubric-list"></ol>
+        </details>
+      </section>
+    </section>
 
-      <div class="main-column">
-        <section class="card profile-card" aria-labelledby="profile-heading">
-          <div class="section-head">
-            <h2 id="profile-heading" data-i18n="profileHeading">Profil de stil</h2>
-            <span class="counter" data-i18n="experimental">experiment local</span>
+    <section id="progress-panel" class="view-panel progress-panel" aria-labelledby="progress-heading" hidden>
+      <section class="card progress-card">
+        <div class="section-head">
+          <h2 id="progress-heading" data-i18n="progressHeading">Progres local</h2>
+          <span id="progress-summary-badge" class="counter">0 · 0 · 0</span>
+        </div>
+        <label class="draft-toggle">
+          <input id="save-attempt-history" type="checkbox">
+          <span data-i18n="saveAttemptHistory">Salvează rezultatele încercărilor</span>
+        </label>
+        <p id="progress-summary" class="progress-summary"></p>
+        <p class="small muted" data-i18n="progressPrivacy">Favoritele sunt salvate numai când le alegi. Istoricul este opțional și păstrează doar momentul și numărul testelor trecute, niciodată codul.</p>
+        <details id="progress-breakdown" class="progress-breakdown" open>
+          <summary data-i18n="progressBreakdown">Concepte și exerciții</summary>
+          <div class="progress-breakdown-body">
+            <h3 data-i18n="conceptProgressHeading">Concepte</h3>
+            <p id="concept-progress-note" class="small muted"></p>
+            <ul id="concept-progress" class="progress-list"></ul>
+            <p id="concept-progress-overlap" class="small muted" data-i18n="conceptProgressOverlap">Un exercițiu poate apărea la mai multe concepte; „rezolvat” înseamnă doar că toate testele locale au trecut cel puțin o dată.</p>
+            <h3 data-i18n="trackedExercisesHeading">Exerciții urmărite</h3>
+            <ul id="exercise-progress-list" class="progress-list"></ul>
+            <p id="progress-breakdown-empty" class="small muted" data-i18n="progressBreakdownEmpty">Încă nu există favorite sau încercări salvate.</p>
           </div>
-          <div class="profile-controls">
-            <div>
-              <label for="profile-select" class="field-label" data-i18n="profileLabel">Profilul de test</label>
-              <select id="profile-select">
-                <option value="profile_a" data-i18n="profileA">Profil A</option>
-                <option value="profile_b" data-i18n="profileB">Profil B</option>
-              </select>
-            </div>
+        </details>
+        <div class="progress-transfer-actions">
+          <button id="export-progress" class="text-button" type="button" data-i18n="exportProgress">Exportă JSON</button>
+          <button id="import-progress-trigger" class="text-button" type="button" data-i18n="importProgress">Importă JSON</button>
+          <input id="import-progress" class="visually-hidden" type="file" accept=".json,application/json">
+        </div>
+        <p class="small muted" data-i18n="progressTransferPrivacy">Transferă numai favoritele și rezultatele numerice ale profilului activ; importul înlocuiește progresul lui.</p>
+        <button id="clear-progress" class="text-button" type="button" data-i18n="clearProgress">Șterge progresul profilului</button>
+        <p id="progress-message" class="small" role="status" aria-live="polite"></p>
+      </section>
+    </section>
+
+    <section id="practice-panel" class="view-panel practice-panel" aria-label="Spațiu de lucru">
+      <details id="profile-panel" class="card disclosure-card profile-card">
+        <summary class="disclosure-summary">
+          <span id="profile-heading" class="disclosure-title" role="heading" aria-level="2" data-i18n="profileHeading">Profil de stil</span>
+          <span class="disclosure-meta">
+            <span id="profile-panel-badge" class="counter">Profil A</span>
+            <span class="disclosure-chevron" aria-hidden="true"></span>
+          </span>
+        </summary>
+        <div class="disclosure-body">
+          <div class="profile-actions">
+            <p class="small muted" data-i18n="profilePanelIntro">Analizează codul curent pentru a actualiza preferințele profilului selectat.</p>
             <button id="learn-style" class="button button-secondary" type="button" data-i18n="learnStyle">Învață din codul curent</button>
           </div>
           <p id="profile-summary" class="profile-summary"></p>
@@ -129,39 +137,70 @@
             <button id="reset-profile" class="text-button" type="button" data-i18n="resetProfile">Resetează stilul</button>
           </div>
           <p id="profile-message" class="small" role="status" aria-live="polite"></p>
-        </section>
+        </div>
+      </details>
 
-        <section class="card editor-card" aria-labelledby="editor-heading">
-          <div class="section-head"><h2 id="editor-heading" data-i18n="editorHeading">Codul tău</h2><span id="file-label" class="file-pill">main.c · C17 / gcc</span></div>
-          <label for="code" class="visually-hidden" data-i18n="sourceCode">Cod sursă</label>
-          <textarea id="code" spellcheck="false" autocomplete="off" autocapitalize="off" aria-describedby="editor-help"></textarea>
-          <div id="code-editor" class="code-editor-shell" hidden></div>
-          <div class="draft-controls">
-            <label class="draft-toggle"><input id="save-drafts" type="checkbox"> <span data-i18n="saveDrafts">Salvează ciornele pe acest dispozitiv</span></label>
-            <button id="reset-draft" class="text-button" type="button" data-i18n="resetDraft">Reia șablonul exercițiului</button>
-          </div>
-          <p id="editor-help" class="small muted" data-i18n="editorHelp">Salvarea permanentă a ciornelor este oprită. Într-o simulare, codul este păstrat temporar în această filă pentru refresh și revizuire; în rest revine șablonul exercițiului. Compilarea este numai pentru uz local.</p>
-          <div class="editor-actions"><button id="run" class="button button-primary" type="button" data-i18n="runTests">Rulează testele</button><span id="run-status" role="status" aria-live="polite"></span></div>
-        </section>
+      <div class="practice-workspace">
+        <aside class="problem-column">
+          <section class="card exercise-card" aria-labelledby="exercise-heading">
+            <h2 id="exercise-heading" data-i18n="exerciseHeading">Exercițiu</h2>
+            <label for="exercise-select" class="field-label" data-i18n="exerciseLabel">Alege o problemă</label>
+            <select id="exercise-select" aria-describedby="exercise-count"><option>Se încarcă exercițiile…</option></select>
+            <p id="exercise-count" class="small muted"></p>
+            <div class="divider"></div>
+            <div class="exercise-title-row">
+              <h3 id="exercise-title">Se încarcă…</h3>
+              <button id="favorite-exercise" class="text-button favorite-button" type="button" aria-pressed="false">☆ Favorit</button>
+            </div>
+            <p id="exercise-progress" class="small muted"></p>
+            <p id="exercise-statement" class="statement"></p>
+            <dl class="formats"><dt data-i18n="input">Intrare</dt><dd id="input-format"></dd><dt data-i18n="output">Ieșire</dt><dd id="output-format"></dd></dl>
+            <details class="sample-tests"><summary data-i18n="publicExamples">Vezi exemplele publice</summary><ul id="public-tests"></ul></details>
+          </section>
+          <p class="side-note"><strong data-i18n="courseNoteTitle">Domeniul actual:</strong> <span data-i18n="courseNoteText">C clasic pentru PCLP1/Calculatoare, cu scanf, printf și FILE*. Sintaxa C++ rămâne în afara acestui experiment.</span></p>
+        </aside>
 
-        <section id="result-card" class="card result-card" aria-labelledby="result-heading" hidden>
-          <div class="section-head"><h2 id="result-heading" data-i18n="resultsHeading">Rezultatele testelor</h2><span id="result-count" class="counter"></span></div>
-          <div id="language-warning" class="warning" hidden></div>
-          <div id="compiler-output"></div>
-          <div id="diagnosis"></div>
-          <ul id="test-results" class="test-results"></ul>
-          <div id="hint-area" class="hint-area" hidden><h3 data-i18n="hintHeading">Ia-o pas cu pas</h3><p class="small muted" data-i18n="hintHelp">Fiecare indiciu este mai concret. Rezolvarea completă rămâne separată.</p><ol id="hints"></ol><button id="next-hint" class="button button-outline" type="button" hidden></button></div>
-        </section>
+        <div class="work-column">
+          <section class="card editor-card" aria-labelledby="editor-heading">
+            <div class="section-head"><h2 id="editor-heading" data-i18n="editorHeading">Codul tău</h2><span id="file-label" class="file-pill">main.c · C17 / gcc</span></div>
+            <label for="code" class="visually-hidden" data-i18n="sourceCode">Cod sursă</label>
+            <textarea id="code" spellcheck="false" autocomplete="off" autocapitalize="off" aria-describedby="editor-help"></textarea>
+            <div id="code-editor" class="code-editor-shell" hidden></div>
+            <div class="draft-controls">
+              <label class="draft-toggle"><input id="save-drafts" type="checkbox"> <span data-i18n="saveDrafts">Salvează ciornele pe acest dispozitiv</span></label>
+              <button id="reset-draft" class="text-button" type="button" data-i18n="resetDraft">Reia șablonul exercițiului</button>
+            </div>
+            <p id="editor-help" class="small muted" data-i18n="editorHelp">Salvarea permanentă a ciornelor este oprită. Într-o simulare, codul este păstrat temporar în această filă pentru refresh și revizuire; în rest revine șablonul exercițiului. Compilarea este numai pentru uz local.</p>
+            <div class="editor-actions"><button id="run" class="button button-primary" type="button" data-i18n="runTests">Rulează testele</button><span id="run-status" role="status" aria-live="polite"></span></div>
+          </section>
 
-        <section class="card solution-card" aria-labelledby="solution-heading">
-          <div class="section-head"><h2 id="solution-heading" data-i18n="solutionHeading">Rezolvarea completă</h2></div>
-          <p data-i18n="solutionIntro">O variantă verificată pentru acest exercițiu, nu o rescriere automată a codului tău. Compară pașii și apoi încearcă din nou.</p>
-          <div class="solution-controls"><div><label for="style" class="field-label" data-i18n="styleLabel">Stilul rezolvării</label><select id="style"><option value="personalized_c" data-i18n="stylePersonalized">După profilul meu</option><option value="pclp1_classic" data-i18n="stylePclp1Classic">PCLP1 clasic · FIESC</option><option value="classic_c" data-i18n="styleClassic">C clasic</option><option value="commented_c" data-i18n="styleCommented">C cu explicații în comentarii</option></select></div><button id="show-solution" class="button button-secondary" type="button" data-i18n="showSolution">Arată rezolvarea completă</button></div>
-          <p id="style-help" class="small muted" data-i18n="styleHelp">Varianta personalizată aplică preferințele profilului activ peste o rezolvare C verificată.</p>
-          <div id="solution-answer" class="solution-answer" hidden><div class="answer-toolbar"><span id="solution-meta"></span><button id="copy-solution" class="text-button" type="button" data-i18n="copyCode">Copiază codul</button></div><pre><code id="solution-code"></code></pre><h3 data-i18n="whyWorks">De ce funcționează</h3><ol id="solution-explanation"></ol><p id="solution-note" class="small muted"></p></div>
-        </section>
+          <section id="result-card" class="card result-card" aria-labelledby="result-heading" hidden>
+            <div class="section-head"><h2 id="result-heading" data-i18n="resultsHeading">Rezultatele testelor</h2><span id="result-count" class="counter"></span></div>
+            <div id="language-warning" class="warning" hidden></div>
+            <div id="compiler-output"></div>
+            <div id="diagnosis"></div>
+            <ul id="test-results" class="test-results"></ul>
+            <div id="hint-area" class="hint-area" hidden><h3 data-i18n="hintHeading">Ia-o pas cu pas</h3><p class="small muted" data-i18n="hintHelp">Fiecare indiciu este mai concret. Rezolvarea completă rămâne separată.</p><ol id="hints"></ol><button id="next-hint" class="button button-outline" type="button" hidden></button></div>
+          </section>
+
+          <details id="solution-panel" class="card disclosure-card solution-card">
+            <summary class="disclosure-summary">
+              <span id="solution-heading" class="disclosure-title" role="heading" aria-level="2" data-i18n="solutionHeading">Rezolvarea completă</span>
+              <span class="disclosure-meta">
+                <span class="disclosure-context" data-i18n="solutionOptional">Ajutor opțional</span>
+                <span class="disclosure-chevron" aria-hidden="true"></span>
+              </span>
+            </summary>
+            <div class="disclosure-body solution-body">
+              <p data-i18n="solutionIntro">O variantă verificată pentru acest exercițiu, nu o rescriere automată a codului tău. Compară pașii și apoi încearcă din nou.</p>
+              <div class="solution-controls"><div><label for="style" class="field-label" data-i18n="styleLabel">Stilul rezolvării</label><select id="style"><option value="personalized_c" data-i18n="stylePersonalized">După profilul meu</option><option value="pclp1_classic" data-i18n="stylePclp1Classic">PCLP1 clasic · FIESC</option><option value="classic_c" data-i18n="styleClassic">C clasic</option><option value="commented_c" data-i18n="styleCommented">C cu explicații în comentarii</option></select></div><button id="show-solution" class="button button-secondary" type="button" data-i18n="showSolution">Arată rezolvarea completă</button></div>
+              <p id="style-help" class="small muted" data-i18n="styleHelp">Varianta personalizată aplică preferințele profilului activ peste o rezolvare C verificată.</p>
+              <div id="solution-answer" class="solution-answer" hidden><div class="answer-toolbar"><span id="solution-meta"></span><button id="copy-solution" class="text-button" type="button" data-i18n="copyCode">Copiază codul</button></div><pre><code id="solution-code"></code></pre><h3 data-i18n="whyWorks">De ce funcționează</h3><ol id="solution-explanation"></ol><p id="solution-note" class="small muted"></p></div>
+            </div>
+          </details>
+        </div>
       </div>
-    </div>
+    </section>
   </main>
   <footer class="footer" data-i18n="footer">Exerciții PCLP1 · rulează local pe calculatorul tău</footer>
 </body>

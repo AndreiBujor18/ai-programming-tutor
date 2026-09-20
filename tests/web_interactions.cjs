@@ -17,6 +17,7 @@ class Element {
     this.options = [];
     this.listeners = {};
     this.attributes = {};
+    this.dataset = {};
     this.classList = {toggle() {}};
     this.hidden = false;
     this.value = "";
@@ -66,6 +67,10 @@ const fakeURL = {
 };
 
 const ids = [
+  "app-shell", "page-title", "intro-copy", "workspace-nav",
+  "view-practice", "view-exam", "view-progress", "practice-panel",
+  "exam-panel", "progress-panel", "exam-tab-status", "progress-tab-status",
+  "profile-panel", "profile-panel-badge", "solution-panel",
   "language-toggle", "theme-toggle", "notice", "run-status", "result-card",
   "solution-answer", "hint-area", "next-hint", "public-tests",
   "exercise-select", "exercise-title", "exercise-statement", "input-format",
@@ -263,6 +268,20 @@ vm.runInContext(fs.readFileSync(path.join(root, "app.js"), "utf8"), context);
   assert.equal(document.documentElement.lang, "ro");
   assert.equal(elements["language-toggle"].textContent, "English");
   assert.equal(elements["exercise-title"].textContent, "Meniu de comenzi pentru vector");
+  assert.equal(elements["practice-panel"].hidden, false);
+  assert.equal(elements["exam-panel"].hidden, true);
+  assert.equal(elements["progress-panel"].hidden, true);
+  assert.equal(elements["view-practice"].attributes["aria-pressed"], "true");
+  assert.equal(elements["page-title"].textContent, "Exersează programarea");
+  elements["view-progress"].listeners.click();
+  assert.equal(elements["practice-panel"].hidden, true);
+  assert.equal(elements["progress-panel"].hidden, false);
+  assert.equal(elements["page-title"].textContent, "Progresul tău local");
+  elements["view-exam"].listeners.click();
+  assert.equal(elements["practice-panel"].hidden, false);
+  assert.equal(elements["exam-panel"].hidden, false);
+  assert.equal(elements["page-title"].textContent, "Simulare de test");
+  elements["view-practice"].listeners.click();
   assert.ok(enhancedEditor, "enhanced editor was not mounted");
   assert.equal(enhancedEditor.getValue().includes("int main(void)"), true);
   vm.runInContext(
@@ -278,6 +297,7 @@ vm.runInContext(fs.readFileSync(path.join(root, "app.js"), "utf8"), context);
     "Fișier rezultat așteptat: summary.txt");
   vm.runInContext("renderPublicTests(state.active)", context);
   assert.equal(elements["profile-select"].value, "profile_a");
+  assert.equal(elements["profile-panel-badge"].textContent, "Profil A · 0 exemple");
   assert.equal(elements["profile-summary"].textContent.includes("Încă nu există"), true);
   assert.equal(elements["profile-message"].textContent.includes("resetate o singură dată"), true);
   assert.equal(elements["save-drafts"].checked, false);
@@ -290,6 +310,15 @@ vm.runInContext(fs.readFileSync(path.join(root, "app.js"), "utf8"), context);
   assert.equal(elements["progress-breakdown-empty"].hidden, false);
   assert.equal(stored["aptutor-v0.7-progress-profile_b"], undefined,
     "disabled history retained an old numeric attempt");
+  elements["view-progress"].listeners.click();
+  elements["profile-select"].value = "profile_b";
+  elements["profile-select"].listeners.change({target: elements["profile-select"]});
+  assert.equal(elements["profile-panel-badge"].textContent, "Profil B · 0 exemple");
+  assert.equal(elements["progress-panel"].hidden, false,
+    "switching profile unexpectedly left the progress view");
+  elements["profile-select"].value = "profile_a";
+  elements["profile-select"].listeners.change({target: elements["profile-select"]});
+  elements["view-practice"].listeners.click();
   elements["favorite-exercise"].listeners.click();
   let progressA = JSON.parse(stored["aptutor-v0.7-progress-profile_a"]);
   assert.deepStrictEqual(progressA.favorites, ["vector_menu"]);
@@ -309,6 +338,9 @@ vm.runInContext(fs.readFileSync(path.join(root, "app.js"), "utf8"), context);
   assert.equal(elements["concept-progress"].children.length, 3);
   assert.equal(elements["exam-summary-badge"].textContent, "60 min · 10p");
   elements["start-exam"].listeners.click();
+  assert.equal(elements["exam-panel"].hidden, false);
+  assert.equal(elements["view-exam"].attributes["aria-pressed"], "true");
+  assert.equal(elements["exam-tab-status"].hidden, false);
   assert.equal(elements["exam-session"].hidden, false);
   assert.equal(elements["exam-score"].textContent, "1.00 / 10");
   assert.ok(stored["aptutor-v0.6-exam-session"]);
@@ -408,6 +440,9 @@ vm.runInContext(fs.readFileSync(path.join(root, "app.js"), "utf8"), context);
   vm.runInContext("state.hintIndex = 1", context);
   elements["language-toggle"].listeners.click();
   assert.equal(document.documentElement.lang, "en");
+  assert.equal(elements["page-title"].textContent, "Practice exam");
+  assert.equal(elements["workspace-nav"].attributes["aria-label"], "Application sections");
+  assert.equal(elements["profile-panel-badge"].textContent, "Profile A · 1 example");
   assert.equal(elements.code.value, ownCodeA, "draft lost on language switch");
   assert.equal(elements["exercise-title"].textContent, "Vector menu");
   assert.equal(elements.hints.children.length, 3, "revealed hint count changed");
@@ -436,6 +471,7 @@ vm.runInContext(fs.readFileSync(path.join(root, "app.js"), "utf8"), context);
 
   assert.equal(elements["solution-code"].textContent, answer.source);
   elements["language-toggle"].listeners.click();
+  assert.equal(elements["page-title"].textContent, "Simulare de test");
   assert.equal(elements.code.value, ownCodeA);
   assert.equal(elements.hints.children.length, 3);
   assert.equal(elements["run-status"].textContent, "Gata");
@@ -543,6 +579,7 @@ vm.runInContext(fs.readFileSync(path.join(root, "app.js"), "utf8"), context);
   elements["finish-exam"].listeners.click();
   assert.equal(vm.runInContext("state.exam.finished", context), true);
   assert.equal(vm.runInContext("state.exam.active", context), false);
+  assert.equal(elements["exam-tab-status"].hidden, true);
   const frozenTimer = elements["exam-timer"].textContent;
   assert.ok(Number.isFinite(JSON.parse(stored["aptutor-v0.6-exam-session"]).remaining_ms));
   assert.equal(stored["aptutor-v0.6-exam-session"].includes(examReviewCode), false);

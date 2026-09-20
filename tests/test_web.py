@@ -394,6 +394,10 @@ class LocalWebTests(unittest.TestCase):
         html = (WEB_ROOT / "index.html").read_text(encoding="utf-8")
         css = (WEB_ROOT / "style.css").read_text(encoding="utf-8")
         for control_id in (
+            "app-shell", "workspace-nav", "view-practice", "view-exam",
+            "view-progress", "practice-panel", "exam-panel", "progress-panel",
+            "exam-tab-status", "progress-tab-status", "profile-panel",
+            "profile-panel-badge", "solution-panel",
             "language-toggle", "theme-toggle", "exercise-select", "profile-select",
             "learn-style", "reset-profile", "save-drafts", "reset-draft", "code",
             "code-editor",
@@ -411,6 +415,10 @@ class LocalWebTests(unittest.TestCase):
         self.assertIn('lang="ro"', html)
         self.assertIn("Exersează programarea", html)
         self.assertIn('class="topbar-controls"', html)
+        self.assertIn('class="practice-workspace"', html)
+        self.assertLess(html.index('id="exercise-heading"'), html.index('id="editor-heading"'))
+        self.assertIn('.workspace-tab[aria-pressed="true"]', css)
+        self.assertIn(".practice-workspace", css)
         self.assertLess(html.index('/static/editor.js'), html.index('/static/app.js'))
         self.assertIn(':root[data-theme="dark"]', css)
         self.assertNotIn('id="dialect"', html)
