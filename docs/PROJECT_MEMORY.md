@@ -1,4 +1,4 @@
-# Project memory — AI Programming Tutor v0.8.0 development
+# Project memory — AI Programming Tutor v0.8.0
 
 This is the maintainer handoff and continuity record for the project. It contains
 only public-safe decisions and implementation state. Private tutoring exports,
@@ -68,10 +68,9 @@ must never be copied into this document or the repository.
 | 0.6.2 | Locale-switch fix: visible hint depth, edited source, feedback, and run status remain synchronized |
 | 0.6.3 | Finished-exam timer snapshot and tab-scoped source recovery across refresh |
 | 0.7.0 | Profile-specific favorites, opt-in bounded numeric attempt history, last/best summaries, a derived concept/exercise view, and strict JSON transfer |
-| 0.8.0-dev0 | Strict project-authored file contracts, a fresh disposable directory per test, and bounded regular-file result checks |
-| 0.8.0-dev1 | First original file exercise, bilingual file-contract/result rendering, Files progress concept, and an explicitly frozen 14-exercise benchmark |
+| 0.8.0 | Strict project-authored file contracts, isolated per-test directories, the first original file exercise, bilingual file feedback, Files progress, and a frozen 14-exercise benchmark |
 
-## Current v0.8.0.dev1 capabilities
+## Current v0.8.0 capabilities
 
 - 15 original C17 exercises; every exercise has two public and three hidden tests.
 - 13 semantic diagnostic labels plus compiler errors and unknown fallbacks.
@@ -156,18 +155,11 @@ natural-data evaluation. The browser currently uses rules without loading the mo
   source-free storage, profile isolation, and deletion; the browser regression
   also verifies the complete favorite/history interaction, the derived bilingual
   concept/exercise view, and strict source-free JSON export/import.
-- The first v0.8.0 development slice passes 65/65 automated tests. New regressions
-  cover exact schema parsing, portable filename and byte bounds, a fresh workspace
-  for every test, missing/wrong/oversized/invalid-UTF-8 output files, POSIX
-  symbolic-link rejection, and hidden file-name/content redaction. Every existing
-  reference and generated solution style continues to pass its original
-  stdin/stdout tests.
-- The second v0.8.0 development slice passes 68/68 automated tests and adds the
-  fifteenth reference plus file-aware browser regressions. It verifies the authored
-  public/hidden file contracts,
-  existing-category diagnosis, all four generated solution styles, bilingual public
-  file blocks, nested file-result statuses, hidden redaction, and the Files progress
-  concept.
+- The v0.8.0 release tree passes 68/68 automated tests. Regressions cover exact
+  schema parsing, filename and byte bounds, fresh per-test workspaces, structured
+  file failures, POSIX symbolic-link rejection, hidden redaction, the fifteenth
+  reference, all four solution styles, bilingual public file blocks, nested file
+  statuses, and the Files progress concept.
 - The first v0.7.0 feature slice also passed its complete manual Windows protocol.
   Profile-specific favorites, opt-in history, latest/best results, forced-refresh
   persistence, history disablement, full progress clearing, and cross-profile
@@ -182,10 +174,14 @@ natural-data evaluation. The browser currently uses rules without loading the mo
   transfer states correctly.
 - All 15 reference solutions and every complete-solution style pass their exercise
   tests; generated variants compile without warnings in the tested matrix.
-- The release wheel installs as version 0.7.0 and exposes all 14 exercises plus the
+- The release wheel installs as version 0.8.0 and exposes all 15 exercises plus the
   four-task, 10-point practice exam.
-- The v0.7.0 release privacy scan found no uploaded archive, private filename, Library ID,
+- The v0.8.0 release privacy scan found no uploaded archive, private filename, Library ID,
   workspace path, PDF, image, office document, or raw tutoring export.
+- The focused v0.8.0 Windows protocol passed the public file contracts, starter
+  failure, verified 5/5 solution, Romanian/English continuity, generic hidden-file
+  labels, Files progress, and Profile A/B draft and history isolation. See
+  `docs/ACCEPTANCE_V080_FILES.md`.
 - The six-stage manual Windows acceptance protocol is complete. The final regression
   confirmed frozen finished time, same-tab source recovery, and removal of temporary
   exam source after tab closure with permanent drafts disabled. See
@@ -208,24 +204,27 @@ Test 6 confirms the complete v0.6.3 lifecycle: finished time remains frozen, the
 numeric result and edited source survive a same-tab refresh, and temporary exam
 source disappears after the tab is closed when permanent drafts are disabled.
 
-The public-safe evidence records are in `docs/ACCEPTANCE_V063.md` and
-`docs/ACCEPTANCE_V070_LOCAL_PROGRESS.md`. The v0.8.0 development schema and
-automated acceptance boundary are in `docs/FILE_TEST_CONTRACT.md`.
+The focused v0.8.0 protocol confirms the complete fixed-file lifecycle: public
+contracts render without empty console blocks, starter and reference results expose
+only the intended per-file detail, both locales preserve active state, Files
+progress is derived correctly, and Profile A/B drafts and history remain isolated.
+
+The public-safe evidence records are in `docs/ACCEPTANCE_V063.md`,
+`docs/ACCEPTANCE_V070_LOCAL_PROGRESS.md`, and `docs/ACCEPTANCE_V080_FILES.md`.
+The v0.8.0 schema and automated acceptance boundary are in
+`docs/FILE_TEST_CONTRACT.md`.
 
 ## Recommended next step
 
-The complete v0.7.0 local-progress sprint is implemented and manually accepted:
-profile-specific favorites, opt-in numeric attempt history, per-exercise last/best
-summaries, refresh persistence, and immediate profile-scoped deletion. The compact
-concept/exercise view and strict active-profile JSON transfer are also accepted.
-Accounts and a server database remain deliberately outside this sprint.
+The v0.8.0 file-aware runner and first original browser exercise are implemented,
+automatically verified, and manually accepted on Windows in both locales. Public
+contracts, structured file statuses, hidden redaction, profile-specific drafts and
+progress, and the Files concept behave as intended. Learner uploads remain out of
+scope.
 
-The file-aware runner foundation and first original browser exercise are now
-implemented. Next, run the focused manual Windows acceptance for public file
-contracts, per-file statuses, both locales, draft/profile behavior, and the Files
-progress concept. Keep learner uploads out of scope. A file-specific diagnostic
-label must wait for a second independent exercise family and a new reviewed
-benchmark version.
+Next, add a second independent file-processing family before deciding whether a
+file-specific diagnostic label and a new reviewed benchmark version are justified.
+Accounts and a server database remain deliberately outside the current local scope.
 
 In parallel planning, prioritize consented natural-code evaluation before improving
 the model or deploying public code execution.

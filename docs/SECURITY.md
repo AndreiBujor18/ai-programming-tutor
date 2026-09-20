@@ -11,7 +11,7 @@ processes on a shared host; compilation remains bounded by the other resource
 limits and a wall-clock timeout. These controls reduce accidental damage and make
 automated tests predictable.
 
-The v0.8.0 development runner adds file-aware tests without accepting learner file
+The v0.8.0 runner adds file-aware tests without accepting learner file
 uploads. Fixtures and expected file contents are project-authored text only. Their
 schema allows portable flat filenames, at most eight combined entries per test,
 32,000 UTF-8 bytes per entry, and 64,000 bytes across the complete file contract.
@@ -29,7 +29,7 @@ test so descendants do not keep writing after their parent exits. The Windows
 prototype cannot guarantee equivalent descendant-tree cleanup without a job-object
 worker, reinforcing the trusted-local boundary.
 
-The v0.7.0 dependency-free demo binds only to `127.0.0.1`, checks the Host and Origin
+The v0.8.0 dependency-free demo binds only to `127.0.0.1`, checks the Host and Origin
 for local requests, and requires `--enable-local-execution` to run user source.
 The optional FastAPI runner endpoint requires both a loopback client and explicit
 `APTUTOR_ENABLE_LOCAL_EXECUTION=1`; launch it with `--host 127.0.0.1`. Neither

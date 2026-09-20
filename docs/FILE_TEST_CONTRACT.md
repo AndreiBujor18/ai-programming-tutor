@@ -1,4 +1,4 @@
-# File test contract — v0.8.0 development
+# File test contract — v0.8.0
 
 This contract is for project-authored exercise data. It does not accept browser
 uploads and does not turn the trusted-local runner into a security sandbox.
@@ -78,4 +78,6 @@ missing files, oversized and invalid-UTF-8 output, and POSIX symbolic-link rejec
 The `file_number_summary` catalog exercise exercises the contract with two public
 and three hidden cases. Browser regressions cover bilingual public fixture and
 expected-file rendering, nested result-file statuses, and generic hidden-file
-labels. Arbitrary uploads and public execution remain outside this boundary.
+labels. The focused Windows browser protocol also passed in both locales with
+profile-specific draft/progress continuity; see `docs/ACCEPTANCE_V080_FILES.md`.
+Arbitrary uploads and public execution remain outside this boundary.

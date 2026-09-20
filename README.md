@@ -8,7 +8,7 @@ complete, explained, tested reference solution as a separate action.
 The repository name is intentionally neutral. Product branding can change later
 without renaming the Python package or rewriting the architecture.
 
-## Unreleased v0.8.0 development
+## File-aware execution in v0.8.0
 
 The runner now understands bounded, project-authored text fixtures and expected
 output files. Each test receives a fresh disposable working directory; output-file
@@ -16,7 +16,7 @@ checks reject missing, oversized, unreadable, and non-regular entries, including
 symbolic links. Test-suite fingerprints include these file contracts, and hidden
 file names and contents are redacted from learner-facing results.
 
-The development catalog now contains 15 exercises. The original
+The catalog now contains 15 exercises. The original
 `file_number_summary` exercise reads `numbers.txt`, writes `summary.txt`, and has
 two public plus three hidden authored file cases. The Romanian/English browser shows
 public fixture and expected-file contents, then reports each result-file status while
@@ -27,9 +27,9 @@ and the local runner is still not a security sandbox. The frozen diagnostic
 benchmark remains the reviewed 14-exercise, 1,136-program v0.3 dataset; the first
 file family is not presented as independent evidence for a new classifier label.
 
-## What works in stable v0.7.0
+## What works in v0.8.0
 
-- 14 fixed C exercises with public and hidden tests;
+- 15 fixed C exercises with public and hidden tests;
 - an original four-task, 60-minute PCLP1 practice exam with a transparent
   10-point rubric and browser-only progress;
 - a local browser interface: editor, test feedback, three hint levels, and an
@@ -49,7 +49,7 @@ file family is not presented as independent evidence for a new classifier label.
   indentation; comment syntax and placement; `main` signature; loop declarations;
   control spacing; declaration layout; and aggregate identifier
   style/language/`snake_case`/`camelCase`;
-- personalized, PCLP1-classic, plain, and explained C references for all 14 exercises;
+- personalized, PCLP1-classic, plain, and explained C references for all 15 exercises;
 - source-free warnings for five legacy or non-portable C patterns without silently
   rewriting the learner's program;
 - local GCC runner with time, memory, process, source-size, and output limits;
@@ -203,7 +203,9 @@ The core is deliberately independent of the web framework:
 10. `service.py` exposes the application interface; `webserver.py` and `api.py`
    deliver it to the local browser.
 
-See `docs/PROJECT_BRIEF.md`, `docs/ACCEPTANCE_V063.md`, `docs/BUG_TAXONOMY.md`,
+See `docs/PROJECT_BRIEF.md`, `docs/ACCEPTANCE_V063.md`,
+`docs/ACCEPTANCE_V070_LOCAL_PROGRESS.md`, `docs/ACCEPTANCE_V080_FILES.md`,
+`docs/BUG_TAXONOMY.md`,
 `docs/DATA_PROVENANCE.md`, `docs/CURRICULUM_ALIGNMENT.md`,
 `docs/STYLE_PERSONALIZATION.md`, and
 `docs/SECURITY.md` for the product scope, labels, privacy boundary, manual
@@ -211,7 +213,7 @@ two-profile experiment, and execution threat model.
 
 `docs/PROJECT_MEMORY.md` is the concise maintainer handoff: settled decisions,
 release history, current metrics, privacy rules, and the exact next sprint.
-`docs/FILE_TEST_CONTRACT.md` defines the unreleased project-authored fixture schema,
+`docs/FILE_TEST_CONTRACT.md` defines the project-authored fixture schema,
 per-test lifecycle, file-result statuses, and its trusted-local boundary.
 
 ## License

@@ -1,4 +1,4 @@
-# Project brief — v0.8.0 development
+# Project brief — v0.8.0
 
 ## Product hypothesis
 
@@ -29,11 +29,11 @@ outside the current product experiment.
 8. During a practice exam, the browser keeps the timer, active task, and numeric
    best-attempt score locally without adding source code to the exam record.
 
-The stable v0.7.0 prototype implements this flow in a dependency-free localhost
-website, CLI, and optional FastAPI service for 14 exercises. No account or
+The stable v0.8.0 prototype implements this flow in a dependency-free localhost
+website, CLI, and optional FastAPI service for 15 exercises. No account or
 server-side attempt history is persisted; optional drafts, bounded numeric progress,
-and exam state never leave browser storage. The v0.8.0 development branch adds the
-file-aware runner contract and a fifteenth original file exercise with bilingual
+and exam state never leave browser storage. The fixed file workflow adds a strict
+project-authored runner contract and an original file exercise with bilingual
 contract and result rendering.
 
 ## In scope for V1
@@ -149,7 +149,7 @@ Target product metrics:
   source are included; benchmark claims remain limited to controlled mutations;
 - local HTTP execution is opt-in and rejects cross-origin requests.
 
-The first v0.8.0 development slice additionally requires exact file-contract keys,
+The first v0.8.0 engineering slice additionally requires exact file-contract keys,
 portable flat names, eight combined entries at most, bounded authored content, a
 fresh work directory for every test, regular-file-only result inspection, hidden
 content redaction, and unchanged behavior for all existing stdin/stdout exercises.
@@ -159,16 +159,15 @@ hidden-file labels, a Files progress concept, and no arbitrary upload surface.
 
 ## Next sprint
 
-The v0.7.0 local-progress sprint and its manual acceptance protocol are complete.
-The first two v0.8.0 engineering slices now provide strict project-authored file
-fixtures, bounded expected-file checks, a fresh disposable work directory for every
-test, and one fixed browser exercise. This remains a trusted-local improvement, not
-a public sandbox claim.
+The v0.8.0 file workflow and its focused Windows manual acceptance protocol are
+complete. Strict project-authored fixtures, bounded expected-file checks, a fresh
+disposable work directory for every test, bilingual file feedback, profile/draft
+continuity, and Files progress are accepted. This remains a trusted-local
+improvement, not a public sandbox claim.
 
-Next, manually accept the complete file workflow on Windows in both locales,
-including public contracts, per-file statuses, profile/draft continuity, and the
-Files progress group. Do not add arbitrary uploads or broaden the execution
-boundary. A file-specific label must wait for another independent exercise family.
+Next, add a second independent file-processing exercise family before considering
+a file-specific diagnostic label or a new reviewed benchmark version. Do not add
+arbitrary uploads or broaden the execution boundary.
 
 In parallel planning, design a consented, de-identified natural-code evaluation,
 especially for sentinel handling. Before public code execution, move the runner

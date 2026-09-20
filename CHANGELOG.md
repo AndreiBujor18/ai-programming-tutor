@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## 0.8.0
+
+- Completed the focused Windows manual acceptance of the fixed file workflow:
+  public contracts, failed and successful per-file results, Romanian/English
+  continuity, profile-specific drafts and progress, and the Files concept all
+  behaved as intended without adding an upload surface.
 - Added the original `file_number_summary` exercise with two public and three
   hidden authored `numbers.txt`/`summary.txt` contracts, existing-category
   diagnosis, and tested classic, commented, PCLP1, and personalized solutions.

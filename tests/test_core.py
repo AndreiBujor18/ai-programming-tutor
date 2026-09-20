@@ -30,7 +30,7 @@ class VersionTests(unittest.TestCase):
     def test_package_and_project_versions_match(self) -> None:
         with (PROJECT_ROOT / "pyproject.toml").open("rb") as stream:
             metadata = tomllib.load(stream)
-        self.assertEqual(__version__, "0.8.0.dev1")
+        self.assertEqual(__version__, "0.8.0")
         self.assertEqual(metadata["project"]["version"], __version__)
 
 

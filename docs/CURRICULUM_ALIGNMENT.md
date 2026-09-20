@@ -1,4 +1,4 @@
-# Curriculum alignment — v0.8.0 development
+# Curriculum alignment — v0.8.0
 
 ## Scope and privacy boundary
 
