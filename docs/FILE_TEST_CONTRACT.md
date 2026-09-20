@@ -81,6 +81,8 @@ string-processing tasks. Browser regressions cover bilingual public fixture and
 expected-file rendering, nested result-file statuses, and generic hidden-file
 labels. The focused v0.8.0 Windows protocol accepted the first family in both
 locales with profile-specific draft/progress continuity; see
-`docs/ACCEPTANCE_V080_FILES.md`. The second family still requires its focused
-manual pass before a release claim. Arbitrary uploads and public execution remain
-outside this boundary.
+`docs/ACCEPTANCE_V080_FILES.md`. The focused v0.10.0 protocol accepted the second
+family's bilingual contract, hidden redaction, verified and faulty tie behavior,
+progressive hints, and source-free progress; see
+`docs/ACCEPTANCE_V0100_SECOND_FILE.md`. Arbitrary uploads and public execution
+remain outside this boundary.

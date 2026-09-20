@@ -1,4 +1,4 @@
-# Project memory — AI Programming Tutor post-v0.9.0 development
+# Project memory — AI Programming Tutor v0.10.0
 
 This is the maintainer handoff and continuity record for the project. It contains
 only public-safe decisions and implementation state. Private tutoring exports,
@@ -70,9 +70,9 @@ must never be copied into this document or the repository.
 | 0.7.0 | Profile-specific favorites, opt-in bounded numeric attempt history, last/best summaries, a derived concept/exercise view, and strict JSON transfer |
 | 0.8.0 | Strict project-authored file contracts, isolated per-test directories, the first original file exercise, bilingual file feedback, Files progress, and a frozen 14-exercise benchmark |
 | 0.9.0 | Locally bundled CodeMirror 6 C editor, Exercises/Practice exam/Progress modes, side-by-side desktop workbench, progressive disclosure, and responsive manual acceptance |
-| Unreleased | Second independent fixed-file family for bounded string processing, with first-on-tie behavior and the benchmark boundary preserved |
+| 0.10.0 | Second independent fixed-file family for bounded string processing, first-on-tie diagnosis and hints, bilingual manual acceptance, and the frozen benchmark boundary preserved |
 
-## Current development capabilities
+## Current v0.10.0 capabilities
 
 - 16 original C17 exercises; every exercise has two public and three hidden tests.
 - 13 semantic diagnostic labels plus compiler errors and unknown fallbacks.
@@ -177,7 +177,7 @@ natural-data evaluation. The browser currently uses rules without loading the mo
   from Progress, active-exam navigation and timer status, and locale changes without
   losing edited source or visible feedback. The committed editor bundle rebuilds
   byte-for-byte from its source configuration.
-- The current development tree passes 71/71 automated tests. The sixteenth
+- The v0.10.0 release tree passes 71/71 automated tests. The sixteenth
   reference and every generated solution style pass all five string-file cases; the
   first-on-tie mutation is diagnosed through the existing relational-operator
   category, and the built wheel includes the complete second exercise family.
@@ -193,11 +193,11 @@ natural-data evaluation. The browser currently uses rules without loading the mo
   source-free envelope; confirmed import replaced only the active profile, Profile A
   remained unchanged, Profile B was restored to empty, and both locales rendered the
   transfer states correctly.
-- All 15 reference solutions and every complete-solution style pass their exercise
+- All 16 reference solutions and every complete-solution style pass their exercise
   tests; generated variants compile without warnings in the tested matrix.
-- The release wheel installs as version 0.9.0 and exposes all 15 exercises plus the
+- The release wheel installs as version 0.10.0 and exposes all 16 exercises plus the
   four-task, 10-point practice exam.
-- The v0.9.0 release privacy scan found no uploaded archive, private filename, Library ID,
+- The v0.10.0 release privacy scan found no uploaded archive, private filename, Library ID,
   workspace path, PDF, image, office document, or raw tutoring export.
 - The focused v0.8.0 Windows protocol passed the public file contracts, starter
   failure, verified 5/5 solution, Romanian/English continuity, generic hidden-file
@@ -207,6 +207,10 @@ natural-data evaluation. The browser currently uses rules without loading the mo
   top-level modes, side-by-side and half-width layouts, both themes, and both locales
   without changing the accepted local-state or execution boundaries. See
   `docs/ACCEPTANCE_V090_INTERFACE.md`.
+- The focused v0.10.0 Windows protocol accepted the second file family's Romanian
+  and English contracts, public and hidden result rendering, verified solution,
+  first-on-tie diagnosis and hints, and source-free Files/Strings progress. See
+  `docs/ACCEPTANCE_V0100_SECOND_FILE.md`.
 - The six-stage manual Windows acceptance protocol is complete. The final regression
   confirmed frozen finished time, same-tab source recovery, and removal of temporary
   exam source after tab closure with permanent drafts disabled. See
@@ -238,9 +242,15 @@ The focused v0.9.0 protocol confirms the editor and information-architecture
 refresh in Romanian and English, both themes, and full and half-width desktop
 layouts. The coding, exam, and progress workflows remain intact.
 
+The focused v0.10.0 protocol confirms the second fixed-file family's complete
+learner workflow in both locales. Public fixtures remain visible, hidden fixtures
+remain redacted, strict first-on-tie behavior receives an existing-category
+diagnosis and three hints, and the final 5/5 result appears only as bounded numeric
+progress.
+
 The public-safe evidence records are in `docs/ACCEPTANCE_V063.md`,
 `docs/ACCEPTANCE_V070_LOCAL_PROGRESS.md`, `docs/ACCEPTANCE_V080_FILES.md`, and
-`docs/ACCEPTANCE_V090_INTERFACE.md`.
+`docs/ACCEPTANCE_V090_INTERFACE.md`, and `docs/ACCEPTANCE_V0100_SECOND_FILE.md`.
 The v0.8.0 schema and automated acceptance boundary are in
 `docs/FILE_TEST_CONTRACT.md`.
 
@@ -258,9 +268,9 @@ progress, and the Files concept behave as intended. Learner uploads remain out o
 scope.
 
 On the curriculum/evaluation track, the second independent file-processing family
-is now implemented. Complete its focused Windows acceptance, then review controlled
-mutations across both families before deciding whether a file-specific diagnostic
-label and a new benchmark version are justified.
+and its focused Windows acceptance are complete. Review controlled mutations across
+both families before deciding whether a file-specific diagnostic label and a new
+benchmark version are justified.
 Accounts and a server database remain deliberately outside the current local scope.
 
 In parallel planning, prioritize consented natural-code evaluation before improving

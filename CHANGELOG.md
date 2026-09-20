@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## 0.10.0
+
+- Completed focused Windows manual acceptance for the second file-processing
+  family: Romanian/English contracts, public and hidden result rendering, the
+  verified solution, first-on-tie diagnosis and hints, and source-free progress all
+  behaved as intended.
 - Added the independent `file_longest_word` exercise with two public and three
   hidden `words.txt`/`longest.txt` contracts, including first-on-tie and maximum
   100-character boundary cases.

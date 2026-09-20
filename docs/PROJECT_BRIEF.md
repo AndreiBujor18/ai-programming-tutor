@@ -1,4 +1,4 @@
-# Project brief — post-v0.9.0 development
+# Project brief — v0.10.0
 
 ## Product hypothesis
 
@@ -29,15 +29,14 @@ outside the current product experiment.
 8. During a practice exam, the browser keeps the timer, active task, and numeric
    best-attempt score locally without adding source code to the exam record.
 
-The stable v0.9.0 release implemented this flow for 15 exercises. The current
-development tree extends the dependency-free localhost website, CLI, and optional
-FastAPI service to 16 exercises with a second independent fixed-file family. No
-account or server-side attempt history is persisted; optional drafts, bounded
-numeric progress, and exam state never leave browser storage. The file workflow
-uses strict project-authored runner contracts and two original exercises with
-bilingual contract and result rendering. The browser uses a locally bundled,
-C-aware editor and separates Exercises, Practice exam, and Progress into focused
-top-level modes.
+The stable v0.10.0 release implements this flow in a dependency-free localhost
+website, CLI, and optional FastAPI service for 16 exercises, including two
+independent fixed-file families. No account or server-side attempt history is
+persisted; optional drafts, bounded numeric progress, and exam state never leave
+browser storage. The file workflow uses strict project-authored runner contracts
+and two original exercises with bilingual contract and result rendering. The
+browser uses a locally bundled, C-aware editor and separates Exercises, Practice
+exam, and Progress into focused top-level modes.
 
 ## In scope for V1
 
@@ -169,7 +168,7 @@ content redaction, and unchanged behavior for all existing stdin/stdout exercise
 The second slice additionally requires one original five-case file exercise,
 bilingual public fixture/expected-file blocks, nested file-result statuses, generic
 hidden-file labels, a Files progress concept, and no arbitrary upload surface.
-The current follow-on slice adds a second five-case family based on bounded strings,
+The v0.10.0 follow-on slice adds a second five-case family based on bounded strings,
 preserves the first word on equal maximum lengths, reuses reviewed diagnostic
 categories, and leaves the frozen benchmark unchanged pending a separate review.
 
@@ -186,11 +185,12 @@ disposable work directory for every test, bilingual file feedback, profile/draft
 continuity, and Files progress are accepted. This remains a trusted-local
 improvement, not a public sandbox claim.
 
-The second independent file-processing family is implemented and awaits focused
-Windows acceptance in both locales. After that pass, review controlled mutations
-across both file families before deciding whether a file-specific diagnostic label
-or a new benchmark version is justified. Do not add arbitrary uploads or broaden
-the execution boundary.
+The second independent file-processing family and its focused Windows acceptance
+are complete in both locales. Public contracts, hidden redaction, verified and
+faulty tie behavior, progressive hints, and source-free Files/Strings progress are
+accepted. Next, review controlled mutations across both file families before
+deciding whether a file-specific diagnostic label or a new benchmark version is
+justified. Do not add arbitrary uploads or broaden the execution boundary.
 
 In parallel planning, design a consented, de-identified natural-code evaluation,
 especially for sentinel handling. Before public code execution, move the runner

@@ -8,6 +8,21 @@ complete, explained, tested reference solution as a separate action.
 The repository name is intentionally neutral. Product branding can change later
 without renaming the Python package or rewriting the architecture.
 
+## Second file-processing family in v0.10.0
+
+The catalog now contains 16 exercises, including two independent fixed-file
+families. The new string exercise reads bounded lowercase words from `words.txt`
+and writes the first longest word plus its length to `longest.txt`. Its two public
+and three hidden cases cover a single word, a last-word maximum, ties, and the
+100-character boundary.
+
+Focused Windows acceptance confirmed the complete workflow in Romanian and
+English: public contracts, generic hidden-file labels, the verified 5/5 solution,
+the existing relational-operator diagnosis for an incorrect tie update, all three
+hints, and source-free Files/Strings progress. The diagnostic benchmark remains
+frozen at the reviewed 14 pre-file exercises and 1,136 controlled programs pending
+a separately reviewed mutation and evaluation update.
+
 ## Interface refresh in v0.9.0
 
 The browser now uses a locally bundled CodeMirror 6 editor with C17 syntax
@@ -45,7 +60,7 @@ second family broadens curriculum coverage, but is not by itself evidence for a 
 classifier label; both file exercises stay outside the frozen benchmark pending an
 explicit mutation and evaluation review.
 
-## What works in the current tree
+## What works in v0.10.0
 
 - 16 fixed C exercises with public and hidden tests;
 - an original four-task, 60-minute PCLP1 practice exam with a transparent
@@ -240,7 +255,7 @@ The core is deliberately independent of the web framework:
 
 See `docs/PROJECT_BRIEF.md`, `docs/ACCEPTANCE_V063.md`,
 `docs/ACCEPTANCE_V070_LOCAL_PROGRESS.md`, `docs/ACCEPTANCE_V080_FILES.md`,
-`docs/ACCEPTANCE_V090_INTERFACE.md`,
+`docs/ACCEPTANCE_V090_INTERFACE.md`, `docs/ACCEPTANCE_V0100_SECOND_FILE.md`,
 `docs/BUG_TAXONOMY.md`,
 `docs/DATA_PROVENANCE.md`, `docs/CURRICULUM_ALIGNMENT.md`,
 `docs/STYLE_PERSONALIZATION.md`, and
