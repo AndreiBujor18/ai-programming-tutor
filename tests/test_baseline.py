@@ -37,8 +37,10 @@ class BaselineTests(unittest.TestCase):
             metrics = train_baseline(dataset, model, metrics_path, matrix)
 
             self.assertEqual(metrics["evaluation"], "leave-one-exercise-out")
+            self.assertEqual(metrics["sample_count"], 164)
+            self.assertEqual(metrics["exercise_count"], 16)
             self.assertEqual(metrics["label_count"], 13)
-            self.assertEqual(len(metrics["folds"]), 14)
+            self.assertEqual(len(metrics["folds"]), 16)
             self.assertIn("rule_only", metrics)
             self.assertIn("hybrid", metrics)
             self.assertGreaterEqual(metrics["hybrid"]["top_3_recall"], metrics["top_3_recall"])

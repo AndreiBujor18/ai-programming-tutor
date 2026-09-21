@@ -12,7 +12,7 @@ from ai_programming_tutor.models import Exercise
 from ai_programming_tutor.runner import CRunner
 
 # Dataset provenance changes only when mutation logic changes, not on a UI release.
-GENERATOR_VERSION = "0.3.0"
+GENERATOR_VERSION = "0.4.0"
 
 
 @dataclass(frozen=True)
@@ -320,14 +320,82 @@ MUTATION_RULES: dict[str, tuple[MutationRule, ...]] = {
             "invalid_program_state", "if (item_count == 0)", "if (0)", "CURR-C-002"
         ),
     ),
+    "file_number_summary": (
+        MutationRule(
+            "loop_boundary",
+            "position = 1; position < item_count;",
+            "position = 1; position < item_count - 1;",
+            "author_designed_v0.4",
+        ),
+        MutationRule(
+            "relational_operator",
+            "value < minimum",
+            "value > minimum",
+            "author_designed_v0.4",
+        ),
+        MutationRule(
+            "wrong_initialization",
+            "long long total = value;",
+            "long long total = 0;",
+            "author_designed_v0.4",
+        ),
+        MutationRule(
+            "missing_update",
+            "total += value;",
+            "(void) value;",
+            "author_designed_v0.4",
+        ),
+        MutationRule(
+            "accumulator_misuse",
+            "total += value;",
+            "total = value;",
+            "author_designed_v0.4",
+        ),
+        MutationRule(
+            "wrong_identifier_or_argument",
+            'fscanf(input_file, "%d", &item_count)',
+            'fscanf(output_file, "%d", &item_count)',
+            "C-SEED-007",
+        ),
+    ),
+    "file_longest_word": (
+        MutationRule(
+            "loop_boundary",
+            "position = 1; position < item_count;",
+            "position = 1; position < item_count - 1;",
+            "author_designed_v0.4",
+        ),
+        MutationRule(
+            "relational_operator",
+            "current_length > longest_length",
+            "current_length >= longest_length",
+            "author_designed_v0.4",
+        ),
+        MutationRule(
+            "wrong_initialization",
+            "int longest_length = (int) strlen(longest_word);",
+            "int longest_length = 0;",
+            "author_designed_v0.4",
+        ),
+        MutationRule(
+            "missing_update",
+            "longest_length = current_length;",
+            "(void) current_length;",
+            "author_designed_v0.4",
+        ),
+        MutationRule(
+            "wrong_identifier_or_argument",
+            'fscanf(input_file, "%d", &item_count)',
+            'fscanf(output_file, "%d", &item_count)',
+            "C-SEED-007",
+        ),
+    ),
 }
 
 
-# The two file families remain outside frozen generator 0.3.0 until their mutation
-# rules and any file-specific category receive an explicit benchmark review.
-# Keeping this allowlist explicit prevents catalog additions from disappearing
-# from the benchmark silently.
-BENCHMARK_EXCLUDED_EXERCISES = frozenset({"file_longest_word", "file_number_summary"})
+# Generator 0.4.0 includes both reviewed file families. The explicit empty allowlist
+# keeps future catalog additions from disappearing from the benchmark silently.
+BENCHMARK_EXCLUDED_EXERCISES: frozenset[str] = frozenset()
 
 
 IDENTIFIER_OPTIONS: dict[str, tuple[str, str, str, str]] = {
@@ -368,6 +436,12 @@ IDENTIFIER_OPTIONS: dict[str, tuple[str, str, str, str]] = {
     "root": ("root", "candidate", "base", "square_root"),
     "square": ("square", "current_square", "power", "squared_value"),
     "printed": ("printed", "has_output", "wrote_value", "found_square"),
+    "input_file": ("input_file", "source_file", "input_stream", "file_in"),
+    "output_file": ("output_file", "result_file", "output_stream", "file_out"),
+    "current_word": ("current_word", "candidate_word", "word_read", "current_token"),
+    "longest_word": ("longest_word", "best_word", "maximum_word", "answer_word"),
+    "current_length": ("current_length", "candidate_length", "word_length", "length_now"),
+    "longest_length": ("longest_length", "maximum_length", "best_length", "length_max"),
 }
 
 

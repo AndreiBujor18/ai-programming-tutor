@@ -90,14 +90,13 @@ identifiers are selected from authored per-exercise alias maps, not copied from 
 Optional local draft saving is a distinct consented setting, not part of the style
 profile or classifier dataset.
 
-The synthetic generator creates 1,136 examples by default: 71 exercise/mutation
+The synthetic generator creates 1,312 examples by default: 82 exercise/mutation
 pairs times 16 source variants. It stores compiler and test signals, origin, and an
 abstract evidence basis alongside each sample. Synthetic coverage is a seed dataset,
 not evidence of real-world quality. Private source material is excluded according
-to docs/DATA_PROVENANCE.md. Generator 0.3.0 remains frozen on the 14 pre-file
-exercises. The two later file families are both excluded until reviewed mutation
-rules, any proposed file-specific label, and a versioned held-out evaluation are
-designed together.
+to docs/DATA_PROVENANCE.md. Generator 0.4.0 includes all 16 exercises. Its reviewed
+file mutations reuse existing labels; the proposed `file_cursor_state` category was
+not admitted because its cases overlap loop-boundary and wrong-argument concepts.
 
 ## Evaluation design
 
@@ -170,7 +169,9 @@ bilingual public fixture/expected-file blocks, nested file-result statuses, gene
 hidden-file labels, a Files progress concept, and no arbitrary upload surface.
 The v0.10.0 follow-on slice adds a second five-case family based on bounded strings,
 preserves the first word on equal maximum lengths, reuses reviewed diagnostic
-categories, and leaves the frozen benchmark unchanged pending a separate review.
+categories, and originally left the benchmark unchanged pending a separate review.
+Generator 0.4.0 completes that review with 11 file-family mutation pairs, separate
+held-out folds, and no additional semantic label.
 
 ## Next sprint
 
@@ -188,10 +189,10 @@ improvement, not a public sandbox claim.
 The second independent file-processing family and its focused Windows acceptance
 are complete in both locales. Public contracts, hidden redaction, verified and
 faulty tie behavior, progressive hints, and source-free Files/Strings progress are
-accepted. Next, review controlled mutations across both file families before
-deciding whether a file-specific diagnostic label or a new benchmark version is
-justified. Do not add arbitrary uploads or broaden the execution boundary.
+accepted. The generator 0.4.0 review now covers both file families and rejects a
+file-specific label as redundant with existing causal categories. Do not add
+arbitrary uploads or broaden the execution boundary.
 
-In parallel planning, design a consented, de-identified natural-code evaluation,
-especially for sentinel handling. Before public code execution, move the runner
-behind a disposable worker boundary.
+Next, design a consented, de-identified natural-code evaluation, especially for
+sentinel handling and naturally structured file processing. Before public code
+execution, move the runner behind a disposable worker boundary.

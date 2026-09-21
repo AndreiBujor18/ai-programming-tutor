@@ -3,15 +3,16 @@
 Run `aptutor generate-data` to create `synthetic_bugs.jsonl`. Generated datasets
 are reproducible and intentionally excluded from version control.
 
-Generator 0.3.0 creates 1,136 rows by default: 71 reviewed single-mutation pairs
-across 14 exercises, each rendered in 16 identifier/layout variants. The generated
-release dataset contains project-authored code only.
+Generator 0.4.0 creates 1,312 rows by default: 82 reviewed single-mutation pairs
+across all 16 exercises, each rendered in 16 identifier/layout variants. The
+generated dataset contains project-authored code only.
 
-The 15th and 16th catalog exercises, `file_longest_word` and
-`file_number_summary`, are intentionally excluded from this frozen generator
-version. A second family enables a useful review, but does not retroactively validate
-a file-specific label; a future benchmark version must add reviewed mutations and
-held-out evaluation before including either exercise.
+The review adds five pairs for `file_longest_word` and six for
+`file_number_summary`, all using the existing semantic taxonomy. The proposed
+`file_cursor_state` label was not admitted: counted over/under-reading overlaps
+`loop_boundary`, and selecting the wrong stream overlaps
+`wrong_identifier_or_argument`. This decision avoids splitting the same causal
+mistake by API context.
 
 `case_seeds.json` contains public-safe, abstract provenance metadata. It does not
 contain source conversations, course files, personal identifiers, or copied student

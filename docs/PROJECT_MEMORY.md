@@ -71,8 +71,9 @@ must never be copied into this document or the repository.
 | 0.8.0 | Strict project-authored file contracts, isolated per-test directories, the first original file exercise, bilingual file feedback, Files progress, and a frozen 14-exercise benchmark |
 | 0.9.0 | Locally bundled CodeMirror 6 C editor, Exercises/Practice exam/Progress modes, side-by-side desktop workbench, progressive disclosure, and responsive manual acceptance |
 | 0.10.0 | Second independent fixed-file family for bounded string processing, first-on-tie diagnosis and hints, bilingual manual acceptance, and the frozen benchmark boundary preserved |
+| Unreleased | Generator 0.4.0 includes both file families through 11 reviewed mutation pairs, retains 13 labels after rejecting an overlapping file-cursor category, and adds a 1,312-program grouped evaluation |
 
-## Current v0.10.0 capabilities
+## Current development capabilities
 
 - 16 original C17 exercises; every exercise has two public and three hidden tests.
 - 13 semantic diagnostic labels plus compiler errors and unknown fallbacks.
@@ -132,26 +133,27 @@ the four-task exam.
 
 ## Data and evaluation state
 
-- Dataset schema: 0.3; generator: 0.3.0.
-- 71 reviewed exercise/mutation pairs × 16 identifier/layout variants = 1,136 rows.
-- The benchmark deliberately remains on the 14 pre-file exercises. Both file
-  families are excluded until reviewed controlled mutations and any proposed
-  file-specific label can be evaluated in a new, explicitly versioned held-out run.
+- Dataset schema: 0.3; generator: 0.4.0.
+- 82 reviewed exercise/mutation pairs × 16 identifier/layout variants = 1,312 rows.
+- The benchmark covers all 16 exercises, including separate held-out folds for both
+  file families. Five string-file and six numeric-file pairs reuse existing labels;
+  `file_cursor_state` was not admitted because its candidate cases overlap
+  `loop_boundary` and `wrong_identifier_or_argument`.
 - Every row is a controlled single-bug mutation of a project-authored reference.
-- Release audit: 1,136 unique IDs; every row compiles, fails at least one test, and
+- Development audit: 1,312 unique IDs; every row compiles, fails at least one test, and
   surfaces its intended label in the rule layer's top three.
 - Evaluation is leave-one-exercise-out; variants of the held-out exercise never
   appear in that fold's training data.
 
 | Track | Accuracy | Macro-F1 | Top-3 recall |
 | --- | ---: | ---: | ---: |
-| ML only | 0.7509 | 0.6375 | 0.8750 |
+| ML only | 0.7675 | 0.6473 | 0.8704 |
 | Rules only | 1.0000 | 1.0000 | 1.0000 |
-| Hybrid | 0.9718 | 0.9610 | 1.0000 |
+| Hybrid | 0.9665 | 0.9524 | 1.0000 |
 
-The honest model result is the ML-only 0.6375 macro-F1. The perfect rule result is
+The honest model result is the ML-only 0.6473 macro-F1. The perfect rule result is
 expected on mutations co-designed with those rules and is not real-student accuracy.
-The new `sentinel_handling` label has 0.0 ML-only F1, making it a priority for future
+The `sentinel_handling` label still has 0.0 ML-only F1, making it a priority for future
 natural-data evaluation. The browser currently uses rules without loading the model.
 
 ## Validation and security state
@@ -181,6 +183,12 @@ natural-data evaluation. The browser currently uses rules without loading the mo
   reference and every generated solution style pass all five string-file cases; the
   first-on-tie mutation is diagnosed through the existing relational-operator
   category, and the built wheel includes the complete second exercise family.
+- The current development tree passes 72/72 automated tests. Generator 0.4.0
+  independently audits 1,312/1,312 unique controlled programs: all compile, all fail
+  at least one authored test, and all surface their intended label in the rule
+  layer's top three. The two held-out file folds reach ML-only macro-F1 of 1.0000
+  and 0.7667 respectively, while the hybrid reaches 1.0000 on both. See
+  `docs/EXPERIMENT_004.md`.
 - The first v0.7.0 feature slice also passed its complete manual Windows protocol.
   Profile-specific favorites, opt-in history, latest/best results, forced-refresh
   persistence, history disablement, full progress clearing, and cross-profile
@@ -267,14 +275,15 @@ contracts, structured file statuses, hidden redaction, profile-specific drafts a
 progress, and the Files concept behave as intended. Learner uploads remain out of
 scope.
 
-On the curriculum/evaluation track, the second independent file-processing family
-and its focused Windows acceptance are complete. Review controlled mutations across
-both families before deciding whether a file-specific diagnostic label and a new
-benchmark version are justified.
+On the curriculum/evaluation track, generator 0.4.0 now includes both independent
+file-processing families. The review found no distinct file-specific misconception
+and retains the 13-label taxonomy. Reconsider that decision only if independently
+labeled natural submissions reveal a recurring non-overlapping cause.
 Accounts and a server database remain deliberately outside the current local scope.
 
-In parallel planning, prioritize consented natural-code evaluation before improving
-the model or deploying public code execution.
+Prioritize a consented, de-identified, frozen natural-code evaluation before
+improving the model or deploying public code execution, especially for sentinel
+handling and naturally structured file processing.
 
 The completed local sprint validates the future account/history/favorites experience
 cheaply and privately.

@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "created_for": "taxonomy-v0.3",
+  "created_for": "taxonomy-v0.4",
   "classification": "public-safe-derived-metadata",
   "privacy": {
     "raw_material_included": false,
@@ -111,8 +111,9 @@
       "label": "file_cursor_state",
       "observation": "Repeated reads can assume data remains after the input source has been exhausted.",
       "source_groups": ["SRC-ALGORITHM-SCAFFOLDS-AGG"],
-      "status": "deferred-insufficient-cross-exercise-coverage",
-      "implemented_in": []
+      "status": "reviewed-not-admitted-overlaps-existing-labels",
+      "implemented_in": ["file_number_summary", "file_longest_word"],
+      "decision": "Over-reading or under-reading a counted file sequence is a loop-boundary error; selecting the wrong stream is a wrong-identifier-or-argument error. A separate label would duplicate established misconceptions."
     },
     {
       "id": "C-SEED-008",

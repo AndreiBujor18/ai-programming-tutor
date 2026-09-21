@@ -111,14 +111,51 @@ def diagnose(source: str, evaluation: EvaluationResult) -> tuple[DiagnosisCandid
                 "A value is read from the file but is not added to the running sum.",
             )
 
+    if exercise_id in {"file_number_summary", "file_longest_word"}:
+        output_file = r"(?:output_file|result_file|output_stream|file_out)"
+        count_name = r"(?:item_count|size|element_count|number_of_items)"
+        position_name = r"(?:position|index|cursor|pos)"
+        if re.search(rf"fscanf\s*\(\s*{output_file}\s*,\s*\"%d\"", code):
+            add(
+                "wrong_identifier_or_argument",
+                0.99,
+                "The item count is read from the output stream instead of the input stream.",
+            )
+        if re.search(
+            rf"for\s*\(\s*int\s+{position_name}\s*=\s*1\s*;\s*"
+            rf"{position_name}\s*<=\s*{count_name}\s*;",
+            code,
+        ):
+            add(
+                "loop_boundary",
+                0.98,
+                "The loop requests one more record after the counted file input is exhausted.",
+            )
+
     if exercise_id == "file_longest_word":
-        current_length = r"(?:current_length|candidate_length|word_length|lungime_curenta|lg)"
-        longest_length = r"(?:longest_length|maximum_length|best_length|lungime_maxima|lg_max)"
+        current_length = (
+            r"(?:current_length|candidate_length|word_length|length_now|lungime_curenta|lg)"
+        )
+        longest_length = (
+            r"(?:longest_length|maximum_length|best_length|length_max|lungime_maxima|lg_max)"
+        )
         if re.search(rf"{current_length}\s*>=\s*{longest_length}", code):
             add(
                 "relational_operator",
                 0.98,
                 "An equal-length later word replaces the first longest word.",
+            )
+        if re.search(rf"\bint\s+{longest_length}\s*=\s*0\s*;", code):
+            add(
+                "wrong_initialization",
+                0.97,
+                "The saved maximum length does not describe the first word already selected.",
+            )
+        if re.search(rf"\(\s*void\s*\)\s*{current_length}\s*;", code):
+            add(
+                "missing_update",
+                0.98,
+                "Selecting a longer word does not update its saved maximum length.",
             )
 
     if exercise_id == "palindrome":

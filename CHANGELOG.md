@@ -2,6 +2,19 @@
 
 ## Unreleased
 
+- Expanded controlled generator 0.4.0 to both fixed-file exercises with 11
+  reviewed mutation pairs, bringing the grouped benchmark to 82 pairs and 1,312
+  project-authored programs across all 16 exercises.
+- Reviewed the proposed `file_cursor_state` category and did not admit it: counted
+  over/under-reading is already `loop_boundary`, while selecting the wrong stream
+  is `wrong_identifier_or_argument`. The semantic taxonomy remains at 13 labels.
+- Added file-aware rules for wrong stream selection and inconsistent longest-word
+  state, then independently audited all 1,312 rows for compilation, failure,
+  uniqueness, and intended-label presence in the rule layer's top three.
+- Retrained the leave-one-exercise-out baseline. ML-only reaches 0.6473 macro-F1
+  and 0.8704 top-3 recall; the hybrid reaches 0.9524 macro-F1 and 1.0000 top-3
+  recall. These remain controlled-mutation results, not student-code accuracy.
+
 ## 0.10.0
 
 - Completed focused Windows manual acceptance for the second file-processing

@@ -1,9 +1,10 @@
-# Bug taxonomy v0.3
+# Bug taxonomy v0.4
 
 Each classifier sample contains exactly one intended semantic mutation. Labels
 describe the misconception rather than one token spelling. The four v0.2 labels
 and the v0.3 sentinel label were admitted only after each could be instantiated in
-at least two exercises.
+at least two exercises. The v0.4 file-family review retains the same 13 labels
+after rejecting a proposed category that overlapped existing misconceptions.
 
 | Label | Student misconception | Typical signal | Hint goal |
 |---|---|---|---|
@@ -30,13 +31,18 @@ than controlled semantic mutations. v0.6.0 therefore reports source-free operati
 warnings for removed, undefined, or commonly non-portable constructs; they are not
 classifier labels and do not alter the submitted source.
 
-`file_cursor_state` remains deferred. Two independent fixed-file families now exist:
-`file_number_summary` covers counted numeric aggregation and `file_longest_word`
-covers bounded string selection with first-on-tie semantics. Generator 0.3.0 has no
-reviewed file-specific mutations for either family, however, and catalog breadth
-alone is not evidence that a new label is reliable. Both exercises therefore reuse
-existing categories and remain excluded until a versioned mutation review can test
-the proposed category across both held-out families.
+`file_cursor_state` was reviewed and not admitted. Two independent fixed-file
+families now exist: `file_number_summary` covers counted numeric aggregation and
+`file_longest_word` covers bounded string selection with first-on-tie semantics.
+Across both, reading too few or too many records after the initial read is a
+`loop_boundary` mistake. Passing the output stream to a read call is a
+`wrong_identifier_or_argument` mistake. Neither case has a distinct causal model or
+hint goal merely because it occurs through FILE*.
+
+Generator 0.4.0 therefore includes five reviewed pairs for the string family and
+six for the numeric family while retaining 13 labels. `C-SEED-007` records the
+rejected-category decision so it is not silently proposed again without new,
+non-overlapping evidence.
 
 ## Labeling rules
 

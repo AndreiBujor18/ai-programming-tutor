@@ -24,9 +24,11 @@ project.
 
 The four v0.6.0 additions intentionally strengthened foundations before file-aware
 tests. The two later file exercises use that infrastructure and now provide distinct
-numeric and string families. They remain outside generator 0.3.0 until reviewed
-mutations, category definitions, and a versioned held-out evaluation are added;
-merely expanding the catalog does not revise an existing metric. Greedy,
+numeric and string families. Generator 0.4.0 includes both through 11 reviewed
+mutation pairs and a versioned held-out evaluation. The review retained the existing
+13 categories because the candidate file-cursor cases overlap loop-boundary and
+wrong-argument mistakes; catalog breadth alone is still not a real-student
+classifier claim. Greedy,
 backtracking, dynamic allocation, records, and recursion remain future curriculum
 layers rather than being squeezed into the first diagnostic benchmark.
 

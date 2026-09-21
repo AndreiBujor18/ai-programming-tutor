@@ -122,6 +122,20 @@ class RunnerTests(unittest.TestCase):
         self.assertFalse(result.all_passed)
         self.assertEqual(candidates[0].category, "relational_operator")
 
+    def test_file_cursor_candidate_remains_a_loop_boundary_error(self) -> None:
+        for exercise_id in ("file_number_summary", "file_longest_word"):
+            with self.subTest(exercise=exercise_id):
+                exercise = get_exercise(exercise_id)
+                buggy = exercise.reference_solution.replace(
+                    "position < item_count;", "position <= item_count;"
+                )
+                result = self.runner.evaluate(buggy, exercise)
+                labels = [candidate.category for candidate in diagnose(buggy, result)]
+                self.assertTrue(result.compilation.succeeded)
+                self.assertFalse(result.all_passed)
+                self.assertIn("loop_boundary", labels)
+                self.assertNotIn("file_cursor_state", labels)
+
     def test_file_summary_results_preserve_public_names_and_redact_hidden_names(self) -> None:
         exercise = get_exercise("file_number_summary")
         result = self.runner.evaluate(exercise.reference_solution, exercise)
@@ -167,14 +181,15 @@ class RunnerTests(unittest.TestCase):
 class DatasetTests(unittest.TestCase):
     def test_one_variant_has_all_labels_and_unique_ids(self) -> None:
         samples = list(iter_samples(variants=1, evaluate=False))
-        self.assertEqual(len(samples), 71)
-        self.assertEqual(len({sample["id"] for sample in samples}), 71)
+        self.assertEqual(len(samples), 82)
+        self.assertEqual(len({sample["id"] for sample in samples}), 82)
         self.assertTrue(all(sample["evidence_basis"] for sample in samples))
         self.assertEqual({sample["dataset_schema_version"] for sample in samples}, {"0.3"})
-        self.assertEqual({sample["generator_version"] for sample in samples}, {"0.3.0"})
+        self.assertEqual({sample["generator_version"] for sample in samples}, {"0.4.0"})
         benchmark_ids = {sample["exercise_id"] for sample in samples}
         catalog_ids = {exercise.id for exercise in list_exercises()}
         self.assertEqual(catalog_ids - benchmark_ids, set(BENCHMARK_EXCLUDED_EXERCISES))
+        self.assertFalse(BENCHMARK_EXCLUDED_EXERCISES)
         self.assertTrue(all(len(sample["exercise_fingerprint"]) == 16 for sample in samples))
         self.assertTrue(all(len(sample["test_suite_fingerprint"]) == 16 for sample in samples))
         self.assertEqual(

@@ -82,6 +82,10 @@ program is a real student's submission.
 - `CURR-C-002` records only an abstract coverage decision. The four v0.6 exercises,
   their statements, tests, solutions, mutations, hints, translations, and exam
   rubric were newly authored for this project.
+- Generator 0.4.0 adds only project-authored mutations for the two fixed-file
+  exercises. The `C-SEED-007` review rejected a separate file-cursor label because
+  its candidate cases overlap existing loop-boundary and wrong-argument concepts;
+  no private code was used to manufacture a new category or metric claim.
 - The PCLP1 preset represents a bounded list of general formatting conventions; it
   does not reproduce a private template. Compatibility warnings contain fixed
   project-authored messages and never echo the matching source fragment.

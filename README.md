@@ -19,9 +19,9 @@ and three hidden cases cover a single word, a last-word maximum, ties, and the
 Focused Windows acceptance confirmed the complete workflow in Romanian and
 English: public contracts, generic hidden-file labels, the verified 5/5 solution,
 the existing relational-operator diagnosis for an incorrect tie update, all three
-hints, and source-free Files/Strings progress. The diagnostic benchmark remains
-frozen at the reviewed 14 pre-file exercises and 1,136 controlled programs pending
-a separately reviewed mutation and evaluation update.
+hints, and source-free Files/Strings progress. At the v0.10.0 release boundary, the
+diagnostic benchmark remained frozen at the reviewed 14 pre-file exercises; the
+later generator 0.4.0 review described below now includes both file families.
 
 ## Interface refresh in v0.9.0
 
@@ -54,13 +54,13 @@ expected-file contents, then reports each result-file status while redacting hid
 names and contents. The progress view includes a Files concept.
 
 This remains a fixed, trusted-local exercise: there are no arbitrary file uploads,
-and the local runner is still not a security sandbox. The frozen diagnostic
-benchmark remains the reviewed 14-exercise, 1,136-program v0.3 dataset. Adding a
-second family broadens curriculum coverage, but is not by itself evidence for a new
-classifier label; both file exercises stay outside the frozen benchmark pending an
-explicit mutation and evaluation review.
+and the local runner is still not a security sandbox. Generator 0.4.0 includes both
+families through 11 reviewed mutation pairs and separate held-out folds. The review
+did not add a file-specific label: counted over/under-reading overlaps
+`loop_boundary`, while choosing the wrong stream overlaps
+`wrong_identifier_or_argument`.
 
-## What works in v0.10.0
+## What works in the current tree
 
 - 16 fixed C exercises with public and hidden tests;
 - an original four-task, 60-minute PCLP1 practice exam with a transparent
@@ -92,7 +92,7 @@ explicit mutation and evaluation review.
 - local GCC runner with time, memory, process, source-size, and output limits;
 - deterministic diagnosis for 13 common beginner bug categories;
 - three-level Socratic hints;
-- synthetic mutation generator (1,136 labeled examples by default);
+- synthetic mutation generator (1,312 labeled examples by default);
 - TF-IDF + logistic-regression baseline with leave-one-exercise-out evaluation;
 - separate ML-only, rule-only, and deployed-hybrid evaluation tracks;
 - privacy-safe provenance from tutoring observations without copied student code;
@@ -120,23 +120,25 @@ recurring course conventions without copying private examples.
 
 ## Current benchmark
 
-On 1,136 controlled single-bug programs, the hybrid reaches **0.9610 macro-F1**
-and **1.0000 top-3 recall** under leave-one-exercise-out evaluation. The ML-only
-track reaches 0.6375 macro-F1 and 0.8750 top-3 recall. In particular, the new
-`sentinel_handling` class receives 0.0 F1 from ML alone, while the explicit rule
-recognises its authored mutations. This is useful evidence that the current model
-does not yet generalise reliably to the expanded curriculum.
+On 1,312 controlled single-bug programs across all 16 exercises, the hybrid reaches
+**0.9524 macro-F1** and **1.0000 top-3 recall** under leave-one-exercise-out
+evaluation. The ML-only track reaches 0.6473 macro-F1 and 0.8704 top-3 recall. Its
+held-out file folds reach 1.0000 macro-F1 for longest-word selection and 0.7667 for
+numeric summary; the hybrid reaches 1.0000 on both. `sentinel_handling` still
+receives 0.0 F1 from ML alone, so the model does not yet generalise reliably across
+the full curriculum.
 
-These figures cover the 14 exercises in generator 0.3.0, not the two newer file
-exercises. They reuse existing diagnostic concepts in the tutor but stay outside
-the frozen benchmark until their mutations, labels, and held-out evaluation are
-reviewed together in an explicitly versioned generator update.
+Generator 0.4.0 retains 13 labels. The proposed `file_cursor_state` category was
+not admitted because its reviewed cases have existing causal explanations and hint
+goals. This is a deliberate taxonomy decision, not evidence that naturally written
+file-processing bugs are already covered.
 
 Rule-only accuracy is 1.0 on the controlled mutations that those rules helped
 define; that is an integration check, not evidence about real student code. The
 browser currently uses the rule layer without loading the optional model. See
-`docs/EXPERIMENT_003.md` for the full comparison and limitations;
-`docs/EXPERIMENT_001.md` and `docs/EXPERIMENT_002.md` preserve earlier results.
+`docs/EXPERIMENT_004.md` for the full comparison and limitations;
+`docs/EXPERIMENT_001.md`, `docs/EXPERIMENT_002.md`, and `docs/EXPERIMENT_003.md`
+preserve earlier results.
 
 ## Quick start
 
@@ -256,7 +258,7 @@ The core is deliberately independent of the web framework:
 See `docs/PROJECT_BRIEF.md`, `docs/ACCEPTANCE_V063.md`,
 `docs/ACCEPTANCE_V070_LOCAL_PROGRESS.md`, `docs/ACCEPTANCE_V080_FILES.md`,
 `docs/ACCEPTANCE_V090_INTERFACE.md`, `docs/ACCEPTANCE_V0100_SECOND_FILE.md`,
-`docs/BUG_TAXONOMY.md`,
+`docs/BUG_TAXONOMY.md`, `docs/EXPERIMENT_004.md`,
 `docs/DATA_PROVENANCE.md`, `docs/CURRICULUM_ALIGNMENT.md`,
 `docs/STYLE_PERSONALIZATION.md`, and
 `docs/SECURITY.md` for the product scope, labels, privacy boundary, manual
