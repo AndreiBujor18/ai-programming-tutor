@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.11.0
+
 - Expanded controlled generator 0.4.0 to both fixed-file exercises with 11
   reviewed mutation pairs, bringing the grouped benchmark to 82 pairs and 1,312
   project-authored programs across all 16 exercises.

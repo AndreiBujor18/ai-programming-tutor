@@ -8,6 +8,19 @@ complete, explained, tested reference solution as a separate action.
 The repository name is intentionally neutral. Product branding can change later
 without renaming the Python package or rewriting the architecture.
 
+## Complete file-family benchmark in v0.11.0
+
+The controlled diagnostic benchmark now covers all 16 exercises. Generator 0.4.0
+adds five reviewed mutation pairs for longest-word selection and six for numeric
+file summaries, bringing the reproducible dataset to 82 pairs and 1,312 programs.
+Each file family has its own held-out fold in the grouped evaluation.
+
+The review retains the existing 13-label taxonomy. Counted over-reading and
+under-reading are loop-boundary mistakes, while reading through the wrong stream is
+a wrong-identifier-or-argument mistake; a separate `file_cursor_state` label would
+duplicate those causal explanations. Experiment 004 documents the complete audit,
+metrics, limitations, and the need for a future natural-code evaluation.
+
 ## Second file-processing family in v0.10.0
 
 The catalog now contains 16 exercises, including two independent fixed-file
@@ -60,7 +73,7 @@ did not add a file-specific label: counted over/under-reading overlaps
 `loop_boundary`, while choosing the wrong stream overlaps
 `wrong_identifier_or_argument`.
 
-## What works in the current tree
+## What works in v0.11.0
 
 - 16 fixed C exercises with public and hidden tests;
 - an original four-task, 60-minute PCLP1 practice exam with a transparent

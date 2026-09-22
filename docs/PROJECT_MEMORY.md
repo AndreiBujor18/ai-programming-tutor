@@ -1,4 +1,4 @@
-# Project memory — AI Programming Tutor v0.10.0
+# Project memory — AI Programming Tutor v0.11.0
 
 This is the maintainer handoff and continuity record for the project. It contains
 only public-safe decisions and implementation state. Private tutoring exports,
@@ -71,9 +71,9 @@ must never be copied into this document or the repository.
 | 0.8.0 | Strict project-authored file contracts, isolated per-test directories, the first original file exercise, bilingual file feedback, Files progress, and a frozen 14-exercise benchmark |
 | 0.9.0 | Locally bundled CodeMirror 6 C editor, Exercises/Practice exam/Progress modes, side-by-side desktop workbench, progressive disclosure, and responsive manual acceptance |
 | 0.10.0 | Second independent fixed-file family for bounded string processing, first-on-tie diagnosis and hints, bilingual manual acceptance, and the frozen benchmark boundary preserved |
-| Unreleased | Generator 0.4.0 includes both file families through 11 reviewed mutation pairs, retains 13 labels after rejecting an overlapping file-cursor category, and adds a 1,312-program grouped evaluation |
+| 0.11.0 | Generator 0.4.0 includes both file families through 11 reviewed mutation pairs, retains 13 labels after rejecting an overlapping file-cursor category, and adds a 1,312-program grouped evaluation |
 
-## Current development capabilities
+## Current v0.11.0 capabilities
 
 - 16 original C17 exercises; every exercise has two public and three hidden tests.
 - 13 semantic diagnostic labels plus compiler errors and unknown fallbacks.
@@ -140,7 +140,7 @@ the four-task exam.
   `file_cursor_state` was not admitted because its candidate cases overlap
   `loop_boundary` and `wrong_identifier_or_argument`.
 - Every row is a controlled single-bug mutation of a project-authored reference.
-- Development audit: 1,312 unique IDs; every row compiles, fails at least one test, and
+- Release audit: 1,312 unique IDs; every row compiles, fails at least one test, and
   surfaces its intended label in the rule layer's top three.
 - Evaluation is leave-one-exercise-out; variants of the held-out exercise never
   appear in that fold's training data.
@@ -183,7 +183,7 @@ natural-data evaluation. The browser currently uses rules without loading the mo
   reference and every generated solution style pass all five string-file cases; the
   first-on-tie mutation is diagnosed through the existing relational-operator
   category, and the built wheel includes the complete second exercise family.
-- The current development tree passes 72/72 automated tests. Generator 0.4.0
+- The v0.11.0 release tree passes 72/72 automated tests. Generator 0.4.0
   independently audits 1,312/1,312 unique controlled programs: all compile, all fail
   at least one authored test, and all surface their intended label in the rule
   layer's top three. The two held-out file folds reach ML-only macro-F1 of 1.0000
@@ -203,9 +203,9 @@ natural-data evaluation. The browser currently uses rules without loading the mo
   transfer states correctly.
 - All 16 reference solutions and every complete-solution style pass their exercise
   tests; generated variants compile without warnings in the tested matrix.
-- The release wheel installs as version 0.10.0 and exposes all 16 exercises plus the
+- The release wheel installs as version 0.11.0 and exposes all 16 exercises plus the
   four-task, 10-point practice exam.
-- The v0.10.0 release privacy scan found no uploaded archive, private filename, Library ID,
+- The v0.11.0 release privacy scan found no uploaded archive, private filename, Library ID,
   workspace path, PDF, image, office document, or raw tutoring export.
 - The focused v0.8.0 Windows protocol passed the public file contracts, starter
   failure, verified 5/5 solution, Romanian/English continuity, generic hidden-file

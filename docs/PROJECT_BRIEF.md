@@ -1,4 +1,4 @@
-# Project brief — v0.10.0
+# Project brief — v0.11.0
 
 ## Product hypothesis
 
@@ -29,7 +29,7 @@ outside the current product experiment.
 8. During a practice exam, the browser keeps the timer, active task, and numeric
    best-attempt score locally without adding source code to the exam record.
 
-The stable v0.10.0 release implements this flow in a dependency-free localhost
+The stable v0.11.0 release implements this flow in a dependency-free localhost
 website, CLI, and optional FastAPI service for 16 exercises, including two
 independent fixed-file families. No account or server-side attempt history is
 persisted; optional drafts, bounded numeric progress, and exam state never leave
@@ -170,8 +170,8 @@ hidden-file labels, a Files progress concept, and no arbitrary upload surface.
 The v0.10.0 follow-on slice adds a second five-case family based on bounded strings,
 preserves the first word on equal maximum lengths, reuses reviewed diagnostic
 categories, and originally left the benchmark unchanged pending a separate review.
-Generator 0.4.0 completes that review with 11 file-family mutation pairs, separate
-held-out folds, and no additional semantic label.
+The v0.11.0 generator 0.4.0 release completes that review with 11 file-family
+mutation pairs, separate held-out folds, and no additional semantic label.
 
 ## Next sprint
 
