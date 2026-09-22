@@ -472,7 +472,19 @@ def _fingerprint(parts: list[str]) -> str:
     return hashlib.sha256(payload).hexdigest()[:16]
 
 
-def _test_suite_fingerprint(exercise: Exercise) -> str:
+def exercise_fingerprint(exercise: Exercise) -> str:
+    return _fingerprint(
+        [
+            exercise.id,
+            exercise.statement,
+            exercise.input_format,
+            exercise.output_format,
+            exercise.reference_solution,
+        ]
+    )
+
+
+def test_suite_fingerprint(exercise: Exercise) -> str:
     return _fingerprint(
         [
             json.dumps(
@@ -527,16 +539,8 @@ def iter_samples(variants: int = 16, evaluate: bool = True):
                 f"Exercise {exercise.id!r} needs reviewed mutation rules or an explicit "
                 "benchmark-exclusion decision."
             ) from exc
-        exercise_fingerprint = _fingerprint(
-            [
-                exercise.id,
-                exercise.statement,
-                exercise.input_format,
-                exercise.output_format,
-                exercise.reference_solution,
-            ]
-        )
-        test_suite_fingerprint = _test_suite_fingerprint(exercise)
+        current_exercise_fingerprint = exercise_fingerprint(exercise)
+        current_test_suite_fingerprint = test_suite_fingerprint(exercise)
         for rule in rules:
             mutated = rule.apply(exercise.reference_solution)
             for variant in range(variants):
@@ -550,8 +554,8 @@ def iter_samples(variants: int = 16, evaluate: bool = True):
                     "evidence_basis": rule.evidence_basis,
                     "dataset_schema_version": "0.3",
                     "generator_version": GENERATOR_VERSION,
-                    "exercise_fingerprint": exercise_fingerprint,
-                    "test_suite_fingerprint": test_suite_fingerprint,
+                    "exercise_fingerprint": current_exercise_fingerprint,
+                    "test_suite_fingerprint": current_test_suite_fingerprint,
                     "compiler_identity": compiler_identity,
                     "labeler": "controlled-mutation-generator",
                     "source": source,

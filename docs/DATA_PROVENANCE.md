@@ -97,3 +97,12 @@ restricted raw storage, a documented deletion path, and separation from the publ
 repository. A frozen human test set must report participant count and labeling
 procedure without publishing reconstructable code. Ambiguous or multi-bug examples
 require independent review before benchmark use.
+
+The public evaluator now enforces the machine-checkable part of that gate: exact
+schema fields, explicit consent/de-identification assertions, pseudonymous keys,
+two or more labelers, agreed/adjudicated single labels, current exercise and test
+fingerprints, source hashes, and bounded precomputed signals from a declared
+disposable worker. It rejects common identity-bearing content and writes only an
+aggregate report. It cannot prove consent, de-identification, worker isolation, or
+label independence; those remain documented human controls. The complete protocol
+is `docs/NATURAL_CODE_EVALUATION.md`.

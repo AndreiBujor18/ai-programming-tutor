@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+- Added a strict private JSONL schema and aggregate-only `evaluate-natural` command
+  for a future frozen, consented, de-identified C17 evaluation set.
+- The evaluator never executes imported source, requires precomputed signals from a
+  declared disposable worker plus two-labeler agreement/adjudication, rejects stale
+  exercise/test fingerprints and common identity leaks, and emits no source or
+  per-sample predictions.
+- Documented the collection, withdrawal, de-identification, independent-labeling,
+  freeze, exclusion-reporting, and interpretation protocol. No natural submissions
+  or human-code accuracy claims are included in this release tree.
+
 ## 0.11.0
 
 - Expanded controlled generator 0.4.0 to both fixed-file exercises with 11

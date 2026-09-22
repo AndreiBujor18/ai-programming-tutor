@@ -28,6 +28,7 @@ data/*.jsonl
 /private_materials/
 /raw_materials/
 /scratch/
+/private_evaluation/
 *.pdf
 *.doc
 *.docx

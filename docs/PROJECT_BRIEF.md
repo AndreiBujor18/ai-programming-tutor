@@ -109,6 +109,13 @@ are available at inference time for this fixed-exercise product, so this is a pr
 feature rather than train/test leakage; it must still be validated on naturally
 written student programs rather than controlled mutations alone.
 
+The natural-code harness is a separate, frozen-test evaluation path. It accepts
+only consented, de-identified C17 submissions with two-labeler agreement or
+adjudication and precomputed statuses from an external disposable worker. It never
+executes imported code, trains on the frozen set, or writes source/per-sample
+predictions to its aggregate report. No qualifying human dataset has been collected
+yet, so this infrastructure is not itself an accuracy result.
+
 Target product metrics:
 
 - bug classification macro-F1 >= 0.75;
@@ -193,6 +200,9 @@ accepted. The generator 0.4.0 review now covers both file families and rejects a
 file-specific label as redundant with existing causal categories. Do not add
 arbitrary uploads or broaden the execution boundary.
 
-Next, design a consented, de-identified natural-code evaluation, especially for
-sentinel handling and naturally structured file processing. Before public code
-execution, move the runner behind a disposable worker boundary.
+The private-input, aggregate-output natural-code evaluation harness is now defined
+and implemented without collecting submissions or making a human-code metric claim.
+Next, establish the external disposable worker and recruit a small consented pilot,
+especially for sentinel handling and naturally structured file processing. Freeze
+and label that set independently before inspecting tutor predictions. Before public
+code execution, move the product runner behind the same class of worker boundary.

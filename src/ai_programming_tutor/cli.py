@@ -61,6 +61,14 @@ def _command_train(args: argparse.Namespace) -> int:
     return 0
 
 
+def _command_evaluate_natural(args: argparse.Namespace) -> int:
+    from ai_programming_tutor.natural_evaluation import evaluate_natural_dataset
+
+    report = evaluate_natural_dataset(args.dataset, args.output, args.model)
+    print(json.dumps(report, indent=2))
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="aptutor", description="AI Programming Tutor prototype")
     subcommands = parser.add_subparsers(dest="command", required=True)
@@ -91,6 +99,27 @@ def build_parser() -> argparse.ArgumentParser:
         "--confusion-matrix", type=Path, default=Path("artifacts/confusion_matrix.csv")
     )
     train_parser.set_defaults(handler=_command_train)
+
+    natural_parser = subcommands.add_parser(
+        "evaluate-natural",
+        help="Evaluate a private frozen natural-code set from precomputed signals",
+    )
+    natural_parser.add_argument(
+        "--dataset",
+        type=Path,
+        default=Path("private_evaluation/natural_samples.jsonl"),
+    )
+    natural_parser.add_argument(
+        "--output",
+        type=Path,
+        default=Path("private_evaluation/aggregate_metrics.json"),
+    )
+    natural_parser.add_argument(
+        "--model",
+        type=Path,
+        help="Optional controlled-mutation baseline .joblib file",
+    )
+    natural_parser.set_defaults(handler=_command_evaluate_natural)
     return parser
 
 

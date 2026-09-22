@@ -108,6 +108,9 @@ did not add a file-specific label: counted over/under-reading overlaps
 - synthetic mutation generator (1,312 labeled examples by default);
 - TF-IDF + logistic-regression baseline with leave-one-exercise-out evaluation;
 - separate ML-only, rule-only, and deployed-hybrid evaluation tracks;
+- an aggregate-only evaluator for a future private, consented, independently
+  labeled natural-code test set; no human submissions or natural-code metric are
+  included yet;
 - privacy-safe provenance from tutoring observations without copied student code;
 - dependency-free local web server and optional FastAPI endpoints;
 - standard-library test suite.
@@ -152,6 +155,20 @@ browser currently uses the rule layer without loading the optional model. See
 `docs/EXPERIMENT_004.md` for the full comparison and limitations;
 `docs/EXPERIMENT_001.md`, `docs/EXPERIMENT_002.md`, and `docs/EXPERIMENT_003.md`
 preserve earlier results.
+
+## Natural-code evaluation gate
+
+The next evaluation layer is implemented as a private-input, aggregate-output
+workflow. `aptutor evaluate-natural` validates a frozen JSONL set, reuses only
+precomputed source-free test signals, and emits rule/ML/hybrid summaries without
+source, participant keys, sample IDs, or individual predictions. Imported programs
+are deliberately not executed because the included local runner is not a sandbox
+for untrusted participant code.
+
+No natural-code dataset or result is committed. Real collection still requires
+informed consent, separate withdrawal records, manual de-identification, an external
+disposable execution worker, and two independent labels or adjudication before the
+split is frozen. See `docs/NATURAL_CODE_EVALUATION.md` for the exact gate and command.
 
 ## Quick start
 
@@ -260,19 +277,22 @@ The core is deliberately independent of the web framework:
 4. `hints.py` selects a progressive hint.
 5. `dataset.py` creates labeled controlled mutations.
 6. `baseline.py` trains and evaluates the first ML model.
-7. `style_profile.py` extracts bounded style preferences, records their evidence
+7. `natural_evaluation.py` validates private frozen records and writes only
+   aggregate rule/ML/hybrid metrics without executing imported source.
+8. `style_profile.py` extracts bounded style preferences, records their evidence
    origin, and applies safe transformations without retaining source.
-8. `solutions.py` provides authored explanations and tested reference variants.
-9. `exam.py` defines the original practice simulation and rubric;
+9. `solutions.py` provides authored explanations and tested reference variants.
+10. `exam.py` defines the original practice simulation and rubric;
    `compatibility.py` explains recognized legacy constructs.
-10. `service.py` exposes the application interface; `webserver.py` and `api.py`
+11. `service.py` exposes the application interface; `webserver.py` and `api.py`
    deliver it to the local browser.
 
 See `docs/PROJECT_BRIEF.md`, `docs/ACCEPTANCE_V063.md`,
 `docs/ACCEPTANCE_V070_LOCAL_PROGRESS.md`, `docs/ACCEPTANCE_V080_FILES.md`,
 `docs/ACCEPTANCE_V090_INTERFACE.md`, `docs/ACCEPTANCE_V0100_SECOND_FILE.md`,
 `docs/BUG_TAXONOMY.md`, `docs/EXPERIMENT_004.md`,
-`docs/DATA_PROVENANCE.md`, `docs/CURRICULUM_ALIGNMENT.md`,
+`docs/DATA_PROVENANCE.md`, `docs/NATURAL_CODE_EVALUATION.md`,
+`docs/CURRICULUM_ALIGNMENT.md`,
 `docs/STYLE_PERSONALIZATION.md`, and
 `docs/SECURITY.md` for the product scope, labels, privacy boundary, manual
 two-profile experiment, and execution threat model.

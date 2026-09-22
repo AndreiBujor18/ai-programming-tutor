@@ -72,8 +72,9 @@ must never be copied into this document or the repository.
 | 0.9.0 | Locally bundled CodeMirror 6 C editor, Exercises/Practice exam/Progress modes, side-by-side desktop workbench, progressive disclosure, and responsive manual acceptance |
 | 0.10.0 | Second independent fixed-file family for bounded string processing, first-on-tie diagnosis and hints, bilingual manual acceptance, and the frozen benchmark boundary preserved |
 | 0.11.0 | Generator 0.4.0 includes both file families through 11 reviewed mutation pairs, retains 13 labels after rejecting an overlapping file-cursor category, and adds a 1,312-program grouped evaluation |
+| Unreleased | Private-input, aggregate-output harness and protocol for a future consented, de-identified, independently labeled frozen natural-code evaluation; no human dataset or result yet |
 
-## Current v0.11.0 capabilities
+## Current development capabilities
 
 - 16 original C17 exercises; every exercise has two public and three hidden tests.
 - 13 semantic diagnostic labels plus compiler errors and unknown fallbacks.
@@ -97,6 +98,9 @@ must never be copied into this document or the repository.
   checking `feof` before a read. Warnings preserve source and compiler diagnostics.
 - Dependency-free local HTTP server, optional FastAPI adapter, CLI, installable
   wheel, deterministic dataset generator, and optional scikit-learn baseline.
+- Strict offline natural-code evaluator with exact private-input validation,
+  frozen exercise/test fingerprints, no imported-source execution, and aggregate
+  rule/ML/hybrid output that omits source and per-sample predictions.
 - Strict project-authored text fixtures and expected-file contracts with portable
   flat names, eight combined entries at most, per-entry and per-test byte limits,
   fresh per-test work directories, structured file statuses, and hidden-content
@@ -156,6 +160,11 @@ expected on mutations co-designed with those rules and is not real-student accur
 The `sentinel_handling` label still has 0.0 ML-only F1, making it a priority for future
 natural-data evaluation. The browser currently uses rules without loading the model.
 
+No natural-code dataset or human-code metric exists yet. The evaluator and protocol
+are ready, but real collection remains gated on informed consent, a separate
+withdrawal ledger, manual de-identification, a disposable execution worker, and two
+independent labels or adjudication. See `docs/NATURAL_CODE_EVALUATION.md`.
+
 ## Validation and security state
 
 - The v0.6.3 release passed 49/49 automated tests in both the working tree and an
@@ -189,6 +198,10 @@ natural-data evaluation. The browser currently uses rules without loading the mo
   layer's top three. The two held-out file folds reach ML-only macro-F1 of 1.0000
   and 0.7667 respectively, while the hybrid reaches 1.0000 on both. See
   `docs/EXPERIMENT_004.md`.
+- The current development tree passes 76/76 automated tests. Natural-evaluation
+  regressions cover exact schema and privacy rejection, frozen revision and duplicate
+  checks, source-free aggregate output, and optional ML/hybrid evaluation using the
+  existing controlled-mutation model. Imported natural source is never executed.
 - The first v0.7.0 feature slice also passed its complete manual Windows protocol.
   Profile-specific favorites, opt-in history, latest/best results, forced-refresh
   persistence, history disablement, full progress clearing, and cross-profile
@@ -281,9 +294,11 @@ and retains the 13-label taxonomy. Reconsider that decision only if independentl
 labeled natural submissions reveal a recurring non-overlapping cause.
 Accounts and a server database remain deliberately outside the current local scope.
 
-Prioritize a consented, de-identified, frozen natural-code evaluation before
-improving the model or deploying public code execution, especially for sentinel
-handling and naturally structured file processing.
+The aggregate evaluator and frozen-set schema are implemented. Next establish the
+external disposable worker, then recruit and independently label a small consented,
+de-identified pilot before inspecting predictions. Prioritize sentinel handling and
+naturally structured file processing; do not tune on the frozen set or describe the
+harness itself as a human-code result.
 
 The completed local sprint validates the future account/history/favorites experience
 cheaply and privately.

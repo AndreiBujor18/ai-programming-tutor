@@ -5,7 +5,7 @@ import shutil
 import unittest
 
 from ai_programming_tutor.catalog import parse_test_case
-from ai_programming_tutor.dataset import _test_suite_fingerprint
+from ai_programming_tutor.dataset import test_suite_fingerprint
 from ai_programming_tutor.models import (
     MAX_TEST_FILE_BYTES,
     MAX_TEST_FILES,
@@ -185,9 +185,9 @@ class FileContractTests(unittest.TestCase):
             )
         )
         fingerprints = {
-            _test_suite_fingerprint(first),
-            _test_suite_fingerprint(changed_fixture),
-            _test_suite_fingerprint(changed_expected),
+            test_suite_fingerprint(first),
+            test_suite_fingerprint(changed_fixture),
+            test_suite_fingerprint(changed_expected),
         }
         self.assertEqual(len(fingerprints), 3)
 
