@@ -9,13 +9,16 @@ must never be copied into this document or the repository.
 
 - `v0.11.0` is the latest tagged release at commit `9376c31`. It closes the
   16-exercise controlled benchmark with 1,312 programs and 72/72 release tests.
-- The post-release history through public checkpoint `4e648e2` contains
+- The post-release history through public checkpoint `f2746f9` contains
   `348b304` (**Add private natural-code evaluation harness**), `b07ba8f`
-  (**Add disposable natural-code worker**), and `4e648e2`
-  (**Record disposable worker Windows acceptance**). The tested hardening tree then
-  adds **Harden worker and add adversarial gate** and **Fix Docker PID namespace
-  compatibility**. The package and release tag deliberately remain at `0.11.0`;
-  no follow-up tag has been created.
+  (**Add disposable natural-code worker**), `4e648e2`
+  (**Record disposable worker Windows acceptance**), `ea3cdb3`
+  (**Harden worker and add adversarial gate**), `61c08da`
+  (**Fix Docker PID namespace compatibility**), and `f2746f9`
+  (**Record hardened worker Windows acceptance**). GitHub Actions run 23 passed all
+  six jobs at that checkpoint, including the disposable-worker image job. The
+  package and release tag deliberately remain at `0.11.0`; no follow-up tag has
+  been created.
 - The post-release harness adds `aptutor evaluate-natural`, an exact private JSONL
   schema, consent/de-identification/two-labeler gates, frozen exercise and test
   fingerprints, aggregate rule/ML/hybrid reporting, and suppression below five
@@ -45,7 +48,8 @@ must never be copied into this document or the repository.
   the child's marker).
 - `aptutor audit-isolated` now runs twelve project-authored hostile-code probes plus
   a residual-container check and writes only a source-free report. The complete tree
-  passes 96/96 automated tests; the wheel contains the audit and worker modules.
+  passes 103/103 automated tests; the wheel contains the audit, worker, and host-
+  preflight modules.
   The rebuilt Windows/Docker Desktop image
   `sha256:635f64b1f068540d9c58567a7682726a27acfed284e4ba667e90d444323055d1`
   passed all twelve probes plus cleanup. The reference returned 5/5, the starter
@@ -57,6 +61,13 @@ must never be copied into this document or the repository.
   flag and relies on Docker's default isolated process tree plus the controller's
   fail-closed PID-1 check. The image was rebuilt and the full audit and smoke suite
   were repeated successfully; the failed attempt supplied no acceptance evidence.
+- The current untagged preflight slice adds the read-only `aptutor inspect-host`
+  command. Its identity-free report evaluates 17 bounded automated checks and can
+  return only `automated_ready` or `blocked`; ten required human attestations remain
+  `not_attested` in every automated report. The companion operations-record template
+  must be completed and retained outside Git. A separate physical Linux laptop is
+  the candidate host, but it has not been inspected, reimaged, or accepted; the
+  developer workstation is excluded as a substitute.
 - This is local software/integration acceptance only. Before a small informed-
   consent pilot, profile 0.2 must be rebuilt from the intended public commit on a
   separate dedicated secret-free Linux host, invoked by that host's immutable
@@ -132,7 +143,7 @@ must never be copied into this document or the repository.
 | 0.9.0 | Locally bundled CodeMirror 6 C editor, Exercises/Practice exam/Progress modes, side-by-side desktop workbench, progressive disclosure, and responsive manual acceptance |
 | 0.10.0 | Second independent fixed-file family for bounded string processing, first-on-tie diagnosis and hints, bilingual manual acceptance, and the frozen benchmark boundary preserved |
 | 0.11.0 | Generator 0.4.0 includes both file families through 11 reviewed mutation pairs, retains 13 labels after rejecting an overlapping file-cursor category, and adds a 1,312-program grouped evaluation |
-| Unreleased | Private-input aggregate evaluator plus worker profile 0.2 with split controller/submission UIDs, bounded host capture, authored adversarial gate, and a dedicated-host runbook; no human dataset, result, dedicated-host acceptance, or production-sandbox claim yet |
+| Unreleased | Private-input aggregate evaluator plus worker profile 0.2 with split controller/submission UIDs, bounded host capture, authored adversarial gate, a dedicated-host runbook, a non-identifying host preflight, and an external operations-record template; no human dataset, result, dedicated-host acceptance, or production-sandbox claim yet |
 
 ## Current development capabilities
 
@@ -168,6 +179,9 @@ must never be copied into this document or the repository.
   source-free receipts.
 - Source-free `audit-isolated` gate with twelve authored malicious C probes plus
   cleanup verification; passing it does not replace dedicated-host acceptance.
+- Read-only `inspect-host` gate with 17 bounded, non-identifying automated checks,
+  fail-closed status, and ten explicitly unresolved manual requirements. It neither
+  mutates nor accepts a candidate host.
 - Strict project-authored text fixtures and expected-file contracts with portable
   flat names, eight combined entries at most, per-entry and per-test byte limits,
   fresh per-test work directories, structured file statuses, and hidden-content
@@ -270,14 +284,17 @@ independent labels or adjudication. See `docs/NATURAL_CODE_EVALUATION.md`.
   revision and duplicate checks, source-free aggregate output, and optional
   ML/hybrid evaluation using the existing controlled-mutation model. Imported
   natural source is never executed by that command.
-- The current unreleased tree passes 96/96 automated tests. Worker regressions cover
+- The current unreleased tree passes 103/103 automated tests. Worker regressions cover
   exact identity-free/source-bound envelopes, stale-content rejection, C++
   rejection, immutable image references, the split-UID/seccomp command, bounded
   host capture, PID-1 namespace cleanup, cleanup after timeout/invalid/oversized
   output, fail-closed gate aggregation, source-free reporting, and entrypoint
-  selection of UID 65533. The installable wheel contains `worker.py`,
-  `worker_protocol.py`, and
-  `worker_audit.py`, and exposes both worker CLI commands.
+  selection of UID 65533. Host-preflight regressions cover exact status, rootful or
+  remote Docker rejection, missing cgroup controls, bounded malformed Docker output,
+  endpoint classification, environment allowlisting, and identity-free reports.
+  The installable wheel contains `worker.py`, `worker_protocol.py`,
+  `worker_audit.py`, and `host_preflight.py`, and exposes the isolated-run, audit,
+  and host-inspection CLI commands.
 - The 2026-09-23 Windows/Docker Desktop profile-0.2 pass accepts local image build,
   all twelve hostile-code probes plus cleanup, source-free 5/5 reference and bounded
   0/5 starter receipts, removed containers, and a clean ignored-output path. See
@@ -360,6 +377,11 @@ reference, bounded 0/5 starter, source-free receipts, and residual-container cle
 passed. It is integration acceptance only; the dedicated-host checklist remains
 open.
 
+The host-preflight implementation is accepted only at the unit and packaging layer:
+17 automated checks are represented in the schema, privacy and bounded-output
+regressions pass, and all manual requirements remain visibly unresolved. This is not
+candidate-host acceptance.
+
 The public-safe evidence records are in `docs/ACCEPTANCE_V063.md`,
 `docs/ACCEPTANCE_V070_LOCAL_PROGRESS.md`, `docs/ACCEPTANCE_V080_FILES.md`,
 `docs/ACCEPTANCE_V090_INTERFACE.md`, `docs/ACCEPTANCE_V0100_SECOND_FILE.md`,
@@ -367,6 +389,9 @@ The public-safe evidence records are in `docs/ACCEPTANCE_V063.md`,
 `docs/ACCEPTANCE_WORKER_02_WINDOWS.md`.
 The v0.8.0 schema and automated acceptance boundary are in
 `docs/FILE_TEST_CONTRACT.md`.
+The candidate-host procedure and private record skeleton are in
+`docs/DEDICATED_WORKER_HOST.md` and
+`docs/DEDICATED_HOST_OPERATIONS_TEMPLATE.md`; a filled record never enters Git.
 
 ## Recommended next step
 
@@ -388,16 +413,19 @@ labeled natural submissions reveal a recurring non-overlapping cause.
 Accounts and a server database remain deliberately outside the current local scope.
 
 The aggregate evaluator, frozen-set schema, profile-0.2 hardening, adversarial
-command, and dedicated-host runbook are implemented, and the complete local
-Windows/Docker Desktop profile-0.2 protocol has passed. The immediate next step is
-to choose and prepare the actual dedicated Linux host, invoke only its immutable
-image ID/digest, record compiler/runtime and host-security identity privately, and
-repeat the complete unit, reference, starter, adversarial, residual-container, and
-incident/cleanup gates there. Only after that separate layer passes may the project
-recruit and independently label a small consented, de-identified pilot before
-inspecting predictions. Prioritize sentinel handling and naturally structured file
-processing; do not tune on the frozen set or describe the harness, adversarial
-probes, or worker itself as a human-code result.
+command, dedicated-host runbook, non-identifying preflight, and external record
+template are implemented, and the complete local Windows/Docker Desktop profile-0.2
+protocol has passed. The immediate next step is to inventory the separate candidate
+Linux laptop read-only, then reimage it with a maintained x86-64 Fedora release,
+install rootless Docker, run `inspect-host`, and complete every manual attestation in
+the private external record. Build and address the worker only by immutable image
+ID/digest, then repeat the unit, reference, starter, adversarial,
+residual-container, reboot, and incident/cleanup gates there. The developer
+workstation is not a substitute. Only after that separate layer passes may the
+project recruit and independently label a small consented, de-identified pilot
+before inspecting predictions. Prioritize sentinel handling and naturally
+structured file processing; do not tune on the frozen set or describe the harness,
+adversarial probes, preflight, or worker itself as a human-code result.
 
 The completed local sprint validates the future account/history/favorites experience
 cheaply and privately.
@@ -408,6 +436,7 @@ cheaply and privately.
 export PYTHONPATH=src
 python -m ai_programming_tutor.webserver --enable-local-execution
 python -m unittest discover -s tests -v
+python -m ai_programming_tutor.cli inspect-host --output private_evaluation/host_preflight.json
 docker build --file worker/Dockerfile --tag aptutor-worker:0.2 .
 worker_image="$(docker image inspect aptutor-worker:0.2 --format '{{.Id}}')"
 python -m ai_programming_tutor.cli audit-isolated --image "$worker_image"

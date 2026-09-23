@@ -125,6 +125,18 @@ def _command_audit_isolated(args: argparse.Namespace) -> int:
     return 0 if report["passed"] else 1
 
 
+def _command_inspect_host(args: argparse.Namespace) -> int:
+    from ai_programming_tutor.host_preflight import (
+        inspect_worker_host,
+        write_host_preflight_report,
+    )
+
+    report = inspect_worker_host(docker_executable=args.docker)
+    write_host_preflight_report(args.output, report)
+    print(json.dumps(report, indent=2))
+    return 0 if report["status"] == "automated_ready" else 1
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="aptutor", description="AI Programming Tutor prototype")
     subcommands = parser.add_subparsers(dest="command", required=True)
@@ -232,6 +244,22 @@ def build_parser() -> argparse.ArgumentParser:
         help="Outer wall timeout for each probe in seconds (maximum 60)",
     )
     audit_parser.set_defaults(handler=_command_audit_isolated)
+
+    host_parser = subcommands.add_parser(
+        "inspect-host",
+        help="Inspect a candidate dedicated worker host without changing it",
+    )
+    host_parser.add_argument(
+        "--output",
+        type=Path,
+        default=Path("private_evaluation/host_preflight.json"),
+    )
+    host_parser.add_argument(
+        "--docker",
+        default="docker",
+        help="Docker executable used only for bounded read-only inspection",
+    )
+    host_parser.set_defaults(handler=_command_inspect_host)
     return parser
 
 

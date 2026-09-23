@@ -88,6 +88,13 @@ monitoring, and a tested incident/cleanup path. Follow
 Docker Desktop run is useful for integration acceptance but is not evidence of a
 production sandbox.
 
+`aptutor inspect-host` adds a bounded, read-only, non-identifying preflight for the
+recommended x86-64/rootless topology. It checks the host and Docker cgroup/systemd,
+seccomp, LSM, local-socket, and rootless signals without returning raw command
+errors or endpoint paths. A green report remains insufficient: every secret-free,
+retention, offline-network, immutable-build, reboot-cleanup, and incident item in
+the dedicated-host runbook requires separate manual attestation.
+
 ## Required public architecture
 
 The API should enqueue an immutable submission and receive only a structured result

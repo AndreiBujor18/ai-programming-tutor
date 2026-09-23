@@ -116,6 +116,9 @@ did not add a file-specific label: counted over/under-reading overlaps
   command for the reference no-network container; profile 0.2 passed local
   Windows/Docker Desktop integration and all authored probes but still requires
   rootless/user-namespace dedicated-host acceptance before real collection;
+- a read-only `aptutor inspect-host` preflight with 17 fail-closed infrastructure
+  checks and permanently separate manual attestations; it emits no host identity and
+  cannot authorize natural-code processing;
 - privacy-safe provenance from tutoring observations without copied student code;
 - dependency-free local web server and optional FastAPI endpoints;
 - standard-library test suite.
@@ -177,7 +180,8 @@ or adjudication before the split is frozen. The repository now includes the firs
 strict worker contract, hardened profile 0.2 container path, and authored adversarial
 gate, but does not claim that these alone prove host isolation. See
 `docs/ISOLATED_WORKER.md`, `docs/WORKER_ADVERSARIAL_REVIEW.md`,
-`docs/ACCEPTANCE_WORKER_02_WINDOWS.md`, `docs/DEDICATED_WORKER_HOST.md`, and
+`docs/ACCEPTANCE_WORKER_02_WINDOWS.md`, `docs/DEDICATED_WORKER_HOST.md`,
+`docs/DEDICATED_HOST_OPERATIONS_TEMPLATE.md`, and
 `docs/NATURAL_CODE_EVALUATION.md` for the exact boundaries and commands.
 
 ## Quick start
@@ -289,8 +293,9 @@ The core is deliberately independent of the web framework:
 6. `baseline.py` trains and evaluates the first ML model.
 7. `natural_evaluation.py` validates private frozen records and writes only
    aggregate rule/ML/hybrid metrics without executing imported source.
-8. `worker_protocol.py` and `worker_audit.py` provide the source-bound disposable
-   worker transport and authored source-free adversarial gate.
+8. `worker_protocol.py`, `worker_audit.py`, and `host_preflight.py` provide the
+   source-bound disposable worker transport, authored source-free adversarial gate,
+   and non-identifying dedicated-host inspection.
 9. `style_profile.py` extracts bounded style preferences, records their evidence
    origin, and applies safe transformations without retaining source.
 10. `solutions.py` provides authored explanations and tested reference variants.
@@ -306,7 +311,7 @@ See `docs/PROJECT_BRIEF.md`, `docs/ACCEPTANCE_V063.md`,
 `docs/EXPERIMENT_004.md`,
 `docs/DATA_PROVENANCE.md`, `docs/NATURAL_CODE_EVALUATION.md`,
 `docs/ISOLATED_WORKER.md`, `docs/WORKER_ADVERSARIAL_REVIEW.md`,
-`docs/DEDICATED_WORKER_HOST.md`,
+`docs/DEDICATED_WORKER_HOST.md`, `docs/DEDICATED_HOST_OPERATIONS_TEMPLATE.md`,
 `docs/CURRICULUM_ALIGNMENT.md`,
 `docs/STYLE_PERSONALIZATION.md`, and
 `docs/SECURITY.md` for the product scope, labels, privacy boundary, manual

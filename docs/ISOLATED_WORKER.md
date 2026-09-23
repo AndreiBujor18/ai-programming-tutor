@@ -36,6 +36,13 @@ runtime's default seccomp confinement or a stricter tested profile, apply host-l
 quotas, and complete adversarial review. Do not run the worker on a developer machine
 that contains sensitive mounts or privileged Docker configuration.
 
+Before building on the candidate host, run the non-mutating
+`aptutor inspect-host` command documented in `docs/DEDICATED_WORKER_HOST.md`. Its
+`automated_ready` status covers only 17 allowlisted infrastructure checks; all
+secret-free, retention, network, lifecycle, and incident attestations remain manual.
+Use the operations template outside Git and never interpret preflight as pilot
+authorization.
+
 ## Protocol
 
 The host creates one schema-0.1 job containing:

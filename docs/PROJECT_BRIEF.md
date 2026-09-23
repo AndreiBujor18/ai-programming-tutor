@@ -126,6 +126,11 @@ Windows/Docker Desktop integration audit, but still requires a dedicated secret-
 host, immutable image recording, and complete host acceptance before a real pilot;
 it is not a production-sandbox claim.
 
+The host path also provides `aptutor inspect-host`: a read-only source-free report
+over 17 rootless Docker and Linux boundary checks. `automated_ready` never attests
+that the machine is dedicated or secret-free; manual retention, network, build,
+reboot, and incident evidence remains blocking in the external operations record.
+
 Target product metrics:
 
 - bug classification macro-F1 >= 0.75;

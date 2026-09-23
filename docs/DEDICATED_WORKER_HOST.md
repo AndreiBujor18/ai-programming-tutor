@@ -44,6 +44,39 @@ separate Linux machine or disposable VM is selected, prepared, and recorded.
   labeling notes, other submissions, and aggregate evaluator on a different trusted
   system. Transfer only one manually de-identified C file into the worker inbox.
 
+## Automated non-mutating preflight
+
+After installing the public tree and rootless Docker, but before building or
+processing any natural source, run:
+
+```bash
+export PYTHONPATH=src
+python -m ai_programming_tutor.cli inspect-host \
+  --output private_evaluation/host_preflight.json
+```
+
+The command performs bounded read-only inspection and writes schema 0.1 profile
+`dedicated-worker-host-preflight-v0.1`. It reports only allowlisted OS/runtime
+versions and categorical outcomes—never hostname, username, IP/MAC address, Docker
+endpoint path, local filesystem path, or raw command error.
+
+Its 17 automated checks cover Linux/x86-64, a non-root operator, cgroup v2 with the
+`cpu`, `memory`, and `pids` controllers, running systemd, an active host LSM, an
+inaccessible rootful Docker socket, and a local rootless Docker daemon with matching
+architecture, cgroup-v2/systemd delegation, built-in seccomp, and LSM integration.
+The first automated profile covers the recommended rootless topology only. A
+user-namespace-remapped rootful fallback remains blocked unless separately reviewed
+and explicitly implemented.
+
+Exit zero and `status: automated_ready` mean only that every automated check passed.
+Every manual requirement deliberately remains `not_attested`; the command cannot
+prove that a host was reimaged, contains no secrets, has safe retention/network
+configuration, or passed the later build, audit, reboot, and incident checks. A
+blocked result must be fixed and rerun without natural data.
+
+Copy `docs/DEDICATED_HOST_OPERATIONS_TEMPLATE.md` outside Git for the private
+operations record. Never complete that template inside the repository.
+
 ## Two operating phases
 
 ### 1. Public build and verification
@@ -53,7 +86,9 @@ No natural source is present in this phase.
 1. Patch and reboot the clean host.
 2. Obtain the public repository tree without credentials and verify the intended
    public commit.
-3. Build the image and immediately resolve its immutable image ID or repository
+3. Run `aptutor inspect-host`; require `automated_ready` and review the still-open
+   manual requirements without treating the report as host acceptance.
+4. Build the image and immediately resolve its immutable image ID or repository
    digest:
 
    ```bash
@@ -62,14 +97,14 @@ No natural source is present in this phase.
    printf '%s\n' "$worker_image"
    ```
 
-4. Record privately: public Git commit, build UTC time, resolved base image,
+5. Record privately: public Git commit, build UTC time, resolved base image,
    immutable worker digest, GCC/Python versions, Linux kernel, Docker client/server,
    cgroup version, security options, LSM state, and whether the daemon is rootless
    or user-namespace-remapped. Do not record hostname, IP, usernames, paths, tokens,
    or source.
-5. Run the full unit suite, reference/starter smoke checks, and the adversarial
+6. Run the full unit suite, reference/starter smoke checks, and the adversarial
    command in `docs/WORKER_ADVERSARIAL_REVIEW.md`.
-6. Confirm that the adversarial report says `passed: true`, its
+7. Confirm that the adversarial report says `passed: true`, its
    `worker_profile` is `docker-disposable-v0.2`, and no worker container remains.
 
 ### 2. Offline evaluation
@@ -95,6 +130,8 @@ Every item is blocking:
   credentials above.
 - [ ] Rootless Docker or reviewed user-namespace remapping is active; the rootful
   system daemon/socket is disabled or inaccessible to the operator workflow.
+- [ ] The source-free host preflight reports `automated_ready` with 17/17 checks,
+  while every manual requirement remains separately attested below.
 - [ ] cgroup v2, built-in seccomp, and an enforcing LSM are recorded.
 - [ ] No cloud role, metadata credential, secret user-data, agent forwarding,
   remote Docker API, host mount, or unrelated network route is available.
