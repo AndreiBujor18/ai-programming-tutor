@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+- Added a strict schema-0.1 job/result protocol for one-shot C17 execution workers.
+  Jobs contain no participant or labeling fields; results are bound to the exact
+  source/exercise/test fingerprints and contain only bounded compilation/test signals.
+- Added the `aptutor run-isolated` host command and a non-root reference container
+  entry point. The invocation uses no network or volumes, a read-only root, a bounded
+  executable tmpfs, dropped capabilities, `no-new-privileges`, immutable image
+  references, and CPU/memory/PID/wall-time bounds.
+- Documented that this container path remains a reference boundary requiring a
+  dedicated secret-free host, image/compiler recording, and adversarial review before
+  a real pilot; it is not presented as a formally verified production sandbox.
 - Added a strict private JSONL schema and aggregate-only `evaluate-natural` command
   for a future frozen, consented, de-identified C17 evaluation set.
 - The evaluator never executes imported source, requires precomputed signals from a

@@ -9,6 +9,52 @@ permissions:
   contents: read
 
 jobs:
+  worker-image:
+    name: Disposable worker image
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Build the reference worker image
+        run: docker build --file worker/Dockerfile --tag aptutor-worker:ci .
+
+      - name: Run one source-free worker smoke test
+        run: |
+          export PYTHONPATH=src
+          python - <<'PY'
+          from pathlib import Path
+          from ai_programming_tutor.catalog import get_exercise
+
+          Path("/tmp/aptutor-reference.c").write_text(
+              get_exercise("sentinel_average").reference_solution,
+              encoding="utf-8",
+          )
+          PY
+          worker_image="$(docker image inspect aptutor-worker:ci --format '{{.Id}}')"
+          python -m ai_programming_tutor.cli run-isolated sentinel_average \
+            /tmp/aptutor-reference.c \
+            --image "$worker_image" \
+            --output /tmp/aptutor-worker-result.json >/tmp/aptutor-worker-stdout.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          result = json.loads(Path("/tmp/aptutor-worker-result.json").read_text())
+          assert result["signals"] == {
+              "compiled": True,
+              "passed_count": 5,
+              "total_count": 5,
+              "test_statuses": ["passed"] * 5,
+          }
+          serialized = json.dumps(result)
+          assert "source" not in result
+          assert "stderr" not in serialized
+          assert "actual" not in serialized
+          PY
+
   web-assets:
     name: Web editor bundle
     runs-on: ubuntu-latest

@@ -116,6 +116,13 @@ executes imported code, trains on the frozen set, or writes source/per-sample
 predictions to its aggregate report. No qualifying human dataset has been collected
 yet, so this infrastructure is not itself an accuracy result.
 
+The first worker slice defines an exact source-bound job/result protocol and a
+one-container-per-submission reference invocation. It uses no network or host
+volumes, runs as a non-root user against a read-only root plus bounded tmpfs, and
+returns only source-free compilation/test signals. It still requires a dedicated
+secret-free host, immutable image recording, and adversarial review before a real
+pilot; it is not a production-sandbox claim.
+
 Target product metrics:
 
 - bug classification macro-F1 >= 0.75;
@@ -166,6 +173,11 @@ Target product metrics:
   exam state, while the fallback textarea remains usable without enhancement;
 - the three workspace modes keep the problem/editor path primary, put exam context
   above the same workbench, and give detailed progress a dedicated view.
+- worker jobs contain no participant or labeling fields, are bound to exact source,
+  exercise, and test-suite fingerprints, and produce exact source-free receipts;
+- the reference worker invocation uses an immutable image ID/digest, no network or
+  volumes, non-root execution, a read-only root, bounded resources, and outer-timeout
+  cleanup without claiming a formally verified sandbox.
 
 The first v0.8.0 engineering slice additionally requires exact file-contract keys,
 portable flat names, eight combined entries at most, bounded authored content, a
@@ -202,7 +214,10 @@ arbitrary uploads or broaden the execution boundary.
 
 The private-input, aggregate-output natural-code evaluation harness is now defined
 and implemented without collecting submissions or making a human-code metric claim.
-Next, establish the external disposable worker and recruit a small consented pilot,
-especially for sentinel handling and naturally structured file processing. Freeze
-and label that set independently before inspecting tutor predictions. Before public
-code execution, move the product runner behind the same class of worker boundary.
+The first disposable-worker protocol and reference container path are also
+implemented. Next, accept that boundary on a dedicated secret-free host, record the
+immutable image/compiler/runtime identity, and perform adversarial review. Only then
+recruit a small consented pilot, especially for sentinel handling and naturally
+structured file processing. Freeze and label that set independently before
+inspecting tutor predictions. Before public code execution, move the product runner
+behind the same accepted class of worker boundary.

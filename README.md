@@ -111,6 +111,9 @@ did not add a file-specific label: counted over/under-reading overlaps
 - an aggregate-only evaluator for a future private, consented, independently
   labeled natural-code test set; no human submissions or natural-code metric are
   included yet;
+- a strict one-job worker protocol and reference no-network container invocation
+  that returns source-free test signals; the container boundary still requires a
+  dedicated host and adversarial validation before real collection;
 - privacy-safe provenance from tutoring observations without copied student code;
 - dependency-free local web server and optional FastAPI endpoints;
 - standard-library test suite.
@@ -167,8 +170,11 @@ for untrusted participant code.
 
 No natural-code dataset or result is committed. Real collection still requires
 informed consent, separate withdrawal records, manual de-identification, an external
-disposable execution worker, and two independent labels or adjudication before the
-split is frozen. See `docs/NATURAL_CODE_EVALUATION.md` for the exact gate and command.
+disposable execution worker on a dedicated reviewed host, and two independent labels
+or adjudication before the split is frozen. The repository now includes the first
+strict worker contract and a hardened reference container path, but does not claim
+that this alone proves isolation. See `docs/ISOLATED_WORKER.md` and
+`docs/NATURAL_CODE_EVALUATION.md` for the exact boundaries and commands.
 
 ## Quick start
 

@@ -35,10 +35,11 @@ intentional: the included localhost runner has resource limits but is not a sand
 for untrusted participant code.
 
 The required `isolated_disposable_worker` provenance is a protocol assertion, not a
-capability supplied by this repository. Before real collection, that worker must
-provide no network, a read-only base filesystem, strict syscall/process/time/memory
-limits, and disposable per-submission storage. The evaluator can validate the
-declared schema and fingerprints; it cannot prove consent or isolation.
+fact proved by the repository's reference container. Before real collection, that
+worker path must be accepted on a dedicated host with no network, a read-only base
+filesystem, strict syscall/process/time/memory limits, and disposable
+per-submission storage. The evaluator can validate the declared schema and
+fingerprints; it cannot prove consent or isolation.
 
 ## Private record schema
 
@@ -94,7 +95,11 @@ under access control until it has passed a separate disclosure review.
 3. Remove identity-bearing comments, paths, URLs, filenames, and other metadata.
    Have a second reviewer verify de-identification.
 4. Run the code only in the external disposable worker and capture the four bounded
-   signal fields plus the current exercise/test fingerprints.
+   signal fields plus the current exercise/test fingerprints. The repository's
+   schema-0.1 worker protocol and no-volume/no-network container invocation provide
+   the first reference path; follow `docs/ISOLATED_WORKER.md`, use a dedicated
+   secret-free host, pin the built image by digest, and record the private operations
+   evidence before treating its provenance assertion as accepted.
 5. Have two reviewers label independently using `docs/BUG_TAXONOMY.md`. Resolve
    disagreements without showing tutor predictions. Exclude unresolved or
    genuinely multi-bug cases from the single-label metric.

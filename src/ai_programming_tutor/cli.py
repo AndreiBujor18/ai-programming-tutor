@@ -69,6 +69,28 @@ def _command_evaluate_natural(args: argparse.Namespace) -> int:
     return 0
 
 
+def _command_run_isolated(args: argparse.Namespace) -> int:
+    from ai_programming_tutor.worker_protocol import (
+        create_worker_job,
+        run_docker_worker,
+        write_worker_result,
+    )
+
+    source = args.source.read_text(encoding="utf-8")
+    if args.source.resolve() == args.output.resolve():
+        raise ValueError("Worker source and result paths must differ.")
+    job = create_worker_job(args.exercise_id, source)
+    result = run_docker_worker(
+        job,
+        image=args.image,
+        docker_executable=args.docker,
+        timeout_seconds=args.timeout,
+    )
+    write_worker_result(args.output, result, job)
+    print(json.dumps(result, indent=2))
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="aptutor", description="AI Programming Tutor prototype")
     subcommands = parser.add_subparsers(dest="command", required=True)
@@ -120,6 +142,35 @@ def build_parser() -> argparse.ArgumentParser:
         help="Optional controlled-mutation baseline .joblib file",
     )
     natural_parser.set_defaults(handler=_command_evaluate_natural)
+
+    worker_parser = subcommands.add_parser(
+        "run-isolated",
+        help="Run one C17 submission in a fresh no-network worker container",
+    )
+    worker_parser.add_argument("exercise_id")
+    worker_parser.add_argument("source", type=Path)
+    worker_parser.add_argument(
+        "--image",
+        required=True,
+        help="Immutable worker image ID or repository@sha256 digest",
+    )
+    worker_parser.add_argument(
+        "--output",
+        type=Path,
+        default=Path("private_evaluation/worker_result.json"),
+    )
+    worker_parser.add_argument(
+        "--docker",
+        default="docker",
+        help="Container runtime executable with Docker-compatible arguments",
+    )
+    worker_parser.add_argument(
+        "--timeout",
+        type=float,
+        default=20.0,
+        help="Outer wall timeout in seconds (maximum 60)",
+    )
+    worker_parser.set_defaults(handler=_command_run_isolated)
     return parser
 
 

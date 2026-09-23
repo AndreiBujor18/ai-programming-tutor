@@ -1,9 +1,41 @@
-# Project memory — AI Programming Tutor v0.11.0
+# Project memory — AI Programming Tutor v0.11.0 + natural-evaluation gate
 
 This is the maintainer handoff and continuity record for the project. It contains
 only public-safe decisions and implementation state. Private tutoring exports,
 course files, learner identities, raw learner code, filenames, and source metadata
 must never be copied into this document or the repository.
+
+## Current checkpoint — 2026-09-23
+
+- `v0.11.0` is the latest tagged release at commit `9376c31`. It closes the
+  16-exercise controlled benchmark with 1,312 programs and 72/72 release tests.
+- The public `main` used as this slice's base is one public-safe commit ahead at
+  `348b304`, **Add private natural-code evaluation harness**. The package and
+  release tag deliberately remain at `0.11.0`; no follow-up tag has been created
+  yet.
+- The post-release harness adds `aptutor evaluate-natural`, an exact private JSONL
+  schema, consent/de-identification/two-labeler gates, frozen exercise and test
+  fingerprints, aggregate rule/ML/hybrid reporting, and suppression below five
+  samples per reported class. Imported natural source is never executed by this
+  command.
+- The natural-evaluation harness checkpoint passed 76/76 automated tests. The
+  editor bundle, installable wheel, and public GitHub Actions matrix were also
+  verified at that checkpoint.
+- This is infrastructure, not a human-code result. No natural submission, private
+  dataset, participant record, per-sample prediction, or human-code metric is
+  committed or claimed.
+- The handoff base for the next slice is public commit `348b304`. The first worker
+  slice adds a strict source-bound job/result protocol, the `aptutor run-isolated`
+  host command, and a no-network/no-volume non-root reference container. It remains
+  unreleased and does not turn the localhost runner into a public service.
+- The unreleased worker worktree passes 85/85 automated tests. Its installable wheel
+  contains both worker modules and exposes `run-isolated`; CI also has a real
+  hardened-container smoke job. Docker itself was unavailable in the development
+  environment, so dedicated-host acceptance remains deliberately open.
+- The worker reference must be accepted on a dedicated secret-free host and reviewed
+  adversarially before a small informed-consent pilot: manually de-identified
+  submissions, independently labeled by two reviewers or adjudicated, frozen before
+  tutor predictions are inspected, and kept outside Git.
 
 ## Product direction
 
@@ -72,7 +104,7 @@ must never be copied into this document or the repository.
 | 0.9.0 | Locally bundled CodeMirror 6 C editor, Exercises/Practice exam/Progress modes, side-by-side desktop workbench, progressive disclosure, and responsive manual acceptance |
 | 0.10.0 | Second independent fixed-file family for bounded string processing, first-on-tie diagnosis and hints, bilingual manual acceptance, and the frozen benchmark boundary preserved |
 | 0.11.0 | Generator 0.4.0 includes both file families through 11 reviewed mutation pairs, retains 13 labels after rejecting an overlapping file-cursor category, and adds a 1,312-program grouped evaluation |
-| Unreleased | Private-input, aggregate-output harness and protocol for a future consented, de-identified, independently labeled frozen natural-code evaluation; no human dataset or result yet |
+| Unreleased | Private-input aggregate evaluator plus a strict one-job worker protocol and hardened reference container path; no human dataset, result, or production-sandbox claim yet |
 
 ## Current development capabilities
 
@@ -101,6 +133,9 @@ must never be copied into this document or the repository.
 - Strict offline natural-code evaluator with exact private-input validation,
   frozen exercise/test fingerprints, no imported-source execution, and aggregate
   rule/ML/hybrid output that omits source and per-sample predictions.
+- Strict worker job/result protocol plus a reference one-container-per-submission
+  invocation with no network or volumes, a read-only root, non-root execution,
+  bounded tmpfs/resources, immutable image references, and source-free receipts.
 - Strict project-authored text fixtures and expected-file contracts with portable
   flat names, eight combined entries at most, per-entry and per-test byte limits,
   fresh per-test work directories, structured file statuses, and hidden-content
@@ -198,10 +233,17 @@ independent labels or adjudication. See `docs/NATURAL_CODE_EVALUATION.md`.
   layer's top three. The two held-out file folds reach ML-only macro-F1 of 1.0000
   and 0.7667 respectively, while the hybrid reaches 1.0000 on both. See
   `docs/EXPERIMENT_004.md`.
-- The current development tree passes 76/76 automated tests. Natural-evaluation
-  regressions cover exact schema and privacy rejection, frozen revision and duplicate
-  checks, source-free aggregate output, and optional ML/hybrid evaluation using the
-  existing controlled-mutation model. Imported natural source is never executed.
+- The natural-evaluation harness checkpoint passes 76/76 automated tests.
+  Natural-evaluation regressions cover exact schema and privacy rejection, frozen
+  revision and duplicate checks, source-free aggregate output, and optional
+  ML/hybrid evaluation using the existing controlled-mutation model. Imported
+  natural source is never executed by that command.
+- The unreleased isolated-worker slice passes 85/85 automated tests. Its nine new
+  regressions cover exact identity-free and source-bound envelopes, stale-content
+  rejection, C++ rejection, immutable image references, hardened Docker arguments,
+  strict source-free results, suppression of untrusted container stderr,
+  compile-failure minimization, and forced cleanup after a host-side timeout. The
+  wheel includes the new modules and CLI command.
 - The first v0.7.0 feature slice also passed its complete manual Windows protocol.
   Profile-specific favorites, opt-in history, latest/best results, forced-refresh
   persistence, history disablement, full progress clearing, and cross-profile
@@ -294,11 +336,14 @@ and retains the 13-label taxonomy. Reconsider that decision only if independentl
 labeled natural submissions reveal a recurring non-overlapping cause.
 Accounts and a server database remain deliberately outside the current local scope.
 
-The aggregate evaluator and frozen-set schema are implemented. Next establish the
-external disposable worker, then recruit and independently label a small consented,
+The aggregate evaluator, frozen-set schema, and first disposable-worker reference
+slice are implemented. Next accept that worker on a dedicated secret-free host:
+build it, invoke it by immutable image ID/digest, verify its source-free receipt and
+resource boundary, record the compiler/runtime identity privately, and perform an
+adversarial review. Only then recruit and independently label a small consented,
 de-identified pilot before inspecting predictions. Prioritize sentinel handling and
 naturally structured file processing; do not tune on the frozen set or describe the
-harness itself as a human-code result.
+harness or worker itself as a human-code result.
 
 The completed local sprint validates the future account/history/favorites experience
 cheaply and privately.
