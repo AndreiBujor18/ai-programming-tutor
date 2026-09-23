@@ -86,7 +86,11 @@ class WorkerContractTests(unittest.TestCase):
         joined = " ".join(command)
         self.assertIn("--network=none", command)
         self.assertIn("--ipc=none", command)
-        self.assertIn("--pid=private", command)
+        # Docker already creates an isolated process tree by default. Some
+        # engines reject the redundant/non-portable value ``--pid=private``;
+        # the worker itself still fails closed unless its controller is PID 1.
+        self.assertFalse(any(argument.startswith("--pid=") for argument in command))
+        self.assertNotIn("--pid=host", command)
         self.assertIn("--read-only", command)
         self.assertIn("--cap-drop=ALL", command)
         self.assertIn("--cap-add=KILL", command)

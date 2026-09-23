@@ -24,6 +24,8 @@
   CPU/memory/process/output pressure, and residual containers. Added a dedicated-
   host runbook and explicit closed-gate incident policy; no dedicated host has been
   accepted yet.
+- Use Docker's default isolated process tree instead of the rejected redundant
+  `--pid=private` value; the controller still fails closed unless it is PID 1.
 - Documented that this container path remains a reference boundary requiring a
   dedicated secret-free host, image/compiler recording, and adversarial review before
   a real pilot; it is not presented as a formally verified production sandbox.

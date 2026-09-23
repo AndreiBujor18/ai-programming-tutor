@@ -47,6 +47,11 @@ must never be copied into this document or the repository.
   Docker is unavailable in the patch-preparation environment, so the new image and
   real adversarial command are deliberately **not yet accepted**. CI will run both
   after push.
+- The first Docker Desktop 4.92 / Engine 29.8 profile-0.2 attempt built the image
+  successfully but stopped before controller startup because that engine rejects
+  the redundant `--pid=private` value. The compatibility follow-up removes that
+  flag and relies on Docker's default isolated process tree plus the controller's
+  fail-closed PID-1 check. The adversarial audit must be repeated before acceptance.
 - Before a small informed-consent pilot, profile 0.2 must be rebuilt and pass the
   reference/starter/adversarial checks, then pass the separate dedicated secret-free
   Linux host runbook. Submissions remain manually de-identified, independently

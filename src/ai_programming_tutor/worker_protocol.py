@@ -273,7 +273,6 @@ def docker_worker_command(
         "--pull=never",
         "--network=none",
         "--ipc=none",
-        "--pid=private",
         "--read-only",
         "--cap-drop=ALL",
         "--cap-add=KILL",

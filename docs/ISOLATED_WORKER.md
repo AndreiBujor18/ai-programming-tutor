@@ -88,8 +88,9 @@ python -m ai_programming_tutor.cli run-isolated sentinel_average `
 The command always creates a fresh container with:
 
 - `--network=none`, no volumes, and `--pull=never`;
-- private IPC and PID namespaces, stdout-only attachment, and disabled container
-  logging;
+- a private IPC namespace and Docker's default isolated process tree, stdout-only
+  attachment, and disabled container logging; the controller additionally refuses
+  to run unless it is PID 1;
 - a read-only root filesystem and one bounded executable tmpfs;
 - a namespace-root UID 0 controller, UID 65533 untrusted compiler/program, and
   dedicated shared workspace GID 65532;
