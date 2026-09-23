@@ -24,14 +24,16 @@ must never be copied into this document or the repository.
 - This is infrastructure, not a human-code result. No natural submission, private
   dataset, participant record, per-sample prediction, or human-code metric is
   committed or claimed.
-- The handoff base for the next slice is public commit `348b304`. The first worker
-  slice adds a strict source-bound job/result protocol, the `aptutor run-isolated`
+- The first worker slice was built from public commit `348b304`. It adds a strict
+  source-bound job/result protocol, the `aptutor run-isolated`
   host command, and a no-network/no-volume non-root reference container. It remains
   unreleased and does not turn the localhost runner into a public service.
 - The unreleased worker worktree passes 85/85 automated tests. Its installable wheel
   contains both worker modules and exposes `run-isolated`; CI also has a real
-  hardened-container smoke job. Docker itself was unavailable in the development
-  environment, so dedicated-host acceptance remains deliberately open.
+  hardened-container smoke job. Focused Windows/Docker Desktop integration is
+  accepted for a 5/5 reference, a bounded 0/5 starter receipt, automatic container
+  removal, and an ignored-output-clean Git tree. Dedicated-host and adversarial
+  acceptance remain deliberately open.
 - The worker reference must be accepted on a dedicated secret-free host and reviewed
   adversarially before a small informed-consent pilot: manually de-identified
   submissions, independently labeled by two reviewers or adjudicated, frozen before
@@ -244,6 +246,11 @@ independent labels or adjudication. See `docs/NATURAL_CODE_EVALUATION.md`.
   strict source-free results, suppression of untrusted container stderr,
   compile-failure minimization, and forced cleanup after a host-side timeout. The
   wheel includes the new modules and CLI command.
+- The focused Windows/Docker Desktop integration pass is accepted. The reference
+  produced a source-free 5/5 receipt, the incomplete authored starter produced five
+  bounded `wrong_answer` statuses, completed containers were removed, and both
+  ignored receipts left Git clean. This is local integration evidence only; see
+  `docs/ACCEPTANCE_WORKER_01_WINDOWS.md`.
 - The first v0.7.0 feature slice also passed its complete manual Windows protocol.
   Profile-specific favorites, opt-in history, latest/best results, forced-refresh
   persistence, history disablement, full progress clearing, and cross-profile

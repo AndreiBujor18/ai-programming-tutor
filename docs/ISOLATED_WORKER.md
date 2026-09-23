@@ -78,6 +78,16 @@ job binding before writing the receipt. A completed command does not by itself p
 informed consent, de-identification, label independence, host isolation, or
 statistical sufficiency.
 
+## Local integration acceptance
+
+The focused Windows/Docker Desktop protocol passed on 2026-09-23: the authored
+reference returned 5/5, the authored incomplete starter returned five bounded
+`wrong_answer` statuses, no worker container remained, and Git stayed clean after
+both ignored receipts were written. See `docs/ACCEPTANCE_WORKER_01_WINDOWS.md`.
+
+This confirms local integration only. Dedicated-host and adversarial acceptance
+remain open before any real submission is collected.
+
 ## Pilot handoff
 
 Only after manual de-identification and independent labeling should the operator
