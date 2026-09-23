@@ -30,8 +30,9 @@
   dedicated secret-free host, image/compiler recording, and adversarial review before
   a real pilot; it is not presented as a formally verified production sandbox.
 - Completed focused Windows/Docker Desktop integration acceptance for the worker:
-  5/5 reference and bounded 0/5 starter receipts, source-free output, automatic
-  container removal, and no Git-visible private result artifact.
+  profile 0.2 passed all twelve hostile-code probes plus cleanup, a 5/5 reference
+  and bounded 0/5 starter, source-free output, automatic container removal, and no
+  Git-visible private result artifact. Dedicated-host acceptance remains open.
 - Added a strict private JSONL schema and aggregate-only `evaluate-natural` command
   for a future frozen, consented, de-identified C17 evaluation set.
 - The evaluator never executes imported source, requires precomputed signals from a

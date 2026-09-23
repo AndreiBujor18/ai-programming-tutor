@@ -8,6 +8,12 @@ acceptance in `docs/DEDICATED_WORKER_HOST.md`. A green unit suite or Docker Desk
 run is not enough. No natural submission may be sent to the worker before both
 parts are recorded.
 
+The complete source-free audit did pass in the Windows/Docker Desktop integration
+environment on 2026-09-23, including all twelve hostile probes and cleanup. That
+result accepts profile-0.2 integration only; see
+`docs/ACCEPTANCE_WORKER_02_WINDOWS.md`. The dedicated-host image must repeat the
+entire gate rather than inherit this result.
+
 This review uses only project-authored probes. It contains no learner source,
 identity, private dataset, prediction, or human-code result.
 

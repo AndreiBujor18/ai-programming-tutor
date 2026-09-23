@@ -77,8 +77,10 @@ The repository now includes authored adversarial probes for protected package an
 controller access, UID recovery, detached-process persistence, root writes, network
 interfaces, CPU/memory/PID pressure, output flooding, and cleanup. They close known
 same-UID, cross-test descendant, and unbounded-host-capture gaps, but they are not an
-independent assessment and the container still shares the host kernel. A real pilot
-requires a dedicated worker host
+independent assessment and the container still shares the host kernel. All twelve
+probes plus cleanup passed the 2026-09-23 Windows/Docker Desktop integration run;
+that result accepts the software path, not the host. A real pilot requires a
+dedicated worker host
 with no secrets or privileged mounts, an immutable image digest, recorded compiler
 and host/runtime versions, retained seccomp confinement, host-level quotas and
 monitoring, and a tested incident/cleanup path. Follow

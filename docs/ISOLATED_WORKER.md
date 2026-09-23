@@ -107,13 +107,17 @@ statistical sufficiency.
 
 ## Local integration acceptance
 
-The focused Windows/Docker Desktop protocol for profile 0.1 passed on 2026-09-23: the authored
-reference returned 5/5, the authored incomplete starter returned five bounded
-`wrong_answer` statuses, no worker container remained, and Git stayed clean after
-both ignored receipts were written. See `docs/ACCEPTANCE_WORKER_01_WINDOWS.md`.
+The focused Windows/Docker Desktop protocol for profile 0.2 passed on 2026-09-23.
+The current image returned 5/5 for the authored reference, five bounded
+`wrong_answer` statuses for the incomplete starter, all twelve hostile-code probes
+plus cleanup passed, no worker container remained, and Git stayed clean after the
+ignored receipts were written. See `docs/ACCEPTANCE_WORKER_02_WINDOWS.md`. The
+earlier profile-0.1 record remains in `docs/ACCEPTANCE_WORKER_01_WINDOWS.md` for
+history only.
 
-That historical pass does not accept the changed profile 0.2 image. Rebuild it and
-repeat the reference/starter checks, then run the authored adversarial gate:
+This accepts local integration, not the host. On the dedicated secret-free Linux
+machine, rebuild and pin the image, repeat both smoke checks, and run the authored
+adversarial gate:
 
 ```powershell
 python -m ai_programming_tutor.cli audit-isolated `

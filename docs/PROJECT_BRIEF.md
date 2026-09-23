@@ -121,9 +121,10 @@ one-container-per-submission reference invocation. Profile 0.2 uses no network o
 host volumes, separates its namespace-root controller from the untrusted
 compiler/program by UID, protects controller package files, bounds host output while
 reading it, and returns only source-free compilation/test signals. The repository
-also provides an authored hostile-probe command, but it still requires a dedicated
-secret-free host, immutable image recording, and complete host acceptance before a
-real pilot; it is not a production-sandbox claim.
+also provides an authored hostile-probe command. Profile 0.2 passed its complete
+Windows/Docker Desktop integration audit, but still requires a dedicated secret-free
+host, immutable image recording, and complete host acceptance before a real pilot;
+it is not a production-sandbox claim.
 
 Target product metrics:
 
@@ -220,10 +221,11 @@ arbitrary uploads or broaden the execution boundary.
 The private-input, aggregate-output natural-code evaluation harness is now defined
 and implemented without collecting submissions or making a human-code metric claim.
 The disposable-worker protocol, hardened profile 0.2 path, and source-free
-adversarial command are implemented. Next, rebuild and pass the changed image, then
-accept it on a dedicated secret-free host using the recorded image/compiler/runtime
-identity and incident path. Only then recruit a small consented pilot, especially
-for sentinel handling and naturally structured file processing. Freeze and label
-that set independently before inspecting tutor predictions. Before public code
-execution, move the product runner behind the same accepted class of worker
-boundary.
+adversarial command are implemented and have passed the complete local
+Windows/Docker Desktop integration protocol. Next, select and prepare the dedicated
+secret-free Linux host, rebuild and pin its image, and repeat the full gate using the
+recorded image/compiler/runtime identity and incident path. Only then recruit a
+small consented pilot, especially for sentinel handling and naturally structured
+file processing. Freeze and label that set independently before inspecting tutor
+predictions. Before public code execution, move the product runner behind the same
+accepted class of worker boundary.

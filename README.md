@@ -113,8 +113,9 @@ did not add a file-specific label: counted over/under-reading overlaps
   included yet;
 - a strict one-job worker protocol, namespace-root controller separated from the
   non-root submission UID, bounded host transport, and a source-free adversarial
-  command for the reference no-network container; the changed profile still
-  requires rootless/user-namespace host acceptance before real collection;
+  command for the reference no-network container; profile 0.2 passed local
+  Windows/Docker Desktop integration and all authored probes but still requires
+  rootless/user-namespace dedicated-host acceptance before real collection;
 - privacy-safe provenance from tutoring observations without copied student code;
 - dependency-free local web server and optional FastAPI endpoints;
 - standard-library test suite.
@@ -176,8 +177,8 @@ or adjudication before the split is frozen. The repository now includes the firs
 strict worker contract, hardened profile 0.2 container path, and authored adversarial
 gate, but does not claim that these alone prove host isolation. See
 `docs/ISOLATED_WORKER.md`, `docs/WORKER_ADVERSARIAL_REVIEW.md`,
-`docs/DEDICATED_WORKER_HOST.md`, and `docs/NATURAL_CODE_EVALUATION.md` for the exact
-boundaries and commands.
+`docs/ACCEPTANCE_WORKER_02_WINDOWS.md`, `docs/DEDICATED_WORKER_HOST.md`, and
+`docs/NATURAL_CODE_EVALUATION.md` for the exact boundaries and commands.
 
 ## Quick start
 
@@ -301,7 +302,8 @@ The core is deliberately independent of the web framework:
 See `docs/PROJECT_BRIEF.md`, `docs/ACCEPTANCE_V063.md`,
 `docs/ACCEPTANCE_V070_LOCAL_PROGRESS.md`, `docs/ACCEPTANCE_V080_FILES.md`,
 `docs/ACCEPTANCE_V090_INTERFACE.md`, `docs/ACCEPTANCE_V0100_SECOND_FILE.md`,
-`docs/BUG_TAXONOMY.md`, `docs/EXPERIMENT_004.md`,
+`docs/ACCEPTANCE_WORKER_02_WINDOWS.md`, `docs/BUG_TAXONOMY.md`,
+`docs/EXPERIMENT_004.md`,
 `docs/DATA_PROVENANCE.md`, `docs/NATURAL_CODE_EVALUATION.md`,
 `docs/ISOLATED_WORKER.md`, `docs/WORKER_ADVERSARIAL_REVIEW.md`,
 `docs/DEDICATED_WORKER_HOST.md`,

@@ -9,11 +9,13 @@ must never be copied into this document or the repository.
 
 - `v0.11.0` is the latest tagged release at commit `9376c31`. It closes the
   16-exercise controlled benchmark with 1,312 programs and 72/72 release tests.
-- The public `main` checkpoint before the current hardening slice is `4e648e2`.
-  It contains `348b304` (**Add private natural-code evaluation harness**),
-  `b07ba8f` (**Add disposable natural-code worker**), and `4e648e2`
-  (**Record disposable worker Windows acceptance**). The package and release tag
-  deliberately remain at `0.11.0`; no follow-up tag has been created yet.
+- The post-release history through public checkpoint `4e648e2` contains
+  `348b304` (**Add private natural-code evaluation harness**), `b07ba8f`
+  (**Add disposable natural-code worker**), and `4e648e2`
+  (**Record disposable worker Windows acceptance**). The tested hardening tree then
+  adds **Harden worker and add adversarial gate** and **Fix Docker PID namespace
+  compatibility**. The package and release tag deliberately remain at `0.11.0`;
+  no follow-up tag has been created.
 - The post-release harness adds `aptutor evaluate-natural`, an exact private JSONL
   schema, consent/de-identification/two-labeler gates, frozen exercise and test
   fingerprints, aggregate rule/ML/hybrid reporting, and suppression below five
@@ -44,19 +46,24 @@ must never be copied into this document or the repository.
 - `aptutor audit-isolated` now runs twelve project-authored hostile-code probes plus
   a residual-container check and writes only a source-free report. The complete tree
   passes 96/96 automated tests; the wheel contains the audit and worker modules.
-  Docker is unavailable in the patch-preparation environment, so the new image and
-  real adversarial command are deliberately **not yet accepted**. CI will run both
-  after push.
+  The rebuilt Windows/Docker Desktop image
+  `sha256:635f64b1f068540d9c58567a7682726a27acfed284e4ba667e90d444323055d1`
+  passed all twelve probes plus cleanup. The reference returned 5/5, the starter
+  returned five bounded `wrong_answer` statuses, no worker container remained, and
+  Git stayed clean after both ignored receipts were written.
 - The first Docker Desktop 4.92 / Engine 29.8 profile-0.2 attempt built the image
   successfully but stopped before controller startup because that engine rejects
   the redundant `--pid=private` value. The compatibility follow-up removes that
   flag and relies on Docker's default isolated process tree plus the controller's
-  fail-closed PID-1 check. The adversarial audit must be repeated before acceptance.
-- Before a small informed-consent pilot, profile 0.2 must be rebuilt and pass the
-  reference/starter/adversarial checks, then pass the separate dedicated secret-free
-  Linux host runbook. Submissions remain manually de-identified, independently
-  labeled by two reviewers or adjudicated, frozen before tutor predictions are
-  inspected, and kept outside Git.
+  fail-closed PID-1 check. The image was rebuilt and the full audit and smoke suite
+  were repeated successfully; the failed attempt supplied no acceptance evidence.
+- This is local software/integration acceptance only. Before a small informed-
+  consent pilot, profile 0.2 must be rebuilt from the intended public commit on a
+  separate dedicated secret-free Linux host, invoked by that host's immutable
+  digest, and repeat the unit, reference/starter, adversarial, cleanup, and incident
+  gates there. Submissions remain manually de-identified, independently labeled by
+  two reviewers or adjudicated, frozen before tutor predictions are inspected, and
+  kept outside Git.
 
 ## Product direction
 
@@ -271,12 +278,12 @@ independent labels or adjudication. See `docs/NATURAL_CODE_EVALUATION.md`.
   selection of UID 65533. The installable wheel contains `worker.py`,
   `worker_protocol.py`, and
   `worker_audit.py`, and exposes both worker CLI commands.
-- The 2026-09-23 Windows/Docker Desktop pass remains accepted for historical
-  profile 0.1 only: source-free 5/5 reference, bounded 0/5 starter, removed
-  containers, and a clean ignored-output path. Profile 0.2 has not yet been built or
-  run in Docker in the patch-preparation environment, so neither local profile-0.2
-  integration nor dedicated-host acceptance may be inferred from that record. See
-  `docs/ACCEPTANCE_WORKER_01_WINDOWS.md`.
+- The 2026-09-23 Windows/Docker Desktop profile-0.2 pass accepts local image build,
+  all twelve hostile-code probes plus cleanup, source-free 5/5 reference and bounded
+  0/5 starter receipts, removed containers, and a clean ignored-output path. See
+  `docs/ACCEPTANCE_WORKER_02_WINDOWS.md`. The earlier profile-0.1 evidence remains in
+  `docs/ACCEPTANCE_WORKER_01_WINDOWS.md` for history only. Neither record constitutes
+  dedicated-host acceptance.
 - The first v0.7.0 feature slice also passed its complete manual Windows protocol.
   Profile-specific favorites, opt-in history, latest/best results, forced-refresh
   persistence, history disablement, full progress clearing, and cross-profile
@@ -347,9 +354,17 @@ remain redacted, strict first-on-tie behavior receives an existing-category
 diagnosis and three hints, and the final 5/5 result appears only as bounded numeric
 progress.
 
+The focused worker profile-0.2 protocol confirms the current Docker command and
+image on Windows/Docker Desktop: all twelve hostile probes plus cleanup, 5/5
+reference, bounded 0/5 starter, source-free receipts, and residual-container cleanup
+passed. It is integration acceptance only; the dedicated-host checklist remains
+open.
+
 The public-safe evidence records are in `docs/ACCEPTANCE_V063.md`,
-`docs/ACCEPTANCE_V070_LOCAL_PROGRESS.md`, `docs/ACCEPTANCE_V080_FILES.md`, and
-`docs/ACCEPTANCE_V090_INTERFACE.md`, and `docs/ACCEPTANCE_V0100_SECOND_FILE.md`.
+`docs/ACCEPTANCE_V070_LOCAL_PROGRESS.md`, `docs/ACCEPTANCE_V080_FILES.md`,
+`docs/ACCEPTANCE_V090_INTERFACE.md`, `docs/ACCEPTANCE_V0100_SECOND_FILE.md`,
+`docs/ACCEPTANCE_WORKER_01_WINDOWS.md`, and
+`docs/ACCEPTANCE_WORKER_02_WINDOWS.md`.
 The v0.8.0 schema and automated acceptance boundary are in
 `docs/FILE_TEST_CONTRACT.md`.
 
@@ -373,11 +388,12 @@ labeled natural submissions reveal a recurring non-overlapping cause.
 Accounts and a server database remain deliberately outside the current local scope.
 
 The aggregate evaluator, frozen-set schema, profile-0.2 hardening, adversarial
-command, and dedicated-host runbook are implemented. The immediate next step is to
-build the changed image and run the reference, starter, and complete authored audit
-in Docker; then choose and prepare the actual dedicated Linux host, invoke only the
-immutable ID/digest, record compiler/runtime identity privately, and repeat the gate
-plus incident/cleanup acceptance there. Only after both layers pass may the project
+command, and dedicated-host runbook are implemented, and the complete local
+Windows/Docker Desktop profile-0.2 protocol has passed. The immediate next step is
+to choose and prepare the actual dedicated Linux host, invoke only its immutable
+image ID/digest, record compiler/runtime and host-security identity privately, and
+repeat the complete unit, reference, starter, adversarial, residual-container, and
+incident/cleanup gates there. Only after that separate layer passes may the project
 recruit and independently label a small consented, de-identified pilot before
 inspecting predictions. Prioritize sentinel handling and naturally structured file
 processing; do not tune on the frozen set or describe the harness, adversarial
