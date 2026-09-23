@@ -55,6 +55,26 @@ jobs:
           assert "actual" not in serialized
           PY
 
+      - name: Run the source-free adversarial worker gate
+        run: |
+          export PYTHONPATH=src
+          worker_image="$(docker image inspect aptutor-worker:ci --format '{{.Id}}')"
+          python -m ai_programming_tutor.cli audit-isolated \
+            --image "$worker_image" \
+            --output /tmp/aptutor-worker-adversarial.json \
+            >/tmp/aptutor-worker-adversarial-stdout.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          report = json.loads(Path("/tmp/aptutor-worker-adversarial.json").read_text())
+          assert report["passed"] is True
+          assert len(report["checks"]) == 13
+          serialized = json.dumps(report)
+          assert "protected_canary.h" not in serialized
+          assert "emit_reference_answer" not in serialized
+          PY
+
   web-assets:
     name: Web editor bundle
     runs-on: ubuntu-latest

@@ -1,4 +1,4 @@
-# Disposable worker reference — protocol 0.1
+# Disposable worker reference — schema 0.1, profile 0.2
 
 ## Purpose and claim boundary
 
@@ -7,6 +7,27 @@ reference path for producing the precomputed signals required by the private
 natural-code evaluation. It sends source through standard input, mounts no host
 directory, exposes no network, and returns only source-free test statuses bound to
 the exact source, exercise revision, and test-suite revision.
+
+Profile `docker-disposable-v0.2` separates a trusted UID 0 controller inside the
+container's user namespace from GCC and every submitted program (UID 65533). Both
+use only the dedicated workspace group 65532; no untrusted process keeps GID 0.
+The installed exercise package and a startup canary are readable only by the
+controller. It retains only `CAP_SETUID` for that irreversible transition and
+`CAP_KILL` to clear every other process from its private PID namespace between
+tests; changing all IDs to a nonzero UID clears capabilities before the untrusted
+executable starts, and `no-new-privileges` remains inherited. Host stdout is
+captured with a live 64 KiB bound rather than buffered without limit. A
+dedicated host must therefore use rootless Docker or reviewed user-namespace
+remapping; rootful UID 0 mapping is outside the accepted topology.
+
+The image's default `USER` remains UID 65532 and cannot read the protected package,
+so a bare or mutable-tag `docker run` fails closed. Only the reviewed host command
+overrides the controller to UID 0 while simultaneously dropping every capability
+except `KILL` and `SETUID` and enabling the remaining isolation flags.
+At startup the controller reads `/proc/self/status` and fails closed unless its
+inheritable/ambient sets are empty, permitted/effective/bounding sets contain only
+`KILL` and `SETUID`, it is PID 1, `NoNewPrivs` is active, and seccomp filter mode is
+active.
 
 This is a reviewable reference boundary, not a claim that Docker alone is a formally
 verified sandbox. Before collecting real submissions, the operator must use a
@@ -42,8 +63,8 @@ test signals and remains outside the first natural-code metric.
 Build locally from the public tree:
 
 ```powershell
-docker build --file worker/Dockerfile --tag aptutor-worker:0.1 .
-$WorkerImage = docker image inspect aptutor-worker:0.1 --format '{{.Id}}'
+docker build --file worker/Dockerfile --tag aptutor-worker:0.2 .
+$WorkerImage = docker image inspect aptutor-worker:0.2 --format '{{.Id}}'
 ```
 
 `$WorkerImage` is an immutable local `sha256:...` image ID. A remote deployment
@@ -67,10 +88,15 @@ python -m ai_programming_tutor.cli run-isolated sentinel_average `
 The command always creates a fresh container with:
 
 - `--network=none`, no volumes, and `--pull=never`;
-- a private IPC namespace, stdout-only attachment, and disabled container logging;
+- private IPC and PID namespaces, stdout-only attachment, and disabled container
+  logging;
 - a read-only root filesystem and one bounded executable tmpfs;
-- non-root UID/GID 65532;
-- all Linux capabilities dropped and `no-new-privileges` enabled;
+- a namespace-root UID 0 controller, UID 65533 untrusted compiler/program, and
+  dedicated shared workspace GID 65532;
+- every capability dropped except controller-only `KILL` and `SETUID`, explicit
+  built-in seccomp, and `no-new-privileges`;
+- whole-PID-namespace termination and reaping between compiler/test invocations,
+  including descendants that detach from the original process group;
 - CPU, memory, PID, file-descriptor, runner, and outer wall-time bounds.
 
 The host never relays container stderr and validates the returned schema and every
@@ -80,13 +106,23 @@ statistical sufficiency.
 
 ## Local integration acceptance
 
-The focused Windows/Docker Desktop protocol passed on 2026-09-23: the authored
+The focused Windows/Docker Desktop protocol for profile 0.1 passed on 2026-09-23: the authored
 reference returned 5/5, the authored incomplete starter returned five bounded
 `wrong_answer` statuses, no worker container remained, and Git stayed clean after
 both ignored receipts were written. See `docs/ACCEPTANCE_WORKER_01_WINDOWS.md`.
 
-This confirms local integration only. Dedicated-host and adversarial acceptance
-remain open before any real submission is collected.
+That historical pass does not accept the changed profile 0.2 image. Rebuild it and
+repeat the reference/starter checks, then run the authored adversarial gate:
+
+```powershell
+python -m ai_programming_tutor.cli audit-isolated `
+  --image $WorkerImage `
+  --output private_evaluation\worker_adversarial_report.json
+```
+
+See `docs/WORKER_ADVERSARIAL_REVIEW.md` and
+`docs/DEDICATED_WORKER_HOST.md`. Dedicated-host acceptance remains open before any
+real submission is collected.
 
 ## Pilot handoff
 

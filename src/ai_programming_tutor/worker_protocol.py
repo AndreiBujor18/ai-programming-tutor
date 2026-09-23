@@ -7,6 +7,7 @@ import json
 import re
 import secrets
 import subprocess
+import threading
 from pathlib import Path
 from typing import Any
 
@@ -17,7 +18,10 @@ from ai_programming_tutor.solutions import cpp_features
 
 
 WORKER_SCHEMA_VERSION = "0.1"
-WORKER_PROFILE = "docker-disposable-v0.1"
+WORKER_PROFILE = "docker-disposable-v0.2"
+WORKER_CONTROLLER_UID = 0
+WORKER_SHARED_GID = 65532
+WORKER_UNTRUSTED_UID = 65533
 MAX_WORKER_JOB_BYTES = 100_000
 MAX_WORKER_RESULT_BYTES = 64_000
 MAX_WORKER_SOURCE_BYTES = 50_000
@@ -49,7 +53,7 @@ _SIGNAL_FIELDS = {"compiled", "passed_count", "total_count", "test_statuses"}
 _ALLOWED_TEST_STATUSES = {"passed", "wrong_answer", "runtime_error", "timeout"}
 _SAFE_JOB_ID = re.compile(r"[A-Za-z0-9][A-Za-z0-9._-]{0,63}")
 _IMAGE_ID = re.compile(r"sha256:[0-9a-f]{64}")
-_IMAGE_DIGEST = re.compile(r"[^\s@]+@sha256:[0-9a-f]{64}")
+_IMAGE_DIGEST = re.compile(r"[A-Za-z0-9][A-Za-z0-9._:/-]*@sha256:[0-9a-f]{64}")
 
 
 def _exact_fields(value: dict[str, Any], expected: set[str], label: str) -> None:
@@ -156,11 +160,21 @@ def validate_worker_job(value: object) -> dict[str, Any]:
     return dict(value)
 
 
-def evaluate_worker_job(value: object) -> dict[str, Any]:
+def evaluate_worker_job(
+    value: object,
+    *,
+    execution_uid: int | None = None,
+    isolated_pid_namespace: bool = False,
+) -> dict[str, Any]:
     """Evaluate a validated job and return only source-free bounded signals."""
     job = validate_worker_job(value)
     exercise = get_exercise(job["exercise_id"])
-    evaluation = CRunner().evaluate(job["source"], exercise, dialect="c17")
+    evaluation = CRunner(
+        execution_uid=execution_uid,
+        isolated_pid_namespace=isolated_pid_namespace,
+    ).evaluate(
+        job["source"], exercise, dialect="c17"
+    )
     result = {
         "schema_version": WORKER_SCHEMA_VERSION,
         "worker_profile": WORKER_PROFILE,
@@ -259,15 +273,19 @@ def docker_worker_command(
         "--pull=never",
         "--network=none",
         "--ipc=none",
+        "--pid=private",
         "--read-only",
         "--cap-drop=ALL",
+        "--cap-add=KILL",
+        "--cap-add=SETUID",
         "--security-opt=no-new-privileges",
+        "--security-opt=seccomp=builtin",
         "--pids-limit=64",
         "--memory=256m",
         "--cpus=1.0",
         "--ulimit=nofile=64:64",
-        "--tmpfs=/work:rw,nosuid,nodev,exec,size=128m,mode=700,uid=65532,gid=65532",
-        "--user=65532:65532",
+        "--tmpfs=/work:rw,nosuid,nodev,exec,size=128m,mode=710,uid=0,gid=65532",
+        f"--user={WORKER_CONTROLLER_UID}:{WORKER_SHARED_GID}",
         "--workdir=/work",
         "--env=HOME=/nonexistent",
         "--env=TMPDIR=/work",
@@ -295,6 +313,101 @@ def _force_remove_container(docker_executable: str, container_name: str) -> None
         pass
 
 
+def _run_bounded_process(
+    command: list[str],
+    *,
+    input_bytes: bytes,
+    max_stdout_bytes: int,
+    timeout_seconds: float,
+) -> subprocess.CompletedProcess[bytes]:
+    """Run a process while retaining at most max_stdout_bytes + 1 bytes.
+
+    ``subprocess.run(..., stdout=PIPE)`` buffers all output before a caller can
+    check its size. A compromised container could therefore consume unbounded
+    host memory. Dedicated pump threads keep stdin and stdout moving on both
+    POSIX and Windows while the stdout reader closes as soon as it has enough
+    bytes to prove that the transport limit was exceeded.
+    """
+    process = subprocess.Popen(
+        command,
+        stdin=subprocess.PIPE,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.DEVNULL,
+        bufsize=0,
+    )
+    if process.stdin is None or process.stdout is None:  # pragma: no cover
+        process.kill()
+        raise OSError("Container process pipes could not be created.")
+
+    stdout_state: dict[str, bytes] = {"value": b""}
+
+    def write_input() -> None:
+        try:
+            pending = memoryview(input_bytes)
+            while pending:
+                written = process.stdin.write(pending)
+                if written is None or written <= 0:
+                    break
+                pending = pending[written:]
+            process.stdin.flush()
+        except (BrokenPipeError, OSError, ValueError):
+            pass
+        finally:
+            try:
+                process.stdin.close()
+            except (OSError, ValueError):
+                pass
+
+    def read_stdout() -> None:
+        retained = bytearray()
+        try:
+            while len(retained) <= max_stdout_bytes:
+                remaining = max_stdout_bytes + 1 - len(retained)
+                chunk = process.stdout.read(min(65_536, remaining))
+                if not chunk:
+                    break
+                retained.extend(chunk)
+        except (OSError, ValueError):
+            pass
+        finally:
+            stdout_state["value"] = bytes(retained)
+            try:
+                process.stdout.close()
+            except (OSError, ValueError):
+                pass
+
+    input_thread = threading.Thread(target=write_input, daemon=True)
+    output_thread = threading.Thread(target=read_stdout, daemon=True)
+    input_thread.start()
+    output_thread.start()
+    try:
+        return_code = process.wait(timeout=timeout_seconds)
+    except subprocess.TimeoutExpired:
+        process.kill()
+        try:
+            process.wait(timeout=5)
+        except subprocess.TimeoutExpired:  # pragma: no cover - local process kill is terminal
+            pass
+        raise
+    finally:
+        input_thread.join(timeout=1)
+        output_thread.join(timeout=1)
+        if input_thread.is_alive():
+            try:
+                process.stdin.close()
+            except (OSError, ValueError):
+                pass
+            input_thread.join(timeout=1)
+        if output_thread.is_alive():
+            try:
+                process.stdout.close()
+            except (OSError, ValueError):
+                pass
+            output_thread.join(timeout=1)
+
+    return subprocess.CompletedProcess(command, return_code, stdout_state["value"], b"")
+
+
 def run_docker_worker(
     job_value: object,
     *,
@@ -316,31 +429,39 @@ def run_docker_worker(
     if len(payload) > MAX_WORKER_JOB_BYTES:
         raise ValueError("Worker job exceeds the transport limit.")
     try:
-        process = subprocess.run(
+        process = _run_bounded_process(
             command,
-            input=payload,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.DEVNULL,
-            check=False,
-            timeout=timeout_seconds,
+            input_bytes=payload,
+            max_stdout_bytes=MAX_WORKER_RESULT_BYTES,
+            timeout_seconds=timeout_seconds,
         )
     except FileNotFoundError as exc:
         raise ValueError(f"Container runtime {docker_executable!r} was not found.") from exc
     except subprocess.TimeoutExpired as exc:
         _force_remove_container(docker_executable, container_name)
         raise ValueError("Disposable worker exceeded its outer wall timeout.") from exc
+    except OSError as exc:
+        _force_remove_container(docker_executable, container_name)
+        raise ValueError("Disposable worker transport failed.") from exc
+    if len(process.stdout) > MAX_WORKER_RESULT_BYTES:
+        _force_remove_container(docker_executable, container_name)
+        raise ValueError("Disposable worker result exceeds the transport limit.")
     if process.returncode != 0:
         # Container stderr is deliberately untrusted. A hostile program may try to
         # reach the worker's inherited descriptors, so never relay it into operator
         # output, logs, or the source-free receipt.
+        _force_remove_container(docker_executable, container_name)
         raise ValueError("Disposable worker failed without a usable result.")
-    if len(process.stdout) > MAX_WORKER_RESULT_BYTES:
-        raise ValueError("Disposable worker result exceeds the transport limit.")
     try:
         result = json.loads(process.stdout.decode("utf-8"))
     except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+        _force_remove_container(docker_executable, container_name)
         raise ValueError("Disposable worker returned invalid UTF-8 JSON.") from exc
-    return validate_worker_result(result, job)
+    try:
+        return validate_worker_result(result, job)
+    except ValueError:
+        _force_remove_container(docker_executable, container_name)
+        raise
 
 
 def write_worker_result(path: Path, result: dict[str, Any], job: dict[str, Any]) -> None:

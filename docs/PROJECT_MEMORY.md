@@ -1,4 +1,4 @@
-# Project memory — AI Programming Tutor v0.11.0 + natural-evaluation gate
+# Project memory — AI Programming Tutor v0.11.0 + dedicated-worker gate
 
 This is the maintainer handoff and continuity record for the project. It contains
 only public-safe decisions and implementation state. Private tutoring exports,
@@ -9,10 +9,11 @@ must never be copied into this document or the repository.
 
 - `v0.11.0` is the latest tagged release at commit `9376c31`. It closes the
   16-exercise controlled benchmark with 1,312 programs and 72/72 release tests.
-- The public `main` used as this slice's base is one public-safe commit ahead at
-  `348b304`, **Add private natural-code evaluation harness**. The package and
-  release tag deliberately remain at `0.11.0`; no follow-up tag has been created
-  yet.
+- The public `main` checkpoint before the current hardening slice is `4e648e2`.
+  It contains `348b304` (**Add private natural-code evaluation harness**),
+  `b07ba8f` (**Add disposable natural-code worker**), and `4e648e2`
+  (**Record disposable worker Windows acceptance**). The package and release tag
+  deliberately remain at `0.11.0`; no follow-up tag has been created yet.
 - The post-release harness adds `aptutor evaluate-natural`, an exact private JSONL
   schema, consent/de-identification/two-labeler gates, frozen exercise and test
   fingerprints, aggregate rule/ML/hybrid reporting, and suppression below five
@@ -24,20 +25,33 @@ must never be copied into this document or the repository.
 - This is infrastructure, not a human-code result. No natural submission, private
   dataset, participant record, per-sample prediction, or human-code metric is
   committed or claimed.
-- The first worker slice was built from public commit `348b304`. It adds a strict
-  source-bound job/result protocol, the `aptutor run-isolated`
-  host command, and a no-network/no-volume non-root reference container. It remains
-  unreleased and does not turn the localhost runner into a public service.
-- The unreleased worker worktree passes 85/85 automated tests. Its installable wheel
-  contains both worker modules and exposes `run-isolated`; CI also has a real
-  hardened-container smoke job. Focused Windows/Docker Desktop integration is
-  accepted for a 5/5 reference, a bounded 0/5 starter receipt, automatic container
-  removal, and an ignored-output-clean Git tree. Dedicated-host and adversarial
-  acceptance remain deliberately open.
-- The worker reference must be accepted on a dedicated secret-free host and reviewed
-  adversarially before a small informed-consent pilot: manually de-identified
-  submissions, independently labeled by two reviewers or adjudicated, frozen before
-  tutor predictions are inspected, and kept outside Git.
+- The historical profile `docker-disposable-v0.1` added the strict source-bound
+  protocol and passed its focused Windows/Docker Desktop integration: 5/5 reference,
+  bounded 0/5 starter, automatic container removal, and a clean ignored-output path.
+  That record does not accept the changed profile below.
+- The current unreleased profile `docker-disposable-v0.2` addresses two reproduced
+  adversarial gaps: the compiler/program shared the controller UID and could read
+  controller-visible files or open its stdout through `/proc`, while host stdout was
+  checked only after unbounded buffering. A trusted UID 0 controller now runs only
+  inside a required rootless/user-remapped container; GCC and submitted programs
+  irreversibly use UID 65533 with dedicated workspace GID 65532, installed exercises
+  and a startup canary are controller-only, only controller `CAP_SETUID` and
+  namespace-cleanup `CAP_KILL` are retained, the controller is PID 1 in a private
+  PID namespace, built-in seccomp is explicit, and host capture is bounded while
+  reading. A final lifecycle review also reproduced and closed a detached-child
+  path that crossed test boundaries (the first case failed, then four cases observed
+  the child's marker).
+- `aptutor audit-isolated` now runs twelve project-authored hostile-code probes plus
+  a residual-container check and writes only a source-free report. The complete tree
+  passes 96/96 automated tests; the wheel contains the audit and worker modules.
+  Docker is unavailable in the patch-preparation environment, so the new image and
+  real adversarial command are deliberately **not yet accepted**. CI will run both
+  after push.
+- Before a small informed-consent pilot, profile 0.2 must be rebuilt and pass the
+  reference/starter/adversarial checks, then pass the separate dedicated secret-free
+  Linux host runbook. Submissions remain manually de-identified, independently
+  labeled by two reviewers or adjudicated, frozen before tutor predictions are
+  inspected, and kept outside Git.
 
 ## Product direction
 
@@ -106,7 +120,7 @@ must never be copied into this document or the repository.
 | 0.9.0 | Locally bundled CodeMirror 6 C editor, Exercises/Practice exam/Progress modes, side-by-side desktop workbench, progressive disclosure, and responsive manual acceptance |
 | 0.10.0 | Second independent fixed-file family for bounded string processing, first-on-tie diagnosis and hints, bilingual manual acceptance, and the frozen benchmark boundary preserved |
 | 0.11.0 | Generator 0.4.0 includes both file families through 11 reviewed mutation pairs, retains 13 labels after rejecting an overlapping file-cursor category, and adds a 1,312-program grouped evaluation |
-| Unreleased | Private-input aggregate evaluator plus a strict one-job worker protocol and hardened reference container path; no human dataset, result, or production-sandbox claim yet |
+| Unreleased | Private-input aggregate evaluator plus worker profile 0.2 with split controller/submission UIDs, bounded host capture, authored adversarial gate, and a dedicated-host runbook; no human dataset, result, dedicated-host acceptance, or production-sandbox claim yet |
 
 ## Current development capabilities
 
@@ -136,8 +150,12 @@ must never be copied into this document or the repository.
   frozen exercise/test fingerprints, no imported-source execution, and aggregate
   rule/ML/hybrid output that omits source and per-sample predictions.
 - Strict worker job/result protocol plus a reference one-container-per-submission
-  invocation with no network or volumes, a read-only root, non-root execution,
-  bounded tmpfs/resources, immutable image references, and source-free receipts.
+  invocation with no network or volumes, a read-only root, namespace-root controller
+  separated from the non-root submission UID, protected controller files, bounded
+  host transport and container resources, immutable image references, and
+  source-free receipts.
+- Source-free `audit-isolated` gate with twelve authored malicious C probes plus
+  cleanup verification; passing it does not replace dedicated-host acceptance.
 - Strict project-authored text fixtures and expected-file contracts with portable
   flat names, eight combined entries at most, per-entry and per-test byte limits,
   fresh per-test work directories, structured file statuses, and hidden-content
@@ -240,16 +258,19 @@ independent labels or adjudication. See `docs/NATURAL_CODE_EVALUATION.md`.
   revision and duplicate checks, source-free aggregate output, and optional
   ML/hybrid evaluation using the existing controlled-mutation model. Imported
   natural source is never executed by that command.
-- The unreleased isolated-worker slice passes 85/85 automated tests. Its nine new
-  regressions cover exact identity-free and source-bound envelopes, stale-content
-  rejection, C++ rejection, immutable image references, hardened Docker arguments,
-  strict source-free results, suppression of untrusted container stderr,
-  compile-failure minimization, and forced cleanup after a host-side timeout. The
-  wheel includes the new modules and CLI command.
-- The focused Windows/Docker Desktop integration pass is accepted. The reference
-  produced a source-free 5/5 receipt, the incomplete authored starter produced five
-  bounded `wrong_answer` statuses, completed containers were removed, and both
-  ignored receipts left Git clean. This is local integration evidence only; see
+- The current unreleased tree passes 96/96 automated tests. Worker regressions cover
+  exact identity-free/source-bound envelopes, stale-content rejection, C++
+  rejection, immutable image references, the split-UID/seccomp command, bounded
+  host capture, PID-1 namespace cleanup, cleanup after timeout/invalid/oversized
+  output, fail-closed gate aggregation, source-free reporting, and entrypoint
+  selection of UID 65533. The installable wheel contains `worker.py`,
+  `worker_protocol.py`, and
+  `worker_audit.py`, and exposes both worker CLI commands.
+- The 2026-09-23 Windows/Docker Desktop pass remains accepted for historical
+  profile 0.1 only: source-free 5/5 reference, bounded 0/5 starter, removed
+  containers, and a clean ignored-output path. Profile 0.2 has not yet been built or
+  run in Docker in the patch-preparation environment, so neither local profile-0.2
+  integration nor dedicated-host acceptance may be inferred from that record. See
   `docs/ACCEPTANCE_WORKER_01_WINDOWS.md`.
 - The first v0.7.0 feature slice also passed its complete manual Windows protocol.
   Profile-specific favorites, opt-in history, latest/best results, forced-refresh
@@ -292,7 +313,10 @@ independent labels or adjudication. See `docs/NATURAL_CODE_EVALUATION.md`.
 - The runner is for trusted localhost use only. Resource limits, loopback binding,
   Host/Origin checks, and explicit execution enablement are not a production sandbox.
 - Public deployment requires disposable isolated workers with no network, no host
-  secrets/mounts, strict resource/syscall controls, quotas, and cleanup.
+  secrets/mounts, strict resource/syscall controls, quotas, and cleanup. Profile 0.2
+  and its authored audit authorize no deployment until the separate host checklist
+  passes; see `docs/WORKER_ADVERSARIAL_REVIEW.md` and
+  `docs/DEDICATED_WORKER_HOST.md`.
 
 ## Completed manual acceptance
 
@@ -343,14 +367,16 @@ and retains the 13-label taxonomy. Reconsider that decision only if independentl
 labeled natural submissions reveal a recurring non-overlapping cause.
 Accounts and a server database remain deliberately outside the current local scope.
 
-The aggregate evaluator, frozen-set schema, and first disposable-worker reference
-slice are implemented. Next accept that worker on a dedicated secret-free host:
-build it, invoke it by immutable image ID/digest, verify its source-free receipt and
-resource boundary, record the compiler/runtime identity privately, and perform an
-adversarial review. Only then recruit and independently label a small consented,
-de-identified pilot before inspecting predictions. Prioritize sentinel handling and
-naturally structured file processing; do not tune on the frozen set or describe the
-harness or worker itself as a human-code result.
+The aggregate evaluator, frozen-set schema, profile-0.2 hardening, adversarial
+command, and dedicated-host runbook are implemented. The immediate next step is to
+build the changed image and run the reference, starter, and complete authored audit
+in Docker; then choose and prepare the actual dedicated Linux host, invoke only the
+immutable ID/digest, record compiler/runtime identity privately, and repeat the gate
+plus incident/cleanup acceptance there. Only after both layers pass may the project
+recruit and independently label a small consented, de-identified pilot before
+inspecting predictions. Prioritize sentinel handling and naturally structured file
+processing; do not tune on the frozen set or describe the harness, adversarial
+probes, or worker itself as a human-code result.
 
 The completed local sprint validates the future account/history/favorites experience
 cheaply and privately.
@@ -361,6 +387,9 @@ cheaply and privately.
 export PYTHONPATH=src
 python -m ai_programming_tutor.webserver --enable-local-execution
 python -m unittest discover -s tests -v
+docker build --file worker/Dockerfile --tag aptutor-worker:0.2 .
+worker_image="$(docker image inspect aptutor-worker:0.2 --format '{{.Id}}')"
+python -m ai_programming_tutor.cli audit-isolated --image "$worker_image"
 ```
 
 Open `http://127.0.0.1:8000/`. Never forward or publicly expose that port.

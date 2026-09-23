@@ -105,4 +105,7 @@ fingerprints, source hashes, and bounded precomputed signals from a declared
 disposable worker. It rejects common identity-bearing content and writes only an
 aggregate report. It cannot prove consent, de-identification, worker isolation, or
 label independence; those remain documented human controls. The complete protocol
-is `docs/NATURAL_CODE_EVALUATION.md`.
+is `docs/NATURAL_CODE_EVALUATION.md`. The current worker profile must also pass
+`docs/WORKER_ADVERSARIAL_REVIEW.md` and the independent
+`docs/DEDICATED_WORKER_HOST.md` checklist before its provenance assertion is
+accepted for natural source.

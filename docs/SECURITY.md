@@ -53,22 +53,38 @@ They do not form a sufficient sandbox against a hostile submission. In particula
 the process still shares the host kernel and may be able to read resources visible
 to the API account. The runner must not be exposed directly to anonymous users.
 
-The schema-0.1 disposable-worker slice adds a separate reference path for private
+The schema-0.1 disposable-worker path adds a separate reference path for private
 evaluation signals. `aptutor run-isolated` creates an identity-free, source-bound job
-and starts one fresh non-root container with no network, no host volumes, a read-only
-root, a bounded executable tmpfs, dropped capabilities, `no-new-privileges`, and
-CPU/memory/PID/wall-time bounds. Only compilation and ordered test-status counts are
-returned; source, compiler text, stdout/stderr, expected/actual values, and diagnoses
-are excluded from the result. Container logging is disabled, only stdout is attached,
-and the host never relays container stderr. The host validates the exact source,
-exercise, test, and job fingerprints before writing it.
+and starts one fresh rootless/user-remapped container with no network, no host
+volumes, a read-only root, a bounded executable tmpfs, explicit built-in seccomp,
+`no-new-privileges`, and CPU/memory/PID/wall-time bounds. Profile 0.2 runs the
+trusted controller as UID 0 inside the container's user namespace and
+GCC/submitted executables as UID 65533, gives both only dedicated workspace GID
+65532 rather than GID 0, makes the installed exercise package controller-only, and
+retains only `CAP_SETUID` for that transition plus `CAP_KILL`
+to clear its private PID namespace between invocations. Changing all
+real/effective/saved UIDs to a nonzero value clears both capabilities before the
+untrusted `execve`. The controller fails closed unless it is PID 1 and
+`/proc/self/status` shows exactly those capabilities, active `NoNewPrivs`, and
+active seccomp filtering.
+Only compilation and ordered test-status counts are returned; source, compiler
+text, stdout/stderr, expected/actual values, and diagnoses are excluded from the
+result. Container logging is disabled, only stdout is attached, host capture is
+bounded while it is read, and the host never relays container stderr. The host
+validates the exact source, exercise, test, and job fingerprints before writing it.
 
-This reference still shares the container host kernel and has not undergone an
-independent adversarial assessment. A real pilot requires a dedicated worker host
+The repository now includes authored adversarial probes for protected package and
+controller access, UID recovery, detached-process persistence, root writes, network
+interfaces, CPU/memory/PID pressure, output flooding, and cleanup. They close known
+same-UID, cross-test descendant, and unbounded-host-capture gaps, but they are not an
+independent assessment and the container still shares the host kernel. A real pilot
+requires a dedicated worker host
 with no secrets or privileged mounts, an immutable image digest, recorded compiler
 and host/runtime versions, retained seccomp confinement, host-level quotas and
-monitoring, and a tested incident/cleanup path. A local Docker Desktop run is useful
-for integration acceptance but is not evidence of a production sandbox.
+monitoring, and a tested incident/cleanup path. Follow
+`docs/WORKER_ADVERSARIAL_REVIEW.md` and `docs/DEDICATED_WORKER_HOST.md`. A local
+Docker Desktop run is useful for integration acceptance but is not evidence of a
+production sandbox.
 
 ## Required public architecture
 
@@ -78,7 +94,7 @@ sandbox with:
 
 - no network namespace access;
 - read-only base filesystem and a small disposable writable directory;
-- non-root user and no host mounts or secrets;
+- a non-root submitted program and no host mounts or secrets;
 - dropped Linux capabilities and a strict seccomp/AppArmor profile;
 - hard CPU, wall-clock, memory, process, disk, and output quotas;
 - pinned compiler image and dependency inventory;

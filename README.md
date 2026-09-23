@@ -111,9 +111,10 @@ did not add a file-specific label: counted over/under-reading overlaps
 - an aggregate-only evaluator for a future private, consented, independently
   labeled natural-code test set; no human submissions or natural-code metric are
   included yet;
-- a strict one-job worker protocol and reference no-network container invocation
-  that returns source-free test signals; the container boundary still requires a
-  dedicated host and adversarial validation before real collection;
+- a strict one-job worker protocol, namespace-root controller separated from the
+  non-root submission UID, bounded host transport, and a source-free adversarial
+  command for the reference no-network container; the changed profile still
+  requires rootless/user-namespace host acceptance before real collection;
 - privacy-safe provenance from tutoring observations without copied student code;
 - dependency-free local web server and optional FastAPI endpoints;
 - standard-library test suite.
@@ -172,9 +173,11 @@ No natural-code dataset or result is committed. Real collection still requires
 informed consent, separate withdrawal records, manual de-identification, an external
 disposable execution worker on a dedicated reviewed host, and two independent labels
 or adjudication before the split is frozen. The repository now includes the first
-strict worker contract and a hardened reference container path, but does not claim
-that this alone proves isolation. See `docs/ISOLATED_WORKER.md` and
-`docs/NATURAL_CODE_EVALUATION.md` for the exact boundaries and commands.
+strict worker contract, hardened profile 0.2 container path, and authored adversarial
+gate, but does not claim that these alone prove host isolation. See
+`docs/ISOLATED_WORKER.md`, `docs/WORKER_ADVERSARIAL_REVIEW.md`,
+`docs/DEDICATED_WORKER_HOST.md`, and `docs/NATURAL_CODE_EVALUATION.md` for the exact
+boundaries and commands.
 
 ## Quick start
 
@@ -285,12 +288,14 @@ The core is deliberately independent of the web framework:
 6. `baseline.py` trains and evaluates the first ML model.
 7. `natural_evaluation.py` validates private frozen records and writes only
    aggregate rule/ML/hybrid metrics without executing imported source.
-8. `style_profile.py` extracts bounded style preferences, records their evidence
+8. `worker_protocol.py` and `worker_audit.py` provide the source-bound disposable
+   worker transport and authored source-free adversarial gate.
+9. `style_profile.py` extracts bounded style preferences, records their evidence
    origin, and applies safe transformations without retaining source.
-9. `solutions.py` provides authored explanations and tested reference variants.
-10. `exam.py` defines the original practice simulation and rubric;
+10. `solutions.py` provides authored explanations and tested reference variants.
+11. `exam.py` defines the original practice simulation and rubric;
    `compatibility.py` explains recognized legacy constructs.
-11. `service.py` exposes the application interface; `webserver.py` and `api.py`
+12. `service.py` exposes the application interface; `webserver.py` and `api.py`
    deliver it to the local browser.
 
 See `docs/PROJECT_BRIEF.md`, `docs/ACCEPTANCE_V063.md`,
@@ -298,6 +303,8 @@ See `docs/PROJECT_BRIEF.md`, `docs/ACCEPTANCE_V063.md`,
 `docs/ACCEPTANCE_V090_INTERFACE.md`, `docs/ACCEPTANCE_V0100_SECOND_FILE.md`,
 `docs/BUG_TAXONOMY.md`, `docs/EXPERIMENT_004.md`,
 `docs/DATA_PROVENANCE.md`, `docs/NATURAL_CODE_EVALUATION.md`,
+`docs/ISOLATED_WORKER.md`, `docs/WORKER_ADVERSARIAL_REVIEW.md`,
+`docs/DEDICATED_WORKER_HOST.md`,
 `docs/CURRICULUM_ALIGNMENT.md`,
 `docs/STYLE_PERSONALIZATION.md`, and
 `docs/SECURITY.md` for the product scope, labels, privacy boundary, manual

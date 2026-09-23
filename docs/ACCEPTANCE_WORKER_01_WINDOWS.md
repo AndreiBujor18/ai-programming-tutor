@@ -2,6 +2,11 @@
 
 Date: 2026-09-23
 
+> Historical scope: this record accepts `docker-disposable-v0.1` only. The current
+> unreleased profile 0.2 changes the UID/capability and host-capture boundary and
+> therefore requires a fresh image build, reference/starter rerun, and adversarial
+> pass. This record must not be cited as profile-0.2 or dedicated-host acceptance.
+
 This record covers the focused Windows/Docker Desktop integration pass for the
 schema-0.1 disposable worker. It contains only public-safe outcomes. No learner
 source, private submission, job identifier, source fingerprint, local path, or

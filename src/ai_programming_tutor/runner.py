@@ -83,6 +83,31 @@ def _program_resource_limiter() -> Callable[[], None] | None:
     return _resource_limiter(1, 128, 1, process_limit=16)
 
 
+def _subprocess_setup(
+    limiter: Callable[[], None] | None,
+    execution_uid: int | None,
+) -> Callable[[], None] | None:
+    """Apply resource limits, then irreversibly select the untrusted UID."""
+    if sys.platform == "win32" or (limiter is None and execution_uid is None):
+        return None
+
+    def apply_setup() -> None:
+        if limiter is not None:
+            limiter()
+        if execution_uid is not None:
+            # Set the real, effective, and saved IDs together. The worker grants
+            # CAP_SETUID and CAP_KILL only to its trusted namespace-root
+            # controller; changing all real/effective/saved UIDs to a nonzero
+            # value clears capabilities, and no-new-privileges prevents the
+            # submitted program from gaining them.
+            if hasattr(os, "setresuid"):
+                os.setresuid(execution_uid, execution_uid, execution_uid)
+            else:
+                os.setuid(execution_uid)
+
+    return apply_setup
+
+
 def _terminate_group(process: subprocess.Popen[bytes]) -> None:
     try:
         if sys.platform == "win32":
@@ -93,6 +118,51 @@ def _terminate_group(process: subprocess.Popen[bytes]) -> None:
             os.killpg(process.pid, signal.SIGKILL)
     except OSError:
         pass
+
+
+def _clear_isolated_pid_namespace(enabled: bool) -> None:
+    """Kill and reap every process other than the worker controller.
+
+    A submitted program can call ``setsid()`` after ``fork()`` and thereby
+    leave the process group used for ordinary timeout cleanup.  The disposable
+    worker runs its controller as PID 1 in a private PID namespace and grants
+    that controller CAP_KILL, so it can clear the entire namespace between
+    compiler/test invocations.  Refuse to perform this broad operation anywhere
+    else; ``kill(-1, ...)`` must never be usable from the development runner.
+    """
+    if not enabled:
+        return
+    if sys.platform != "linux" or os.getpid() != 1:
+        raise RuntimeError("Isolated PID cleanup requires a Linux PID 1 controller.")
+
+    try:
+        os.kill(-1, signal.SIGKILL)
+    except ProcessLookupError:
+        pass
+    except OSError as exc:
+        raise RuntimeError("Isolated PID namespace cleanup failed.") from exc
+
+    deadline = time.monotonic() + 1.0
+    while True:
+        try:
+            child_pid, _ = os.waitpid(-1, os.WNOHANG)
+        except ChildProcessError:
+            return
+        except OSError as exc:
+            raise RuntimeError("Isolated PID namespace cleanup failed.") from exc
+        if child_pid != 0:
+            continue
+        # Close the fork-vs-kill race: a task created near the first namespace
+        # sweep may only become an adopted PID 1 child afterwards.
+        try:
+            os.kill(-1, signal.SIGKILL)
+        except ProcessLookupError:
+            pass
+        except OSError as exc:
+            raise RuntimeError("Isolated PID namespace cleanup failed.") from exc
+        if time.monotonic() >= deadline:
+            raise RuntimeError("Isolated PID namespace cleanup timed out.")
+        time.sleep(0.01)
 
 
 def _read_regular_file(path: Path, max_bytes: int) -> tuple[str | None, bytes]:
@@ -145,13 +215,29 @@ class CRunner:
         run_timeout_seconds: float = 1.0,
         max_source_bytes: int = 50_000,
         max_output_bytes: int = 32_000,
+        execution_uid: int | None = None,
+        isolated_pid_namespace: bool = False,
     ) -> None:
+        if execution_uid is not None and (
+            isinstance(execution_uid, bool) or not isinstance(execution_uid, int)
+        ):
+            raise ValueError("Execution UID must be an integer or None.")
+        if execution_uid is not None and execution_uid <= 0:
+            raise ValueError("Execution UID must be a positive non-root UID.")
+        if execution_uid is not None and sys.platform == "win32":
+            raise ValueError("Execution UID separation requires a POSIX worker.")
+        if not isinstance(isolated_pid_namespace, bool):
+            raise ValueError("PID namespace isolation flag must be a boolean.")
+        if isolated_pid_namespace and execution_uid is None:
+            raise ValueError("PID namespace cleanup requires an untrusted UID.")
         self.compiler = compiler
         self.cpp_compiler = cpp_compiler
         self.compile_timeout_seconds = compile_timeout_seconds
         self.run_timeout_seconds = run_timeout_seconds
         self.max_source_bytes = max_source_bytes
         self.max_output_bytes = max_output_bytes
+        self.execution_uid = execution_uid
+        self.isolated_pid_namespace = isolated_pid_namespace
 
     def evaluate(self, source: str, exercise: Exercise, *, dialect: str = "c17") -> EvaluationResult:
         if dialect not in {"c17", "cpp17"}:
@@ -167,6 +253,12 @@ class CRunner:
 
         with tempfile.TemporaryDirectory(prefix="aptutor-") as temp_directory:
             workdir = Path(temp_directory)
+            if self.execution_uid is not None:
+                # The controller and submitted processes keep the same primary
+                # group. Group access is therefore limited to this disposable
+                # workspace while their differing UIDs protect controller files
+                # and process descriptors from the submitted program.
+                workdir.chmod(0o770)
             source_path = workdir / ("submission.cpp" if dialect == "cpp17" else "submission.c")
             executable_path = workdir / ("submission.exe" if sys.platform == "win32" else "submission")
             source_path.write_text(source, encoding="utf-8")
@@ -180,6 +272,8 @@ class CRunner:
                     prefix=f"case-{index:03d}-", dir=workdir
                 ) as case_directory:
                     case_workdir = Path(case_directory)
+                    if self.execution_uid is not None:
+                        case_workdir.chmod(0o770)
                     try:
                         for fixture in case.fixtures:
                             with (case_workdir / fixture.name).open("xb") as stream:
@@ -228,17 +322,26 @@ class CRunner:
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 start_new_session=True,
-                preexec_fn=_compiler_resource_limiter(),
+                preexec_fn=_subprocess_setup(
+                    _compiler_resource_limiter(), self.execution_uid
+                ),
                 env=_process_environment(workdir),
             )
         except FileNotFoundError:
             return CompilationResult(False, None, stderr=f"Compiler '{compiler}' was not found.")
+        except (OSError, subprocess.SubprocessError):
+            return CompilationResult(
+                False,
+                None,
+                stderr="Compiler execution could not be isolated.",
+            )
 
         try:
             stdout, stderr = process.communicate(timeout=self.compile_timeout_seconds)
         except subprocess.TimeoutExpired:
             _terminate_group(process)
             stdout, stderr = process.communicate()
+            _clear_isolated_pid_namespace(self.isolated_pid_namespace)
             return CompilationResult(
                 False,
                 process.returncode,
@@ -246,6 +349,8 @@ class CRunner:
                 self._decode(stderr) or "Compilation timed out.",
                 timed_out=True,
             )
+
+        _clear_isolated_pid_namespace(self.isolated_pid_namespace)
 
         return CompilationResult(
             process.returncode == 0,
@@ -272,10 +377,12 @@ class CRunner:
                     stdout=stdout_file,
                     stderr=stderr_file,
                     start_new_session=True,
-                    preexec_fn=_program_resource_limiter(),
+                    preexec_fn=_subprocess_setup(
+                        _program_resource_limiter(), self.execution_uid
+                    ),
                     env=_process_environment(workdir),
                 )
-            except OSError as exc:
+            except (OSError, subprocess.SubprocessError) as exc:
                 return TestResult(
                     case.name,
                     case.hidden,
@@ -299,6 +406,7 @@ class CRunner:
             finally:
                 if sys.platform != "win32":
                     _terminate_group(process)
+                _clear_isolated_pid_namespace(self.isolated_pid_namespace)
 
             stdout_file.seek(0)
             stderr_file.seek(0)

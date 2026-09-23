@@ -35,11 +35,14 @@ intentional: the included localhost runner has resource limits but is not a sand
 for untrusted participant code.
 
 The required `isolated_disposable_worker` provenance is a protocol assertion, not a
-fact proved by the repository's reference container. Before real collection, that
-worker path must be accepted on a dedicated host with no network, a read-only base
+fact proved by the repository's reference container or adversarial command. Before
+real collection, profile `docker-disposable-v0.2` must pass the complete authored
+gate and be accepted on a dedicated host with no network, a read-only base
 filesystem, strict syscall/process/time/memory limits, and disposable
-per-submission storage. The evaluator can validate the declared schema and
-fingerprints; it cannot prove consent or isolation.
+per-submission storage. The separate host checklist must establish that no
+unrelated secret, identity map, consent ledger, cloud role, or prior source is
+present. The evaluator can validate the declared schema and fingerprints; it cannot
+prove consent, isolation, or host preparation.
 
 ## Private record schema
 
@@ -96,10 +99,11 @@ under access control until it has passed a separate disclosure review.
    Have a second reviewer verify de-identification.
 4. Run the code only in the external disposable worker and capture the four bounded
    signal fields plus the current exercise/test fingerprints. The repository's
-   schema-0.1 worker protocol and no-volume/no-network container invocation provide
-   the first reference path; follow `docs/ISOLATED_WORKER.md`, use a dedicated
-   secret-free host, pin the built image by digest, and record the private operations
-   evidence before treating its provenance assertion as accepted.
+   schema-0.1/profile-0.2 worker and no-volume/no-network container invocation
+   provide the first reference path; follow `docs/ISOLATED_WORKER.md`,
+   `docs/WORKER_ADVERSARIAL_REVIEW.md`, and `docs/DEDICATED_WORKER_HOST.md`, use a
+   dedicated secret-free host, pin the built image by digest, and record the private
+   operations evidence before treating its provenance assertion as accepted.
 5. Have two reviewers label independently using `docs/BUG_TAXONOMY.md`. Resolve
    disagreements without showing tutor predictions. Exclude unresolved or
    genuinely multi-bug cases from the single-label metric.

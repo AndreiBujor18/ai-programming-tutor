@@ -8,6 +8,19 @@ from ai_programming_tutor.catalog import list_exercises
 from ai_programming_tutor.service import TutorService
 
 
+def _read_bounded_utf8(path: Path, max_bytes: int, label: str) -> str:
+    if not path.is_file():
+        raise ValueError(f"{label} must be a regular file.")
+    with path.open("rb") as stream:
+        payload = stream.read(max_bytes + 1)
+    if len(payload) > max_bytes:
+        raise ValueError(f"{label} exceeds the {max_bytes}-byte limit.")
+    try:
+        return payload.decode("utf-8")
+    except UnicodeDecodeError as exc:
+        raise ValueError(f"{label} must be UTF-8 text.") from exc
+
+
 def _command_list(_: argparse.Namespace) -> int:
     for exercise in list_exercises():
         public_count = sum(not case.hidden for case in exercise.tests)
@@ -71,12 +84,17 @@ def _command_evaluate_natural(args: argparse.Namespace) -> int:
 
 def _command_run_isolated(args: argparse.Namespace) -> int:
     from ai_programming_tutor.worker_protocol import (
+        MAX_WORKER_SOURCE_BYTES,
         create_worker_job,
         run_docker_worker,
         write_worker_result,
     )
 
-    source = args.source.read_text(encoding="utf-8")
+    source = _read_bounded_utf8(
+        args.source,
+        MAX_WORKER_SOURCE_BYTES,
+        "Worker source",
+    )
     if args.source.resolve() == args.output.resolve():
         raise ValueError("Worker source and result paths must differ.")
     job = create_worker_job(args.exercise_id, source)
@@ -89,6 +107,22 @@ def _command_run_isolated(args: argparse.Namespace) -> int:
     write_worker_result(args.output, result, job)
     print(json.dumps(result, indent=2))
     return 0
+
+
+def _command_audit_isolated(args: argparse.Namespace) -> int:
+    from ai_programming_tutor.worker_audit import (
+        run_worker_adversarial_audit,
+        write_worker_audit_report,
+    )
+
+    report = run_worker_adversarial_audit(
+        image=args.image,
+        docker_executable=args.docker,
+        timeout_seconds=args.timeout,
+    )
+    write_worker_audit_report(args.output, report)
+    print(json.dumps(report, indent=2))
+    return 0 if report["passed"] else 1
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -171,6 +205,33 @@ def build_parser() -> argparse.ArgumentParser:
         help="Outer wall timeout in seconds (maximum 60)",
     )
     worker_parser.set_defaults(handler=_command_run_isolated)
+
+    audit_parser = subcommands.add_parser(
+        "audit-isolated",
+        help="Run source-free adversarial probes against a pinned worker image",
+    )
+    audit_parser.add_argument(
+        "--image",
+        required=True,
+        help="Immutable worker image ID or repository@sha256 digest",
+    )
+    audit_parser.add_argument(
+        "--output",
+        type=Path,
+        default=Path("private_evaluation/worker_adversarial_report.json"),
+    )
+    audit_parser.add_argument(
+        "--docker",
+        default="docker",
+        help="Container runtime executable with Docker-compatible arguments",
+    )
+    audit_parser.add_argument(
+        "--timeout",
+        type=float,
+        default=20.0,
+        help="Outer wall timeout for each probe in seconds (maximum 60)",
+    )
+    audit_parser.set_defaults(handler=_command_audit_isolated)
     return parser
 
 

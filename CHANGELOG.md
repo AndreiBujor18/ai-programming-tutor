@@ -5,10 +5,25 @@
 - Added a strict schema-0.1 job/result protocol for one-shot C17 execution workers.
   Jobs contain no participant or labeling fields; results are bound to the exact
   source/exercise/test fingerprints and contain only bounded compilation/test signals.
-- Added the `aptutor run-isolated` host command and a non-root reference container
-  entry point. The invocation uses no network or volumes, a read-only root, a bounded
-  executable tmpfs, dropped capabilities, `no-new-privileges`, immutable image
-  references, and CPU/memory/PID/wall-time bounds.
+- Added the `aptutor run-isolated` host command and a fail-closed reference container
+  entry point. The hardened invocation uses a namespace-root controller only to
+  drop GCC/submissions to UID 65533, plus no network or volumes, a read-only root,
+  a bounded executable tmpfs, explicit built-in seccomp, `no-new-privileges`,
+  immutable image references, and CPU/memory/PID/wall-time bounds.
+- Hardened the worker as profile `docker-disposable-v0.2`: the trusted controller
+  and untrusted compiler/program now use separate UIDs, controller package files
+  are protected by permissions and a startup canary, and the controller retains
+  only `CAP_SETUID` for the irreversible transition plus `CAP_KILL` for whole-PID-
+  namespace cleanup between tests. Host stdout is bounded while being read instead
+  of after unbounded buffering, and the host source file is bounded before UTF-8
+  decoding. Dedicated-host acceptance now requires rootless Docker or explicit
+  user-namespace remapping.
+- Added `aptutor audit-isolated` with twelve authored hostile-code probes plus a
+  cleanup check. Its source-free report covers controller/package access, UID
+  recovery, detached-process persistence, root writes, network interfaces,
+  CPU/memory/process/output pressure, and residual containers. Added a dedicated-
+  host runbook and explicit closed-gate incident policy; no dedicated host has been
+  accepted yet.
 - Documented that this container path remains a reference boundary requiring a
   dedicated secret-free host, image/compiler recording, and adversarial review before
   a real pilot; it is not presented as a formally verified production sandbox.
